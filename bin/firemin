@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+const pack = require('../package.json')
+
+const result = program
+  .version(pack.version)
+  .command('minimize', 'minimize a Firebase Firestore rules file')
+  .parse(process.argv)
+
+if (!program.args.length) {
+  program.help()
+}
+if (result == program) {
+  // eslint-disable-next-line no-console
+  console.log("\n  firemin: '" + program.args[0] + "' is not a command")
+  program.help()
+}

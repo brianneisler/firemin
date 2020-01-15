@@ -1,0 +1,7 @@
+{
+  "*.js": [
+    "npm run lint",
+    "npm run docs:generate",
+    "git add -A"
+  ]
+}

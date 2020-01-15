@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+const { minimize, setupCliContext } = require('../index')
+const { resolve } = require('path')
+const program = require('commander')
+
+program
+  .description('minimize a firebase firestore rules file')
+  .option(
+    '-f, --filePath [filePath]',
+    'The relative file path to the rule file (defaults to ./firestore.rules)',
+    resolve('./firestore.rules')
+  )
+  .option(
+    '-o, --outputFilePath [outputFilePath]',
+    'the relative file path to output the new minimized file (defaults to ./firestore.min.rules)',
+    resolve('./firestore.min.rules')
+  )
+  .parse(process.argv)
+
+const exec = async (options) => {
+  const context = await setupCliContext()
+  const { logger } = context
+
+  try {
+    await minimize(context, options)
+    logger.info('Minimization complete!')
+  } catch (error) {
+    logger.warn('An error occured while trying to minimize the rules file')
+    throw error
+  }
+}
+
+exec(program)
+  .then(() => process.exit())
+  .catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error(error)
+    process.exit(1)
+  })

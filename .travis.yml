@@ -1,0 +1,25 @@
+language: node_js
+sudo: false
+node_js:
+- 12
+- 10
+- 8
+os:
+- linux
+- osx
+- windows
+install:
+- npm run setup
+script:
+- npm run lint
+- npm run test:ci
+deploy:
+  provider: npm
+  email: me@brianneisler.com
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
+    repo: brianneisler/firemin
+  api_key:
+    secure: Yzfa+tfgEQlJOEJ0yH8DhwKIO9f9Z+gLD52G62lMf7UyA/OU5BtzhMR9mEvVfYU1X9f6X0JyqJZwbKUtiRjFNsJ/omEEt9RwkOzEiCK5r0g1sVl080ybheoxr1TRRHogdx2DDDh1t0X+GKdHNQKgm+HRmYNhXZVS+Nl1bcwYOLl4JQlZFvWMfQ4UtPev+Y0PgckSBPwDAuJXOKAp2OXlAGP/woV1Q7JX+YhEh66uEVPjQ0U6SW4wSz9mXBbYgIF46EaLCSGw8JTxl+NbWg9RGyVZKS7CjXb7pZqs9hNEvdWizzmlnuP6olWpiYOeVy9upCmgYJ+Svj2WoYYe60YKMnV1yqPmINHGI39UTHeNFVhe9yTF2u5URtxo5sKZAdLu4zEq4OrVDymdIkFhjuO853+yEFEso1PWDxob4UxvtO5JXLt7cTZMzu5wm7QUgtpjfQUjecoc8WcwH+MDje+2/3ik9cx7mSf8ice5lNdmQGAC09MkzHVH5rQQDbwOVfxP/1IARvCBQW6cW6Z8MBaKnFOpYzmvUppO+/k2MnYCCxR7lZuLhlAqqvYhrw5dQliYHw4J7ERK/eKiKxV898TgRfb9ABK33MvuQNAqhAkQoGy84WjxFoOBpGH6DUeL08LLXYkLWXi/NufCqCDGSId2bRZp+TungMeQUyxtA1zOlvc=

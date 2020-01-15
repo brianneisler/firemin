@@ -6,7 +6,7 @@ Firebase Firestore/Storage security rules minifier
 
 [![npm version](https://badge.fury.io/js/firemin.svg)](https://badge.fury.io/js/firemin)<br />
 [![Build Status](https://travis-ci.org/brianneisler/firemin.svg)](https://travis-ci.org/brianneisler/firemin)<br />
-[![NPM](https://nodei.co/npm/stutter.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/firemin/)
+[![NPM](https://nodei.co/npm/firemin.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/firemin/)
 
 
 ## why?

@@ -68,5 +68,11 @@
   },
   "pre-commit": [
     "lint:staged"
+  ],
+  "keywords": [
+    "firebase",
+    "firestore",
+    "minifier",
+    "rules"
   ]
 }

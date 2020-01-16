@@ -19,8 +19,8 @@ The following outlines the commands for common development tasks.
 To setup the project for development run the below commands. After these have been run you will be able to use the project else where, run tests, etc.
 
 ```sh
-git clone https://github.com/brianneisler/stutter.git
-cd stutter
+git clone https://github.com/brianneisler/firemin.git
+cd firemin
 nvm install
 nvm use
 npm run setup

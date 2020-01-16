@@ -12,9 +12,12 @@
   "bugs": {
     "url": "https://github.com/brianneisler/firemin/issues"
   },
-  "main": "./index.module.js",
   "engines": {
     "node": ">=8.0"
+  },
+  "main": "./index.module.js",
+  "bin": {
+    "firemin": "./bin/firemin"
   },
   "scripts": {
     "build": "bash ./scripts/build.sh",

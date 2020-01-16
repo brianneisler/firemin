@@ -1,7 +1,7 @@
 import { COMMENT } from '../../constants/TOKEN_TYPES'
 
 const REGEX_COMMENT_TEST = /^\/\//
-const REGEX_COMMENT_TOKEN = /^\/\/.*\n/
+const REGEX_COMMENT_TOKEN = /^\/\/.*(\r\n?|\n)/
 
 const Comment = {
   parse: (data) => {

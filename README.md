@@ -65,9 +65,9 @@ This means the less the number of collections and subcollections, the less rules
 * Removes unnecessary whitespace
 
 ## TODO
-* Replace function names and function parameter names with shorter single
-  character names
-* Collapse single use functions
+- [ ] Replace function names and function parameter names with shorter single character names
+- [ ] Collapse single use functions
+- [ ] Remove unused functions
 
 ## Install
 

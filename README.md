@@ -46,7 +46,7 @@ This means the less the number of collections and subcollections, the less rules
     (and your security), this is a non-option.
 
 ## Another approach
-* Technically, this problem is not too disimilar from trying to keep javascript
+* Technically, this problem is not too dissimilar from trying to keep javascript
   file size down on the web. We can use a lot of the same approaches taken by javascript
   minifiers to reduce the size of our firebase rules file.
 * A minifier can do the following before deployment  
@@ -83,7 +83,7 @@ add a `predeploy` hook to run `firemin`
 ```json
 {
   "firestore": {
-    "predeploy": "./node_modules/.bin/firemin -f './firestore.rules -o ./firestore.min.rules",
+    "predeploy": "firemin minimize -f './firestore.rules -o ./firestore.min.rules",
     "rules": "firestore.min.rules"
     ...
   }

@@ -24,7 +24,7 @@ const exec = async (options) => {
 
   try {
     await minimize(context, options)
-    logger.info('Minimization complete!')
+    logger.info(`Minimized rules file generated ${options.outputFilePath}`)
   } catch (error) {
     logger.warn('An error occured while trying to minimize the rules file')
     throw error

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { minimize, setupCliContext } = require('../index')
+const { minimize, setupCliContext } = require('../index.module')
 const { resolve } = require('path')
 const program = require('commander')
 

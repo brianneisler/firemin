@@ -93,3 +93,25 @@ add a `predeploy` hook to run `firemin`
 
 Now when firestore deploys, it will minify your `firestore.rules` file and
 output the minified file to `firestore.min.rules` before deploying the rules.
+
+
+## Using the Binary
+
+You can using the binary directly by installing globally
+
+```sh
+npm install -g firemin
+```
+
+To minimize a rules file, use the `minimize` command
+
+```sh
+firemin minimize -f ./path/to/my-firestore.rules
+```
+
+By default the output file is `./firestore.min.rules`. To specify a different
+path you can use the `-o` option.
+
+```sh
+firemin minimie -f ./path/to/my-firestore.rules -o ./output/file/my-firestore.min.rules
+```

@@ -1,4 +1,4 @@
-import { OPERATOR_GREATER_THAN } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_GREATER_THAN } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_GREATER_THAN_TEST = /^>([^=]|$)/
 

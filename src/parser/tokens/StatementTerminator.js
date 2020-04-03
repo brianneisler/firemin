@@ -1,4 +1,4 @@
-import { STATEMENT_TERMINATOR } from '../../constants/TOKEN_TYPES'
+import { STATEMENT_TERMINATOR } from '../../constants/TokenTypes'
 
 const REGEX_STATEMENT_TERMINATOR_TEST = /^;/
 

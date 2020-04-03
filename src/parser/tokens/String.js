@@ -1,4 +1,4 @@
-import { STRING } from '../../constants/TOKEN_TYPES'
+import { STRING } from '../../constants/TokenTypes'
 
 const REGEX_STRING_TEST = /^['"]/
 const REGEX_STRING_TOKEN = /^("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')/

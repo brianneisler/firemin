@@ -1,4 +1,4 @@
-import { OPERATOR_COMMA } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_COMMA } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_COMMA_TEST = /^,/
 

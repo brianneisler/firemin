@@ -1,4 +1,4 @@
-import { OPERATOR_INEQUALITY } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_INEQUALITY } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_INEQUALITY_TEST = /^\!=/
 

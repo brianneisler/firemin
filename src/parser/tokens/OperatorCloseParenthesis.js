@@ -1,4 +1,4 @@
-import { OPERATOR_CLOSE_PARENTHESIS } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_CLOSE_PARENTHESIS } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_CLOSE_PARENTHESIS_TEST = /^\)/
 

@@ -6,7 +6,7 @@ Firebase Firestore/Storage security rules minifier
 
 [![npm version](https://badge.fury.io/js/firemin.svg)](https://badge.fury.io/js/firemin)<br />
 [![Build Status](https://travis-ci.org/brianneisler/firemin.svg)](https://travis-ci.org/brianneisler/firemin)<br />
-[![Code coverage](https://codecov.io/gh/brianneisler/firemin/branch/master/graph/badge.svg)](https://codecov.io/gh/brianneisler/firemin/branch/master/)
+[![Code coverage](https://codecov.io/gh/brianneisler/firemin/branch/master/graph/badge.svg)](https://codecov.io/gh/brianneisler/firemin/branch/master/)<br />
 [![NPM](https://nodei.co/npm/firemin.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/firemin/)
 
 

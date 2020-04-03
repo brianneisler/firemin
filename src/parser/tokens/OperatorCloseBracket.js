@@ -1,4 +1,4 @@
-import { OPERATOR_CLOSE_BRACKET } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_CLOSE_BRACKET } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_CLOSE_BRACKET_TEST = /^\]/
 

@@ -1,3 +1,4 @@
-import * as TOKEN_TYPES from './TOKEN_TYPES'
+import * as NodeTypes from './NodeTypes'
+import * as TokenTypes from './TokenTypes'
 
-export { TOKEN_TYPES }
+export { NodeTypes, TokenTypes }

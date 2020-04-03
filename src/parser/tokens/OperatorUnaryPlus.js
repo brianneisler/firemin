@@ -1,4 +1,4 @@
-import { OPERATOR_UNARY_PLUS } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_UNARY_PLUS } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_UNARY_PLUS_TEST = /^\+/
 

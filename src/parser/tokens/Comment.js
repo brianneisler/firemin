@@ -1,4 +1,4 @@
-import { COMMENT } from '../../constants/TOKEN_TYPES'
+import { COMMENT } from '../../constants/TokenTypes'
 
 const REGEX_COMMENT_TEST = /^\/\//
 const REGEX_COMMENT_TOKEN = /^\/\/.*(\r\n?|\n)/

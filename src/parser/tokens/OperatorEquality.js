@@ -1,4 +1,4 @@
-import { OPERATOR_EQUALITY } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_EQUALITY } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_EQUALITY_TEST = /^==/
 

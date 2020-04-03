@@ -6,8 +6,8 @@ import {
   OPERATOR_CLOSE_PARENTHESIS,
   OPERATOR_COLON,
   OPERATOR_COMMA,
+  OPERATOR_DIVIDE,
   OPERATOR_DOT,
-  OPERATOR_FORWARD_SLASH,
   OPERATOR_LOGICAL_AND,
   OPERATOR_LOGICAL_NOT,
   OPERATOR_LOGICAL_OR,
@@ -16,7 +16,7 @@ import {
   OPERATOR_OPEN_PARENTHESIS,
   STATEMENT_TERMINATOR,
   WHITESPACE
-} from '../constants/TOKEN_TYPES'
+} from '../constants/TokenTypes'
 
 const minimizeTokenList = (context, { tokenList }) =>
   tokenList
@@ -51,8 +51,8 @@ const minimizeTokenList = (context, { tokenList }) =>
             prevToken.type !== OPERATOR_CLOSE_PARENTHESIS &&
             prevToken.type !== OPERATOR_COLON &&
             prevToken.type !== OPERATOR_COMMA &&
+            prevToken.type !== OPERATOR_DIVIDE &&
             prevToken.type !== OPERATOR_DOT &&
-            prevToken.type !== OPERATOR_FORWARD_SLASH &&
             prevToken.type !== OPERATOR_LOGICAL_AND &&
             prevToken.type !== OPERATOR_LOGICAL_NOT &&
             prevToken.type !== OPERATOR_LOGICAL_OR &&
@@ -64,8 +64,8 @@ const minimizeTokenList = (context, { tokenList }) =>
             nextToken.type !== OPERATOR_CLOSE_BRACKET &&
             nextToken.type !== OPERATOR_CLOSE_CURLY_BRACE &&
             nextToken.type !== OPERATOR_CLOSE_PARENTHESIS &&
+            nextToken.type !== OPERATOR_DIVIDE &&
             nextToken.type !== OPERATOR_DOT &&
-            nextToken.type !== OPERATOR_FORWARD_SLASH &&
             nextToken.type !== OPERATOR_LOGICAL_AND &&
             nextToken.type !== OPERATOR_LOGICAL_NOT &&
             nextToken.type !== OPERATOR_LOGICAL_OR &&

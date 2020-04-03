@@ -1,4 +1,4 @@
-import { OPERATOR_MODULUS } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_MODULUS } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_MODULUS_TEST = /^%/
 

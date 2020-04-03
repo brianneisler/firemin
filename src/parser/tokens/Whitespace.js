@@ -1,4 +1,4 @@
-import { WHITESPACE } from '../../constants/TOKEN_TYPES'
+import { WHITESPACE } from '../../constants/TokenTypes'
 
 const REGEX_WHITESPACE_TEST = /^\s/
 const REGEX_WHITESPACE_TOKEN = /^\s+/

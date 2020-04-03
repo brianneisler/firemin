@@ -1,4 +1,4 @@
-import { NUMBER } from '../../constants/TOKEN_TYPES'
+import { NUMBER } from '../../constants/TokenTypes'
 
 const REGEX_NUMBER_TEST = /^[0-9]/
 const REGEX_NUMBER_TOKEN = /^[0-9]+(\.[0-9]+)?/

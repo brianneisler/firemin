@@ -1,4 +1,4 @@
-import { OPERATOR_LESS_THAN_EQUAL } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_LESS_THAN_EQUAL } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_LESS_THAN_EQUAL_TEST = /^<=/
 

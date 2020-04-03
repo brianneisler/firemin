@@ -1,4 +1,4 @@
-import { IDENTIFIER } from '../../constants/TOKEN_TYPES'
+import { IDENTIFIER } from '../../constants/TokenTypes'
 
 const REGEX_IDENTIFIER_TEST = /^[a-zA-Z_]/
 const REGEX_IDENTIFIER_TOKEN = /^[a-zA-Z_][a-zA-Z0-9_]*/

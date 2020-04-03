@@ -1,4 +1,4 @@
-import { OPERATOR_MULTIPLY } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_MULTIPLY } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_MULTIPLY_TEST = /^\*/
 

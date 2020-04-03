@@ -1,4 +1,4 @@
-import { OPERATOR_LOGICAL_NOT } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_LOGICAL_NOT } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_LOGICAL_NOT_TEST = /^\!([^=]|$)/
 

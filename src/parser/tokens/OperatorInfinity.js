@@ -1,4 +1,4 @@
-import { OPERATOR_INFINITY } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_INFINITY } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_INFINITY_TEST = /^∞/
 

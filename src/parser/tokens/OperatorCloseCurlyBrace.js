@@ -1,4 +1,4 @@
-import { OPERATOR_CLOSE_CURLY_BRACE } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_CLOSE_CURLY_BRACE } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_CLOSE_CURLY_BRACE_TEST = /^}/
 

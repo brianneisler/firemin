@@ -1,4 +1,4 @@
-import { OPERATOR_BACKWARD_SLASH } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_BACKWARD_SLASH } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_BACKWARD_SLASH_TEST = /^\\/
 

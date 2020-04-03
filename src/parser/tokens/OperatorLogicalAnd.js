@@ -1,4 +1,4 @@
-import { OPERATOR_LOGICAL_AND } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_LOGICAL_AND } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_LOGICAL_AND_TEST = /^&&/
 

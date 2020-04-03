@@ -1,4 +1,4 @@
-import { OPERATOR_ASSIGNMENT } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_ASSIGNMENT } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_ASSIGNMENT_TEST = /^=([^=]|$)/
 

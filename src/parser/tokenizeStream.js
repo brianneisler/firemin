@@ -1,6 +1,7 @@
 import * as Tokens from './tokens'
 import { List } from 'immutable'
-import { find, keys, map } from 'ramda'
+import { append, assoc, find, keys, map } from 'ramda'
+import { countLinesAndCharacters } from '../utils'
 
 const TokenParsers = map((name) => {
   const TokenParser = Tokens[name]
@@ -20,10 +21,19 @@ const getDataFromStream = async (stream) => {
   })
 }
 
-const parseNextToken = (data) => {
+const parseNextToken = (context, data) => {
   const tokenParser = find((parser) => parser.test(data), TokenParsers)
   if (!tokenParser) {
-    throw new Error(`Do not know how to parse '${data.substring(0, data.search(/\n/))}'...`)
+    const { originalData } = context
+    const { lastLineCharacterCount, lineCount } = countLinesAndCharacters(
+      originalData.substring(0, originalData.length - data.length)
+    )
+    throw new Error(
+      `Do not know how to parse '${data.substring(
+        0,
+        data.search(/\n/)
+      )}' at ${lineCount}:${lastLineCharacterCount}`
+    )
   }
   return tokenParser.parse(data)
 }
@@ -31,12 +41,16 @@ const parseNextToken = (data) => {
 const tokenizeStream = async (context, { stream }) => {
   let data = await getDataFromStream(stream)
   let list = List([])
+
+  context = assoc('originalData', data, context)
+
   while (data.length > 0) {
     try {
-      const token = parseNextToken(data)
-      list = list.push(token)
+      const token = parseNextToken(context, data)
+      list = append(token, list)
       data = data.substring(token.length)
     } catch (error) {
+      // console.log('error:', error)
       throw error
     }
   }

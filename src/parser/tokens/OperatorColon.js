@@ -1,4 +1,4 @@
-import { OPERATOR_COLON } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_COLON } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_COLON_TEST = /^:/
 

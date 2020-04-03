@@ -1,4 +1,4 @@
-import { OPERATOR_DOLLAR_SIGN } from '../../constants/TOKEN_TYPES'
+import { OPERATOR_DOLLAR_SIGN } from '../../constants/TokenTypes'
 
 const REGEX_OPERATOR_DOLLAR_SIGN_TEST = /^\$/
 

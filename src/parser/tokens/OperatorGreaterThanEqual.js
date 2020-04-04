@@ -8,7 +8,7 @@ const OperatorGreaterThanEqual = {
     type: OPERATOR_GREATER_THAN_EQUAL,
     value: '>='
   }),
-  test: (data) => REGEX_OPERATOR_GREATER_THAN_EQUAL_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_GREATER_THAN_EQUAL_TEST.test(data)
 }
 
 export default OperatorGreaterThanEqual

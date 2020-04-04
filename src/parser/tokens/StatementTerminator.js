@@ -8,7 +8,7 @@ const StatementTerminator = {
     type: STATEMENT_TERMINATOR,
     value: ';'
   }),
-  test: (data) => REGEX_STATEMENT_TERMINATOR_TEST.test(data)
+  test: (context, data) => REGEX_STATEMENT_TERMINATOR_TEST.test(data)
 }
 
 export default StatementTerminator

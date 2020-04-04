@@ -4,7 +4,7 @@ const REGEX_COMMENT_TEST = /^\/\//
 const REGEX_COMMENT_TOKEN = /^\/\/.*(\r\n?|\n)/
 
 const Comment = {
-  parse: (data) => {
+  parse: (context, data) => {
     const [match] = data.match(REGEX_COMMENT_TOKEN)
     return {
       length: match.length,
@@ -12,7 +12,7 @@ const Comment = {
       value: match
     }
   },
-  test: (data) => REGEX_COMMENT_TEST.test(data)
+  test: (context, data) => REGEX_COMMENT_TEST.test(data)
 }
 
 export default Comment

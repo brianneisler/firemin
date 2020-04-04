@@ -8,7 +8,7 @@ const OperatorMultiply = {
     type: OPERATOR_MULTIPLY,
     value: '*'
   }),
-  test: (data) => REGEX_OPERATOR_MULTIPLY_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_MULTIPLY_TEST.test(data)
 }
 
 export default OperatorMultiply

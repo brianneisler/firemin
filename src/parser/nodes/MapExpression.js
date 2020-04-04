@@ -1,1 +1,7 @@
-https://github.com/uhop/node-re2/
+import { ParserTypes } from '../../constants'
+
+const MapExpression = {
+  type: ParserTypes.EXPRESSION
+}
+
+export default MapExpression

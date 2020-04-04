@@ -8,7 +8,7 @@ const OperatorEquality = {
     type: OPERATOR_EQUALITY,
     value: '=='
   }),
-  test: (data) => REGEX_OPERATOR_EQUALITY_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_EQUALITY_TEST.test(data)
 }
 
 export default OperatorEquality

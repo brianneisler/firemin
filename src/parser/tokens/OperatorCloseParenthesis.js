@@ -8,7 +8,7 @@ const OperatorCloseParenthesis = {
     type: OPERATOR_CLOSE_PARENTHESIS,
     value: ')'
   }),
-  test: (data) => REGEX_OPERATOR_CLOSE_PARENTHESIS_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_CLOSE_PARENTHESIS_TEST.test(data)
 }
 
 export default OperatorCloseParenthesis

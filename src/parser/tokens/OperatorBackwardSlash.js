@@ -8,7 +8,7 @@ const OperatorBackwardSlash = {
     type: OPERATOR_BACKWARD_SLASH,
     value: '\\'
   }),
-  test: (data) => REGEX_OPERATOR_BACKWARD_SLASH_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_BACKWARD_SLASH_TEST.test(data)
 }
 
 export default OperatorBackwardSlash

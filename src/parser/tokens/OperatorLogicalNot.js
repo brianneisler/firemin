@@ -8,7 +8,7 @@ const OperatorLogicalNot = {
     type: OPERATOR_LOGICAL_NOT,
     value: '!'
   }),
-  test: (data) => REGEX_OPERATOR_LOGICAL_NOT_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_LOGICAL_NOT_TEST.test(data)
 }
 
 export default OperatorLogicalNot

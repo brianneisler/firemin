@@ -22,7 +22,7 @@ const getDataFromStream = async (stream) => {
 }
 
 const parseNextToken = (context, data) => {
-  const tokenParser = find((parser) => parser.test(data), TokenParsers)
+  const tokenParser = find((parser) => parser.test(context, data), TokenParsers)
   if (!tokenParser) {
     const { originalData } = context
     const { lastLineCharacterCount, lineCount } = countLinesAndCharacters(
@@ -35,7 +35,7 @@ const parseNextToken = (context, data) => {
       )}' at ${lineCount}:${lastLineCharacterCount}`
     )
   }
-  return tokenParser.parse(data)
+  return tokenParser.parse(context, data)
 }
 
 const tokenizeStream = async (context, { stream }) => {

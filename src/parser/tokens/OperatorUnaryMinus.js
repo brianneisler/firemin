@@ -8,7 +8,7 @@ const OperatorUnaryMinus = {
     type: OPERATOR_UNARY_MINUS,
     value: '-'
   }),
-  test: (data) => REGEX_OPERATOR_UNARY_MINUS_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_UNARY_MINUS_TEST.test(data)
 }
 
 export default OperatorUnaryMinus

@@ -8,7 +8,7 @@ const OperatorAssignment = {
     type: OPERATOR_ASSIGNMENT,
     value: '='
   }),
-  test: (data) => REGEX_OPERATOR_ASSIGNMENT_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_ASSIGNMENT_TEST.test(data)
 }
 
 export default OperatorAssignment

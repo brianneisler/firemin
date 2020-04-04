@@ -15,7 +15,7 @@ const Literal = {
           : JSON.parse(identifier.value)
     }
   },
-  test: (tokenList) => {
+  test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return (
       // Booleans & Null

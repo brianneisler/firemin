@@ -8,7 +8,7 @@ const OperatorModulus = {
     type: OPERATOR_MODULUS,
     value: '%'
   }),
-  test: (data) => REGEX_OPERATOR_MODULUS_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_MODULUS_TEST.test(data)
 }
 
 export default OperatorModulus

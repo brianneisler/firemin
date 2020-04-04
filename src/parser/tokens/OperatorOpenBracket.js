@@ -8,7 +8,7 @@ const OperatorOpenBracket = {
     type: OPERATOR_OPEN_BRACKET,
     value: '['
   }),
-  test: (data) => REGEX_OPERATOR_OPEN_BRACKET_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_OPEN_BRACKET_TEST.test(data)
 }
 
 export default OperatorOpenBracket

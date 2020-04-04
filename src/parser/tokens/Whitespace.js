@@ -4,7 +4,7 @@ const REGEX_WHITESPACE_TEST = /^\s/
 const REGEX_WHITESPACE_TOKEN = /^\s+/
 
 const Whitespace = {
-  parse: (data) => {
+  parse: (context, data) => {
     const [match] = data.match(REGEX_WHITESPACE_TOKEN)
     return {
       length: match.length,
@@ -12,7 +12,7 @@ const Whitespace = {
       value: match
     }
   },
-  test: (data) => REGEX_WHITESPACE_TEST.test(data)
+  test: (context, data) => REGEX_WHITESPACE_TEST.test(data)
 }
 
 export default Whitespace

@@ -8,7 +8,7 @@ const Whitespace = {
       type: NodeTypes.WHITESPACE
     }
   },
-  test: (tokenList) => tokenList.get(0).type === TokenTypes.WHITESPACE
+  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.WHITESPACE
 }
 
 export default Whitespace

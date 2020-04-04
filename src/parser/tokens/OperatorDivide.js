@@ -8,7 +8,7 @@ const OperatorDivide = {
     type: OPERATOR_DIVIDE,
     value: '/'
   }),
-  test: (data) => REGEX_OPERATOR_DIVIDE_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_DIVIDE_TEST.test(data)
 }
 
 export default OperatorDivide

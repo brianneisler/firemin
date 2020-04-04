@@ -8,7 +8,7 @@ const OperatorDot = {
     type: OPERATOR_DOT,
     value: '.'
   }),
-  test: (data) => REGEX_OPERATOR_DOT_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_DOT_TEST.test(data)
 }
 
 export default OperatorDot

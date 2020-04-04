@@ -8,7 +8,7 @@ const OperatorInfinity = {
     type: OPERATOR_INFINITY,
     value: '∞'
   }),
-  test: (data) => REGEX_OPERATOR_INFINITY_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_INFINITY_TEST.test(data)
 }
 
 export default OperatorInfinity

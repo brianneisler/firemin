@@ -1,16 +1,13 @@
-import ExpressionStatement from './ExpressionStatement'
-import parseNextNode from '../parseNextNode'
-import testNextNode from '../testNextNode'
-
-const StatementNodeParsers = [ExpressionStatement]
+import parseNextNode from '../util/parseNextNode'
+import testNextNode from '../util/testNextNode'
 
 const Statement = {
   parse: (context, tokenList) => {
-    return parseNextNode(tokenList, StatementNodeParsers)
+    return parseNextNode(context, tokenList, context.Statements)
   },
 
   // NOTE BRN: The first token of a Statement cannot be Whitespace or a Comment
-  test: (tokenList) => testNextNode(tokenList, StatementNodeParsers)
+  test: (context, tokenList) => testNextNode(context, tokenList, context.Statements)
 }
 
 export default Statement

@@ -8,7 +8,7 @@ const OperatorOpenCurlyBrace = {
     type: OPERATOR_OPEN_CURLY_BRACE,
     value: '{'
   }),
-  test: (data) => REGEX_OPERATOR_OPEN_CURLY_BRACE_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_OPEN_CURLY_BRACE_TEST.test(data)
 }
 
 export default OperatorOpenCurlyBrace

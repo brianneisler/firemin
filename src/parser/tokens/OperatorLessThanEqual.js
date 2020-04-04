@@ -8,7 +8,7 @@ const OperatorLessThanEqual = {
     type: OPERATOR_LESS_THAN_EQUAL,
     value: '<='
   }),
-  test: (data) => REGEX_OPERATOR_LESS_THAN_EQUAL_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_LESS_THAN_EQUAL_TEST.test(data)
 }
 
 export default OperatorLessThanEqual

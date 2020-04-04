@@ -4,7 +4,7 @@ const REGEX_STRING_TEST = /^['"]/
 const REGEX_STRING_TOKEN = /^("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')/
 
 const String = {
-  parse: (data) => {
+  parse: (context, data) => {
     const [match] = data.match(REGEX_STRING_TOKEN)
     return {
       length: match.length,
@@ -12,7 +12,7 @@ const String = {
       value: match
     }
   },
-  test: (data) => REGEX_STRING_TEST.test(data)
+  test: (context, data) => REGEX_STRING_TEST.test(data)
 }
 
 export default String

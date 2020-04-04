@@ -8,7 +8,7 @@ const OperatorDollarSign = {
     type: OPERATOR_DOLLAR_SIGN,
     value: '$'
   }),
-  test: (data) => REGEX_OPERATOR_DOLLAR_SIGN_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_DOLLAR_SIGN_TEST.test(data)
 }
 
 export default OperatorDollarSign

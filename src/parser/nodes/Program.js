@@ -6,7 +6,7 @@ import ServiceDeclaration from './ServiceStatement'
 import Statement from './Statement'
 import Whitespace from './Whitespace'
 import generateTokenList from '../../generator/generateTokenList'
-import parseNextNode from '../parseNextNode'
+import parseNextNode from '../util/parseNextNode'
 
 const ProgramNodeParsers = [Comment, Whitespace, FunctionDeclaration, ServiceDeclaration, Statement]
 const PROGRAM_BODY_NODE_TYPES = {
@@ -20,8 +20,9 @@ const Program = {
     let body = []
 
     while (tokenList.size() > 0) {
-      const node = parseNextNode(tokenList, ProgramNodeParsers)
+      const node = parseNextNode(context, tokenList, ProgramNodeParsers)
       children = append(node, children)
+      console.log('children:', children)
       if (has(node.type, PROGRAM_BODY_NODE_TYPES)) {
         body = append(node, body)
       }

@@ -31,7 +31,7 @@ const Operator = {
       value: nextToken.value
     }
   },
-  test: (tokenList) => has(tokenList.get(0).type, OPERATOR_TOKEN_TYPES)
+  test: (context, tokenList) => has(tokenList.get(0).type, OPERATOR_TOKEN_TYPES)
 }
 
 export default Operator

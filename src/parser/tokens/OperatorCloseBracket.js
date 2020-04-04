@@ -8,7 +8,7 @@ const OperatorCloseBracket = {
     type: OPERATOR_CLOSE_BRACKET,
     value: ']'
   }),
-  test: (data) => REGEX_OPERATOR_CLOSE_BRACKET_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_CLOSE_BRACKET_TEST.test(data)
 }
 
 export default OperatorCloseBracket

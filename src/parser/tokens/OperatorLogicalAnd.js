@@ -8,7 +8,7 @@ const OperatorLogicalAnd = {
     type: OPERATOR_LOGICAL_AND,
     value: '&&'
   }),
-  test: (data) => REGEX_OPERATOR_LOGICAL_AND_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_LOGICAL_AND_TEST.test(data)
 }
 
 export default OperatorLogicalAnd

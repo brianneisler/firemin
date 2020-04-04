@@ -14,7 +14,7 @@ const Identifier = {
       type: NodeTypes.IDENTIFIER
     }
   },
-  test: (tokenList) => tokenList.get(0).type === TokenTypes.IDENTIFIER
+  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.IDENTIFIER
 }
 
 export default Identifier

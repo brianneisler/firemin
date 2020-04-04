@@ -12,7 +12,7 @@ const Keyword = {
       type: NodeTypes.KEYWORD
     }
   },
-  test: (tokenList) => {
+  test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.IDENTIFIER && has(firstToken.value, KEYWORD_VALUES)
   }

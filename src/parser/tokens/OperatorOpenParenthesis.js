@@ -8,7 +8,7 @@ const OperatorOpenParenthesis = {
     type: OPERATOR_OPEN_PARENTHESIS,
     value: '('
   }),
-  test: (data) => REGEX_OPERATOR_OPEN_PARENTHESIS_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_OPEN_PARENTHESIS_TEST.test(data)
 }
 
 export default OperatorOpenParenthesis

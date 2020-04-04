@@ -8,7 +8,7 @@ const OperatorLogicalOr = {
     type: OPERATOR_LOGICAL_OR,
     value: '||'
   }),
-  test: (data) => REGEX_OPERATOR_LOGICAL_OR_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_LOGICAL_OR_TEST.test(data)
 }
 
 export default OperatorLogicalOr

@@ -8,7 +8,7 @@ const OperatorColon = {
     type: OPERATOR_COLON,
     value: ':'
   }),
-  test: (data) => REGEX_OPERATOR_COLON_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_COLON_TEST.test(data)
 }
 
 export default OperatorColon

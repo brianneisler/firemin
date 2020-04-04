@@ -1,4 +1,4 @@
-import { NodeTypes, TokenTypes } from '../../constants'
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { slice } from 'ramda'
 
 const LetDeclaration = {
@@ -11,10 +11,11 @@ const LetDeclaration = {
       type: NodeTypes.WHITESPACE
     }
   },
-  test: (tokenList) => {
+  test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === 'let'
-  }
+  },
+  type: ParserTypes.DECLARATION
 }
 
 export default LetDeclaration

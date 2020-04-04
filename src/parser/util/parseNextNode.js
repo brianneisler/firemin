@@ -1,9 +1,9 @@
-import { countLinesAndCharacters } from '../utils'
+import { countLinesAndCharacters } from '../../utils'
 import { find } from 'ramda'
-import generateString from '../generator/generateString'
+import generateString from '../../generator/generateString'
 
 const parseNextNode = (context, tokenList, parsers) => {
-  const nodeParser = find((parser) => parser.test(tokenList), parsers)
+  const nodeParser = find((parser) => parser.test(context, tokenList), parsers)
   if (!nodeParser) {
     const { originalTokenList } = context
     const originalData = generateString(context, { tokenList: originalTokenList })

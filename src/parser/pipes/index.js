@@ -1,6 +1,8 @@
 export { default as parseAllowKeyword } from './parseAllowKeyword'
 export { default as parseAssignmentOperator } from './parseAssignmentOperator'
 export { default as parseBackwardSlashOperator } from './parseBackwardSlashOperator'
+export { default as parseBlockStatement } from './parseBlockStatement'
+export { default as parseBodyUntil } from './parseBodyUntil'
 export { default as parseCloseBracketOperator } from './parseCloseBracketOperator'
 export { default as parseCloseCurlyBraceOperator } from './parseCloseCurlyBraceOperator'
 export { default as parseCloseParenthesisOperator } from './parseCloseParenthesisOperator'

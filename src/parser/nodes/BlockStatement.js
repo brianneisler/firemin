@@ -1,23 +1,28 @@
 import { NodeTypes, TokenTypes } from '../../constants'
-import Comment from './Comment'
-import Declaration from './Declaration'
-import Statement from './Statement'
-import Whitespace from './Whitespace'
-import parseNextNode from '../util/parseNextNode'
+import { pipe } from 'ramda'
+import parseBodyUntil from '../pipes/parseBodyUntil'
+import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
+import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
 
-// NOTE BRN: This needs to be slightly different based on which type of block
-// this is (allow, function, etc...)
-const BodyParsers = [Comment, Whitespace, Declaration, Statement]
-
+const createBlockStatement = pipe(
+  parseOpenCurlyBraceOperator,
+  parseBodyUntil(
+    ({ tokenList }) => tokenList.get(0).type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE
+  ),
+  parseCloseCurlyBraceOperator,
+  ({ body, children }) => ({
+    body,
+    children,
+    type: NodeTypes.BLOCK_STATEMENT
+  })
+)
 const BlockStatement = {
-  parse: (context, tokenList) => {
-    const expression = parseNextNode(context, tokenList, ExpressionStatementParsers)
-    return {
-      children: [expression],
-      expression,
-      type: NodeTypes.EXPRESSION_STATEMENT
-    }
-  },
+  parse: (context, tokenList) =>
+    createBlockStatement({
+      children: [],
+      context,
+      tokenList
+    }),
 
   // NOTE BRN: The first token of a Statement cannot be Whitespace or a Comment
   test: (context, tokenList) => {

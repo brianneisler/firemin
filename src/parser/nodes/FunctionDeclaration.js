@@ -1,38 +1,35 @@
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import { append, pipe, slice } from 'ramda'
+import { pipe } from 'ramda'
 import parseBlockStatement from '../pipes/parseBlockStatement'
 import parseFunctionKeyword from '../pipes/parseFunctionKeyword'
 import parseFunctionParameters from '../pipes/parseFunctionParameters'
 import parseIdentifier from '../pipes/parseIdentifier'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const parseParams = ({ children, context, tokenList, ...rest }) => {
-  const init = parseNextNode(context, tokenList, INIT_PARSERS)
-  const parsedTokenList = generateTokenList(context, { ast: init })
-  return {
-    ...rest,
-    children: append(init, children),
-    init,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
-  }
-}
+const parseParams = pipe(parseFunctionParameters, ({ functionParameters, ...rest }) => ({
+  ...rest,
+  params: functionParameters.params
+}))
 
-const parseBody = () => {}
+const parseBody = pipe(parseBlockStatement, ({ blockStatement, ...rest }) => ({
+  ...rest,
+  body: blockStatement
+}))
 
 const createFunctionDelcaration = pipe(
   parseFunctionKeyword,
   parseWhitespaceAndComments,
   parseIdentifier,
   parseWhitespaceAndComments,
-  parseFunctionParameters,
+  parseParams,
   parseWhitespaceAndComments,
-  parseInit,
-  ({ children, identifier, init, operator }) => ({
+  parseBody,
+  ({ body, children, identifier, params }) => ({
+    body,
     children,
     identifier,
-    init,
-    operator,
-    type: NodeTypes.LET_DECLARATION
+    params,
+    type: NodeTypes.FUNCTION_DECLARATION
   })
 )
 

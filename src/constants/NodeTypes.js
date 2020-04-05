@@ -1,6 +1,7 @@
 export const ALLOW_STATEMENT = 'AllowStatement'
 export const ASSIGNMENT_EXPRESSION = 'AssignmentExpression'
 export const BINARY_EXPRESSION = 'BinaryExpression'
+export const BLOCK_STATEMENT = 'BlockStatement'
 export const CALL_EXPRESSION = 'CallExpression'
 export const COMMENT = 'Comment'
 export const EXPRESSION_STATEMENT = 'ExpressionStatement'

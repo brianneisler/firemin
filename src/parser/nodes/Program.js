@@ -19,7 +19,7 @@ const Program = {
     let children = []
     let body = []
 
-    while (tokenList.size() > 0) {
+    while (tokenList.size > 0) {
       const node = parseNextNode(context, tokenList, ProgramNodeParsers)
       children = append(node, children)
       console.log('children:', children)
@@ -29,7 +29,7 @@ const Program = {
 
       // NOTE BRN: Remove the parsed tokens from tokenList
       const parsedTokenList = generateTokenList(context, { ast: node })
-      tokenList = slice(parsedTokenList.size(), tokenList.size(), tokenList)
+      tokenList = slice(parsedTokenList.size, tokenList.size, tokenList)
     }
     return {
       body,

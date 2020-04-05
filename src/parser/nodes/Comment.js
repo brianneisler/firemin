@@ -9,7 +9,7 @@ const Comment = {
       value: tokenList.get(0).value
     }
   },
-  test: (tokenList) => tokenList.get(0).type === TokenTypes.COMMENT
+  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.COMMENT
 }
 
 export default Comment

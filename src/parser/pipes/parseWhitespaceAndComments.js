@@ -5,7 +5,7 @@ import Whitespace from '../nodes/Whitespace'
 
 const parseWhitespaceAndComments = ({ children, context, tokenList, ...rest }) => {
   let stop = false
-  while (tokenList.size() > 0 && !stop) {
+  while (tokenList.size > 0 && !stop) {
     const nextToken = tokenList.get(0)
     if (nextToken.type === NodeTypes.WHITESPACE) {
       children = append(Whitespace.parse(context, tokenList), children)

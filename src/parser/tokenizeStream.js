@@ -1,6 +1,6 @@
 import * as Tokens from './tokens'
 import { List } from 'immutable'
-import { append, assoc, find, keys, map } from 'ramda'
+import { assoc, find, keys, map } from 'ramda'
 import { countLinesAndCharacters } from '../utils'
 
 const TokenParsers = map((name) => {
@@ -47,7 +47,7 @@ const tokenizeStream = async (context, { stream }) => {
   while (data.length > 0) {
     try {
       const token = parseNextToken(context, data)
-      list = append(token, list)
+      list = list.push(token)
       data = data.substring(token.length)
     } catch (error) {
       // console.log('error:', error)

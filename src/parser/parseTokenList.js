@@ -7,7 +7,7 @@ const Declarations = filter((parser) => parser.type === ParserTypes.DECLARATION,
 const Expressions = filter((parser) => parser.type === ParserTypes.EXPRESSION, values(Nodes))
 const Statements = filter((parser) => parser.type === ParserTypes.STATEMENT, values(Nodes))
 
-const parseTokenList = (context, { tokenList }) => {
+const parseTokenList = (context, tokenList) => {
   context = {
     ...context,
     Declarations,

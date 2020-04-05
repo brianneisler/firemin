@@ -1,9 +1,9 @@
 import { append, slice } from 'ramda'
-import Operator from '../nodes/Operator'
+import LessThanEqualOperator from '../nodes/LessThanEqualOperator'
 import generateTokenList from '../../generator/generateTokenList'
 
-const parseOperator = ({ children, context, tokenList, ...rest }) => {
-  const operator = Operator.parse(context, tokenList)
+const parseLessThanEqualOperator = ({ children, context, tokenList, ...rest }) => {
+  const operator = LessThanEqualOperator.parse(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: operator })
   return {
     ...rest,
@@ -13,4 +13,4 @@ const parseOperator = ({ children, context, tokenList, ...rest }) => {
   }
 }
 
-export default parseOperator
+export default parseLessThanEqualOperator

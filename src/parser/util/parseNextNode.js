@@ -1,16 +1,10 @@
-import { countLinesAndCharacters } from '../../utils'
 import { find } from 'ramda'
-import generateString from '../../generator/generateString'
+import getTokenListPosition from './getTokenListPosition'
 
 const parseNextNode = (context, tokenList, parsers) => {
   const nodeParser = find((parser) => parser.test(context, tokenList), parsers)
   if (!nodeParser) {
-    const { originalTokenList } = context
-    const originalData = generateString(context, { tokenList: originalTokenList })
-    const remaningData = generateString(context, { tokenList })
-    const { lastLineCharacterCount, lineCount } = countLinesAndCharacters(
-      originalData.substring(0, originalData.length - remaningData.length)
-    )
+    const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
     throw new Error(
       `Unexpected token '${tokenList.get(0).value}' at ${lineCount}:${lastLineCharacterCount}`
     )

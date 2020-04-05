@@ -1,9 +1,9 @@
 import { append, slice } from 'ramda'
-import Operator from '../nodes/Operator'
+import ModulusOperator from '../nodes/ModulusOperator'
 import generateTokenList from '../../generator/generateTokenList'
 
-const parseOperator = ({ children, context, tokenList, ...rest }) => {
-  const operator = Operator.parse(context, tokenList)
+const parseModulusOperator = ({ children, context, tokenList, ...rest }) => {
+  const operator = ModulusOperator.parse(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: operator })
   return {
     ...rest,
@@ -13,4 +13,4 @@ const parseOperator = ({ children, context, tokenList, ...rest }) => {
   }
 }
 
-export default parseOperator
+export default parseModulusOperator

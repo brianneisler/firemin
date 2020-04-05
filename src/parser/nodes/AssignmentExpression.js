@@ -5,7 +5,7 @@ import Expression from './Expression'
 import Identifier from './Identifier'
 import Literal from './Literal'
 import generateTokenList from '../../generator/generateTokenList'
-import parseOperator from '../pipes/parseOperator'
+import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
 const parseLeft = ({ children, context, tokenList, ...rest }) => {
@@ -15,7 +15,7 @@ const parseLeft = ({ children, context, tokenList, ...rest }) => {
     ...rest,
     children: append(left, children),
     left,
-    tokenList: slice(0, parsedTokenList.size(), tokenList)
+    tokenList: slice(0, parsedTokenList.size, tokenList)
   }
 }
 
@@ -29,34 +29,33 @@ const parseRight = ({ children, context, tokenList, ...rest }) => {
     ...rest,
     children: append(right, children),
     right,
-    tokenList: slice(0, parsedTokenList.size(), tokenList)
+    tokenList: slice(0, parsedTokenList.size, tokenList)
   }
 }
 
-const parseAssignmentExpression = pipe(
+const createAssignmentExpression = pipe(
   parseLeft,
   parseWhitespaceAndComments,
-  parseOperator,
+  parseAssignmentOperator,
   parseWhitespaceAndComments,
-  parseRight
+  parseRight,
+  ({ children, left, operator, right }) => ({
+    children,
+    left,
+    operator,
+    right,
+    type: NodeTypes.ASSIGNMENT_EXPRESSION
+  })
 )
 
 const AssignmentExpression = {
-  parse: (context, tokenList) => {
-    const { children, left, operator, right } = parseAssignmentExpression({
+  parse: (context, tokenList) =>
+    createAssignmentExpression({
       children: [],
       context,
       tokenList
-    })
+    }),
 
-    return {
-      children,
-      left,
-      operator,
-      right,
-      type: NodeTypes.ASSIGNMENT_EXPRESSION
-    }
-  },
   test: (context, tokenList) => {
     // The first real token will be the identifier (can only be a single identifier
     // in firestore rules)

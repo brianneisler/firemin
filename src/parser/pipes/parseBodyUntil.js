@@ -9,14 +9,14 @@ import parseNextNode from '../util/parseNextNode'
 
 // NOTE BRN: This needs to be slightly different based on which type of block
 // this is (allow, function, etc...)
-const BodyParsers = [Comment, Whitespace, Declaration, Statement]
+const BODY_PARSERS = [Comment, Whitespace, Declaration, Statement]
+const parseBodyNode = parseNextNode(BODY_PARSERS)
 
 const parseBodyUntil = curry((predicate, { children, context, tokenList, ...rest }) => {
-  let children = []
   let body = []
 
   while (tokenList.size > 0 && predicate({ context, tokenList })) {
-    const node = parseNextNode(context, tokenList, BodyParsers)
+    const node = parseBodyNode(context, tokenList)
     children = append(node, children)
     if (node.type !== NodeTypes.WHITESPACE && node.type !== NodeTypes.COMMENT) {
       body = append(node, body)

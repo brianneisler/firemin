@@ -16,7 +16,7 @@ const GreaterThanEqualOperator = {
     return {
       operatorType: OperatorTypes.GREATER_THAN_EQUAL,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

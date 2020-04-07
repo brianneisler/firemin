@@ -16,7 +16,7 @@ const OpenParenthesisOperator = {
     return {
       operatorType: OperatorTypes.OPEN_PARENTHESIS,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

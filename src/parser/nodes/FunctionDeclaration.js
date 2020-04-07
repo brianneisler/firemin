@@ -1,15 +1,57 @@
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import { pipe } from 'ramda'
+import { append, pipe } from 'ramda'
 import parseBlockStatement from '../pipes/parseBlockStatement'
+import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
+import parseCommaOperator from '../pipes/parseCommaOperator'
 import parseFunctionKeyword from '../pipes/parseFunctionKeyword'
-import parseFunctionParameters from '../pipes/parseFunctionParameters'
 import parseIdentifier from '../pipes/parseIdentifier'
+import parseOpenParenthesisOperator from '../pipes/parseOpenParenthesisOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const parseParams = pipe(parseFunctionParameters, ({ functionParameters, ...rest }) => ({
-  ...rest,
-  params: functionParameters.params
+const parseParam = pipe(parseIdentifier, ({ identifier, ...rest }) => ({
+  param: identifier,
+  ...rest
 }))
+
+const parseParamAndWhitespace = pipe(
+  parseWhitespaceAndComments,
+  parseParam,
+  parseWhitespaceAndComments
+)
+
+const parseCommaParamAndWhitespace = pipe(parseCommaOperator, parseParamAndWhitespace)
+
+const parseCommaSeparatedParams = (props) => {
+  let { children, context, tokenList } = props
+  let params = []
+  let first = true
+  const nextToken = tokenList.get(0)
+  while (tokenList.size > 0 && nextToken.type !== TokenTypes.OPERATOR_CLOSE_PARENTHESIS) {
+    let param
+    if (first) {
+      first = false
+      ;({ children, context, param, tokenList } = parseParamAndWhitespace({
+        children,
+        context,
+        tokenList
+      }))
+    } else {
+      ;({ children, context, param, tokenList } = parseCommaParamAndWhitespace({
+        children,
+        context,
+        tokenList
+      }))
+    }
+    params = append(param, params)
+  }
+  return { ...props, children, context, params, tokenList }
+}
+
+const parseParams = pipe(
+  parseOpenParenthesisOperator,
+  parseCommaSeparatedParams,
+  parseCloseParenthesisOperator
+)
 
 const parseBody = pipe(parseBlockStatement, ({ blockStatement, ...rest }) => ({
   ...rest,

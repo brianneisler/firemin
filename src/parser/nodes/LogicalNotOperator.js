@@ -16,7 +16,7 @@ const LogicalNotOperator = {
     return {
       operatorType: OperatorTypes.LOGICAL_NOT,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

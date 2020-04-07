@@ -16,6 +16,7 @@ const createBlockStatement = pipe(
     type: NodeTypes.BLOCK_STATEMENT
   })
 )
+
 const BlockStatement = {
   parse: (context, tokenList) =>
     createBlockStatement({

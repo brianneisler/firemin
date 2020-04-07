@@ -16,7 +16,7 @@ const OpenBracketOperator = {
     return {
       operatorType: OperatorTypes.OPEN_BRACKET,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

@@ -16,7 +16,7 @@ const LessThanOperator = {
     return {
       operatorType: OperatorTypes.LESS_THAN,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

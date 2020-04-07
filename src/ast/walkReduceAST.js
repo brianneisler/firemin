@@ -15,7 +15,7 @@ const astReduceWalkee = (accum, node, keys, iteratee, recur) => {
 }
 
 const walkReduceAST = curry((iteratee, accum, ast) =>
-  walk(astReduceWalkee(), iteratee, accum, ast, [])
+  walk(astReduceWalkee, accum, ast, [], iteratee)
 )
 
 export default walkReduceAST

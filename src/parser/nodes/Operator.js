@@ -28,7 +28,7 @@ const Operator = {
     return {
       operatorType: prop(nextToken.type, OPERATOR_TOKEN_TYPE_TO_OPERATOR_TYPE),
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

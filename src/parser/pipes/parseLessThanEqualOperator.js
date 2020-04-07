@@ -8,8 +8,9 @@ const parseLessThanEqualOperator = ({ children, context, tokenList, ...rest }) =
   return {
     ...rest,
     children: append(operator, children),
+    context,
     operator,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
+    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
   }
 }
 

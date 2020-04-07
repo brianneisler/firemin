@@ -2,14 +2,15 @@ import { append, slice } from 'ramda'
 import AllowKeyword from '../nodes/AllowKeyword'
 import generateTokenList from '../../generator/generateTokenList'
 
-const parseAllowKeyword = ({ children, context, tokenList, ...rest }) => {
+const parseAllowKeyword = (props) => {
+  const { children, context, tokenList } = props
   const keyword = AllowKeyword.parse(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: keyword })
   return {
-    ...rest,
+    ...props,
     children: append(keyword, children),
     keyword,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
+    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
   }
 }
 

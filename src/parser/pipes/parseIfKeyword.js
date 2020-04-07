@@ -8,8 +8,9 @@ const parseIfKeyword = ({ children, context, tokenList, ...rest }) => {
   return {
     ...rest,
     children: append(keyword, children),
+    context,
     keyword,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
+    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
   }
 }
 

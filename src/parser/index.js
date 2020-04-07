@@ -1,5 +1,4 @@
 export { default as parseFile } from './parseFile'
-export { default as parseNextNode } from './util/parseNextNode'
+export { default as parseString } from './parseString'
 export { default as parseTokenList } from './parseTokenList'
-export { default as testNextNode } from './util/testNextNode'
 export { default as tokenizeStream } from './tokenizeStream'

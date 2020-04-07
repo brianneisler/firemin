@@ -16,7 +16,7 @@ const MultiplyOperator = {
     return {
       operatorType: OperatorTypes.MULTIPLY,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

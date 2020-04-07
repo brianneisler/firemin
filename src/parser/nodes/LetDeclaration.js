@@ -10,15 +10,17 @@ import parseLetKeyword from '../pipes/parseLetKeyword'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
 const INIT_PARSERS = [Expression, Identifier, Literal]
+const parseInitNode = parseNextNode(INIT_PARSERS)
 
-const parseInit = ({ children, context, tokenList, ...rest }) => {
-  const init = parseNextNode(context, tokenList, INIT_PARSERS)
+const parseInit = (props) => {
+  const { children, context, tokenList } = props
+  const init = parseInitNode(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: init })
   return {
-    ...rest,
+    ...props,
     children: append(init, children),
     init,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
+    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
   }
 }
 

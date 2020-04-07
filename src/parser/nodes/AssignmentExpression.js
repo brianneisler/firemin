@@ -1,35 +1,29 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { findNextRealToken, findNextRealTokenIndex, parseNextNode } from '../util'
-import Expression from './Expression'
+import { findNextRealToken, findNextRealTokenIndex } from '../util'
 import Identifier from './Identifier'
-import Literal from './Literal'
 import generateTokenList from '../../generator/generateTokenList'
 import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
+import parseRight from '../pipes/parseRight'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const parseLeft = ({ children, context, tokenList, ...rest }) => {
+// NOTE BRN: The left of an AssignmentExpression MUST be an identifier
+const parseLeft = (props) => {
+  const { children, context, prevExpression, tokenList } = props
+  if (prevExpression) {
+    return {
+      ...props,
+      children: append(prevExpression, children),
+      left: prevExpression
+    }
+  }
   const left = Identifier.parse(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: left })
   return {
-    ...rest,
+    ...props,
     children: append(left, children),
     left,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
-  }
-}
-
-const RIGHT_PARSERS = [Expression, Identifier, Literal]
-
-// NOTE BRN: Right can be another Expression
-const parseRight = ({ children, context, tokenList, ...rest }) => {
-  const right = parseNextNode(context, tokenList, RIGHT_PARSERS)
-  const parsedTokenList = generateTokenList(context, { ast: right })
-  return {
-    ...rest,
-    children: append(right, children),
-    right,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
+    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
   }
 }
 
@@ -49,21 +43,24 @@ const createAssignmentExpression = pipe(
 )
 
 const AssignmentExpression = {
-  parse: (context, tokenList) =>
+  parse: (context, tokenList, prevExpression = null) =>
     createAssignmentExpression({
       children: [],
       context,
+      prevExpression,
       tokenList
     }),
 
-  test: (context, tokenList) => {
-    // The first real token will be the identifier (can only be a single identifier
-    // in firestore rules)
-    const identifierToken = findNextRealToken(tokenList)
-    if (!identifierToken || identifierToken.type !== TokenTypes.IDENTIFIER) {
-      return false
+  test: (context, tokenList, prevExpression = null) => {
+    if (!prevExpression) {
+      // The first real token will be the identifier (can only be a single identifier
+      // in firestore rules)
+      const identifierToken = findNextRealToken(tokenList)
+      if (!identifierToken || identifierToken.type !== TokenTypes.IDENTIFIER) {
+        return false
+      }
     }
-    const operatorToken = findNextRealToken(tokenList, findNextRealTokenIndex(tokenList))
+    const operatorToken = findNextRealToken(tokenList, findNextRealTokenIndex(tokenList) + 1)
     return operatorToken && operatorToken.type === TokenTypes.OPERATOR_ASSIGNMENT
   },
 

@@ -16,7 +16,7 @@ const CloseCurlyBraceOperator = {
     return {
       operatorType: OperatorTypes.CLOSE_CURLY_BRACE,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

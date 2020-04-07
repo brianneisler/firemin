@@ -16,7 +16,7 @@ const UnaryPlusOperator = {
     return {
       operatorType: OperatorTypes.UNARY_PLUS,
       tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.Operator,
+      type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },

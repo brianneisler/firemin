@@ -11,8 +11,8 @@ const Literal = {
       type: NodeTypes.LITERAL,
       value:
         identifier.type === TokenTypes.BYTES
-          ? Buffer.from(JSON.parse(identifier.value.substring(1, identifier.value.length)))
-          : JSON.parse(identifier.value)
+          ? Buffer.from(eval(identifier.value.substring(1, identifier.value.length)))
+          : eval(identifier.value)
     }
   },
   test: (context, tokenList) => {

@@ -9,7 +9,8 @@ const parseBlockStatement = ({ children, context, tokenList, ...rest }) => {
     ...rest,
     blockStatement,
     children: append(blockStatement, children),
-    tokenList: slice(0, parsedTokenList.size, tokenList)
+    context,
+    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
   }
 }
 

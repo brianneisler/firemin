@@ -8,8 +8,9 @@ const parseIdentifier = ({ children, context, tokenList, ...rest }) => {
   return {
     ...rest,
     children: append(identifier, children),
+    context,
     identifier,
-    tokenList: slice(0, parsedTokenList.size, tokenList)
+    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
   }
 }
 

@@ -1,14 +1,19 @@
-import { NodeTypes, OperatorTypes, TokenTypes } from '../../constants'
+import { NodeTypes, OperatorTypes, Operators, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
 const UnaryMinusOperator = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
+    if (!nextToken) {
+      throw new Error(
+        `Expected operator '${Operators.UNARY_MINUS}'. Instead reached the end of the file.`
+      )
+    }
     if (nextToken.type !== TokenTypes.OPERATOR_UNARY_MINUS) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected UnaryMinusOperator. Instead was given '${
+        `Expected operator '${Operators.UNARY_MINUS}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )

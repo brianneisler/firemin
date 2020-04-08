@@ -1,14 +1,19 @@
-import { NodeTypes, OperatorTypes, TokenTypes } from '../../constants'
+import { NodeTypes, OperatorTypes, Operators, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
 const BackwardSlashOperator = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
+    if (!nextToken) {
+      throw new Error(
+        `Expected operator '${Operators.BACKWARD_SLASH}'. Instead reached the end of the file.`
+      )
+    }
     if (nextToken.type !== TokenTypes.OPERATOR_BACKWARD_SLASH) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected BackwardSlashOperator. Instead was given '${
+        `Expected operator '${Operators.BACKWARD_SLASH}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )

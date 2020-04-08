@@ -6,10 +6,13 @@ import Keyword from './Keyword'
 const IfKeyword = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
-    if (nextToken.type !== TokenTypes.IDENTIFIER || nextToken.value !== Keywords.IF) {
+    if (!nextToken) {
+      throw new Error(`Expected keyword '${Keywords.IF}'. Instead reached the end of the file.`)
+    }
+    if (nextToken.type !== TokenTypes.KEYWORD_IF) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected IfKeyword. Instead was given '${
+        `Expected keyword '${Keywords.IF}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
@@ -22,7 +25,7 @@ const IfKeyword = {
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
-    return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === Keywords.IF
+    return firstToken.type === TokenTypes.KEYWORD_IF
   }
 }
 

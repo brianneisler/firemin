@@ -6,10 +6,15 @@ import Keyword from './Keyword'
 const ServiceKeyword = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
-    if (nextToken.type !== TokenTypes.IDENTIFIER || nextToken.value !== Keywords.SERVICE) {
+    if (!nextToken) {
+      throw new Error(
+        `Expected keyword '${Keywords.SERVICE}'. Instead reached the end of the file.`
+      )
+    }
+    if (nextToken.type !== TokenTypes.KEYWORD_SERVICE) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected ServiceKeyword. Instead was given '${
+        `Expected keyword '${Keywords.SERVICE}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
@@ -22,7 +27,7 @@ const ServiceKeyword = {
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
-    return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === Keywords.SERVICE
+    return firstToken.type === TokenTypes.KEYWORD_SERVICE
   }
 }
 

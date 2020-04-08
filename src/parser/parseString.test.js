@@ -6,7 +6,7 @@ import parseString from './parseString'
 describe('parseString', () => {
   test('parse a simple AssignmentExpression to AST', async () => {
     const context = { logger: console }
-    const result = await parseString(context, 'a = b')
+    const result = await parseString(context, 'a = b;')
     expect(result).toEqual({
       body: [
         {
@@ -40,168 +40,168 @@ describe('parseString', () => {
   })
 
   test('parses a simple true boolean Literal', async () => {
-    const code = 'true'
+    const code = 'true;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple false boolean Literal', async () => {
-    const code = 'false'
+    const code = 'false;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple number Literal', async () => {
-    const code = '123'
+    const code = '123;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple single quote string Literal', async () => {
-    const code = "'abc'"
+    const code = "'abc';"
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple double quote string Literal', async () => {
-    const code = '"abc"'
+    const code = '"abc";'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple Identifier', async () => {
-    const code = 'a'
+    const code = 'a;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple UnaryExpression with a "+"', async () => {
-    const code = '+a'
+    const code = '+a;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple UnaryExpression with a "-"', async () => {
-    const code = '-a'
+    const code = '-a;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple UnaryExpression with a "!"', async () => {
-    const code = '!a'
+    const code = '!a;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a + b"', async () => {
-    const code = 'a + b'
+    const code = 'a + b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a - b"', async () => {
-    const code = 'a - b'
+    const code = 'a - b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a / b"', async () => {
-    const code = 'a / b'
+    const code = 'a / b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a * b"', async () => {
-    const code = 'a * b'
+    const code = 'a * b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a % b"', async () => {
-    const code = 'a % b'
+    const code = 'a % b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a == b"', async () => {
-    const code = 'a == b'
+    const code = 'a == b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a != b"', async () => {
-    const code = 'a != b'
+    const code = 'a != b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a > b"', async () => {
-    const code = 'a > b'
+    const code = 'a > b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a >= b"', async () => {
-    const code = 'a >= b'
+    const code = 'a >= b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a < b"', async () => {
-    const code = 'a < b'
+    const code = 'a < b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a <= b"', async () => {
-    const code = 'a <= b'
+    const code = 'a <= b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a && b"', async () => {
-    const code = 'a && b'
+    const code = 'a && b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple BinaryExpression "a || b"', async () => {
-    const code = 'a || b'
+    const code = 'a || b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple AssignmentExpression', async () => {
-    const code = 'a = b'
+    const code = 'a = b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('parses a simple StaticMemberExpression', async () => {
-    const code = 'a.b'
+    const code = 'a.b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)

@@ -6,10 +6,15 @@ import Keyword from './Keyword'
 const FunctionKeyword = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
-    if (nextToken.type !== TokenTypes.IDENTIFIER || nextToken.value !== Keywords.FUNCTION) {
+    if (!nextToken) {
+      throw new Error(
+        `Expected keyword '${Keywords.FUNCTION}'. Instead reached the end of the file.`
+      )
+    }
+    if (nextToken.type !== TokenTypes.KEYWORD_FUNCTION) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected FunctionKeyword. Instead was given '${
+        `Expected keyword '${Keywords.FUNCTION}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
@@ -22,7 +27,7 @@ const FunctionKeyword = {
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
-    return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === Keywords.FUNCTION
+    return firstToken.type === TokenTypes.KEYWORD_FUNCTION
   }
 }
 

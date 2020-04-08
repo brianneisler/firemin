@@ -1,14 +1,19 @@
-import { NodeTypes, OperatorTypes, TokenTypes } from '../../constants'
+import { NodeTypes, OperatorTypes, Operators, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
 const MultiplyOperator = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
+    if (!nextToken) {
+      throw new Error(
+        `Expected operator '${Operators.MULTIPLY}'. Instead reached the end of the file.`
+      )
+    }
     if (nextToken.type !== TokenTypes.OPERATOR_MULTIPLY) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected MultiplyOperator. Instead was given '${
+        `Expected operator '${Operators.MULTIPLY}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )

@@ -1,12 +1,15 @@
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
 
-const createIfStatement = pipe(({ children, consequent, test }) => ({
-  children,
-  consequent,
-  test,
-  type: NodeTypes.IF_STATEMENT
-}))
+const createIfStatement = pipe(
+  // TODO
+  ({ children, consequent, test }) => ({
+    children,
+    consequent,
+    test,
+    type: NodeTypes.IF_STATEMENT
+  })
+)
 
 const IfStatement = {
   parse: (context, tokenList) => createIfStatement({ children: [], context, tokenList }),

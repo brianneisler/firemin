@@ -1,24 +1,31 @@
 import { NodeTypes, ParserTypes } from '../../constants'
+import { pipe } from 'ramda'
 import Expression from './Expression'
 import Identifier from './Identifier'
 import Literal from './Literal'
-import parseNextNode from '../util/parseNextNode'
+import parseExpression from '../pipes/parseExpression'
+import parseSemicolonOperator from '../pipes/parseSemicolonOperator'
+import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 import testNextNode from '../util/testNextNode'
 
-const ExpressionStatementParsers = [Expression, Identifier, Literal]
+const EXPRESSION_STATEMENT_PARSERS = [Expression, Identifier, Literal]
+
+const createExpressionStatement = pipe(
+  parseExpression,
+  parseWhitespaceAndComments,
+  parseSemicolonOperator,
+  ({ children, expression }) => ({
+    children,
+    expression,
+    type: NodeTypes.EXPRESSION_STATEMENT
+  })
+)
 
 const ExpressionStatement = {
-  parse: (context, tokenList) => {
-    const expression = parseNextNode(ExpressionStatementParsers, context, tokenList)
-    return {
-      children: [expression],
-      expression,
-      type: NodeTypes.EXPRESSION_STATEMENT
-    }
-  },
+  parse: (context, tokenList) => createExpressionStatement({ children: [], context, tokenList }),
 
   // NOTE BRN: The first token of a Statement cannot be Whitespace or a Comment
-  test: (context, tokenList) => testNextNode(ExpressionStatementParsers, context, tokenList),
+  test: (context, tokenList) => testNextNode(EXPRESSION_STATEMENT_PARSERS, context, tokenList),
   type: ParserTypes.STATEMENT
 }
 

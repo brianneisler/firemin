@@ -1,12 +1,12 @@
-import { OPERATOR_MODULUS } from '../../constants/TokenTypes'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_MODULUS_TEST = /^%/
 
 const OperatorModulus = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_MODULUS,
-    value: '%'
+    type: TokenTypes.OPERATOR_MODULUS,
+    value: Operators.MODULUS
   }),
   test: (context, data) => REGEX_OPERATOR_MODULUS_TEST.test(data)
 }

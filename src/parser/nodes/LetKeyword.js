@@ -6,10 +6,13 @@ import Keyword from './Keyword'
 const LetKeyword = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
-    if (nextToken.type !== TokenTypes.IDENTIFIER || nextToken.value !== Keywords.LET) {
+    if (!nextToken) {
+      throw new Error(`Expected keyword '${Keywords.LET}'. Instead reached the end of the file.`)
+    }
+    if (nextToken.type !== TokenTypes.KEYWORD_LET) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected LetKeyword. Instead was given '${
+        `Expected keyword '${Keywords.LET}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
@@ -22,7 +25,7 @@ const LetKeyword = {
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
-    return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === Keywords.LET
+    return firstToken.type === TokenTypes.KEYWORD_LET
   }
 }
 

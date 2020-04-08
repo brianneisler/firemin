@@ -1,12 +1,12 @@
-import { OPERATOR_INEQUALITY } from '../../constants/TokenTypes'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_INEQUALITY_TEST = /^\!=/
 
 const OperatorInequality = {
   parse: () => ({
     length: 2,
-    type: OPERATOR_INEQUALITY,
-    value: '!='
+    type: TokenTypes.OPERATOR_INEQUALITY,
+    value: Operators.INEQUALITY
   }),
   test: (context, data) => REGEX_OPERATOR_INEQUALITY_TEST.test(data)
 }

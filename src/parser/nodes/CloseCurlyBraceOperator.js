@@ -1,14 +1,19 @@
-import { NodeTypes, OperatorTypes, TokenTypes } from '../../constants'
+import { NodeTypes, OperatorTypes, Operators, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
 const CloseCurlyBraceOperator = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
+    if (!nextToken) {
+      throw new Error(
+        `Expected operator '${Operators.CLOSE_CURLY_BRACE}'. Instead reached the end of the file.`
+      )
+    }
     if (nextToken.type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected CloseCurlyBraceOperator. Instead was given '${
+        `Expected operator '${Operators.CLOSE_CURLY_BRACE}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )

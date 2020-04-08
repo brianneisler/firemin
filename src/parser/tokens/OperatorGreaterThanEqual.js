@@ -1,12 +1,12 @@
-import { OPERATOR_GREATER_THAN_EQUAL } from '../../constants/TokenTypes'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_GREATER_THAN_EQUAL_TEST = /^>=/
 
 const OperatorGreaterThanEqual = {
   parse: () => ({
     length: 2,
-    type: OPERATOR_GREATER_THAN_EQUAL,
-    value: '>='
+    type: TokenTypes.OPERATOR_GREATER_THAN_EQUAL,
+    value: Operators.GREATER_THAN_EQUAL
   }),
   test: (context, data) => REGEX_OPERATOR_GREATER_THAN_EQUAL_TEST.test(data)
 }

@@ -1,12 +1,12 @@
-import { OPERATOR_UNARY_PLUS } from '../../constants/TokenTypes'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_UNARY_PLUS_TEST = /^\+/
 
 const OperatorUnaryPlus = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_UNARY_PLUS,
-    value: '+'
+    type: TokenTypes.OPERATOR_UNARY_PLUS,
+    value: Operators.UNARY_PLUS
   }),
   test: (context, data) => REGEX_OPERATOR_UNARY_PLUS_TEST.test(data)
 }

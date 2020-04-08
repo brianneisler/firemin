@@ -1,14 +1,19 @@
-import { NodeTypes, OperatorTypes, TokenTypes } from '../../constants'
+import { NodeTypes, OperatorTypes, Operators, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
 const LogicalNotOperator = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
+    if (!nextToken) {
+      throw new Error(
+        `Expected operator '${Operators.LOGICAL_NOT}'. Instead reached the end of the file.`
+      )
+    }
     if (nextToken.type !== TokenTypes.OPERATOR_LOGICAL_NOT) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected LogicalNotOperator. Instead was given '${
+        `Expected operator '${Operators.LOGICAL_NOT}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )

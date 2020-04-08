@@ -6,10 +6,13 @@ import Keyword from './Keyword'
 const ReturnKeyword = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
-    if (nextToken.type !== TokenTypes.IDENTIFIER || nextToken.value !== Keywords.RETURN) {
+    if (!nextToken) {
+      throw new Error(`Expected keyword '${Keywords.RETURN}'. Instead reached the end of the file.`)
+    }
+    if (nextToken.type !== TokenTypes.KEYWORD_RETURN) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected ReturnKeyword. Instead was given '${
+        `Expected keyword '${Keywords.RETURN}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
@@ -22,7 +25,7 @@ const ReturnKeyword = {
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
-    return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === Keywords.RETURN
+    return firstToken.type === TokenTypes.KEYWORD_RETURN
   }
 }
 

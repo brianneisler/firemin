@@ -1,12 +1,12 @@
-import { OPERATOR_COLON } from '../../constants/TokenTypes'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_COLON_TEST = /^:/
 
 const OperatorColon = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_COLON,
-    value: ':'
+    type: TokenTypes.OPERATOR_COLON,
+    value: Operators.COLON
   }),
   test: (context, data) => REGEX_OPERATOR_COLON_TEST.test(data)
 }

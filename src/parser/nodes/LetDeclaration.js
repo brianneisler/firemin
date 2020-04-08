@@ -1,4 +1,4 @@
-import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
 import { generateTokenList, parseNextNode } from '../util'
 import Expression from './Expression'
@@ -45,7 +45,7 @@ const LetDeclaration = {
   parse: (context, tokenList) => createLetDelcaration({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
-    return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === Keywords.LET
+    return firstToken.type === TokenTypes.KEYWORD_LET
   },
   type: ParserTypes.DECLARATION
 }

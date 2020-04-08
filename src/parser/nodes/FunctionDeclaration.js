@@ -1,4 +1,4 @@
-import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
 import parseBlockStatement from '../pipes/parseBlockStatement'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
@@ -79,7 +79,7 @@ const FunctionDeclaration = {
   parse: (context, tokenList) => createFunctionDelcaration({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
-    return firstToken.type === TokenTypes.IDENTIFIER && firstToken.value === Keywords.FUNCTION
+    return firstToken.type === TokenTypes.KEYWORD_FUNCTION
   },
   type: ParserTypes.DECLARATION
 }

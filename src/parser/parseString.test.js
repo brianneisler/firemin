@@ -206,4 +206,46 @@ describe('parseString', () => {
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
+
+  test('parses a simple StaticMemberExpression', async () => {
+    const code = 'a.b;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple FunctionDeclaration', async () => {
+    const code = 'function foo() {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a FunctionDeclaration with a ReturnStatement', async () => {
+    const code = 'function foo() { return "foo" }'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses an IfStatement "if true;"', async () => {
+    const code = 'if true;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses an IfStatement "if foo;"', async () => {
+    const code = 'if true;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple ServiceStatement', async () => {
+    const code = 'service cloud.firestore {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
 })

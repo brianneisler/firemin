@@ -2,7 +2,7 @@ import { append, slice } from 'ramda'
 import SemicolonOperator from '../nodes/SemicolonOperator'
 import generateTokenList from '../../generator/generateTokenList'
 
-const parseOperatorSemicolon = ({ children, context, tokenList, ...rest }) => {
+const parseSemicolonOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = SemicolonOperator.parse(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: operator })
   return {
@@ -14,4 +14,4 @@ const parseOperatorSemicolon = ({ children, context, tokenList, ...rest }) => {
   }
 }
 
-export default parseOperatorSemicolon
+export default parseSemicolonOperator

@@ -1,6 +1,6 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
-import parseBlockStatement from '../pipes/parseBlockStatement'
+import parseBody from '../pipes/parseBody'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
 import parseFunctionKeyword from '../pipes/parseFunctionKeyword'
@@ -25,7 +25,7 @@ const parseCommaSeparatedParams = (props) => {
   let { children, context, tokenList } = props
   let params = []
   let first = true
-  const nextToken = tokenList.get(0)
+  let nextToken = tokenList.get(0)
   while (tokenList.size > 0 && nextToken.type !== TokenTypes.OPERATOR_CLOSE_PARENTHESIS) {
     let param
     if (first) {
@@ -43,6 +43,7 @@ const parseCommaSeparatedParams = (props) => {
       }))
     }
     params = append(param, params)
+    nextToken = tokenList.get(0)
   }
   return { ...props, children, context, params, tokenList }
 }
@@ -52,11 +53,6 @@ const parseParams = pipe(
   parseCommaSeparatedParams,
   parseCloseParenthesisOperator
 )
-
-const parseBody = pipe(parseBlockStatement, ({ blockStatement, ...rest }) => ({
-  ...rest,
-  body: blockStatement
-}))
 
 const createFunctionDelcaration = pipe(
   parseFunctionKeyword,

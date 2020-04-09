@@ -1,15 +1,21 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { findNextRealToken, findNextRealTokenIndex } from '../util'
+import { findNextRealToken, findNextRealTokenIndex, parseNextNode } from '../util'
+import Expression from './Expression'
 import Identifier from './Identifier'
+import Literal from './Literal'
 import generateTokenList from '../../generator/generateTokenList'
-import parseDotOperator from '../pipes/parseDotOperator'
+import parseCloseBracketOperator from '../pipes/parseCloseBracketOperator'
 import parseObject from '../pipes/parseObject'
+import parseOpenBracketOperator from '../pipes/parseOpenBracketOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const parseStaticProperty = (props) => {
+const PROPERTY_PARSERS = [Expression, Identifier, Literal]
+const parsePropertyNode = parseNextNode(PROPERTY_PARSERS)
+
+const parseProperty = (props) => {
   const { children, context, tokenList } = props
-  const property = Identifier.parse(context, tokenList)
+  const property = parsePropertyNode(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: property })
   return {
     ...props,
@@ -19,12 +25,14 @@ const parseStaticProperty = (props) => {
   }
 }
 
-const createStaticMemberExpression = pipe(
+const createComputedMemberExpression = pipe(
   parseObject,
   parseWhitespaceAndComments,
-  parseDotOperator,
+  parseOpenBracketOperator,
   parseWhitespaceAndComments,
-  parseStaticProperty,
+  parseProperty,
+  parseWhitespaceAndComments,
+  parseCloseBracketOperator,
   ({ children, object, property }) => ({
     children,
     object,
@@ -33,15 +41,9 @@ const createStaticMemberExpression = pipe(
   })
 )
 
-const StaticMemberExpression = {
+const ComputedMemberExpression = {
   parse: (context, tokenList, prevExpression = null) =>
-    createStaticMemberExpression({
-      children: [],
-      context,
-      prevExpression,
-      tokenList
-    }),
-
+    createComputedMemberExpression({ children: [], context, prevExpression, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (!prevExpression) {
       const identifierToken = findNextRealToken(tokenList)
@@ -53,10 +55,9 @@ const StaticMemberExpression = {
       tokenList,
       findNextRealTokenIndex(tokenList) + (prevExpression ? 0 : 1)
     )
-    return operatorToken && operatorToken.type === TokenTypes.OPERATOR_DOT
+    return operatorToken && operatorToken.type === TokenTypes.OPERATOR_OPEN_BRACKET
   },
-
   type: ParserTypes.EXPRESSION
 }
 
-export default StaticMemberExpression
+export default ComputedMemberExpression

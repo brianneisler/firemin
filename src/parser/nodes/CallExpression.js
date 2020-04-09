@@ -20,7 +20,7 @@ const parseCommaSeparatedArgs = (props) => {
   let { children, context, tokenList } = props
   let args = []
   let first = true
-  const nextToken = tokenList.get(0)
+  let nextToken = tokenList.get(0)
   while (tokenList.size > 0 && nextToken.type !== TokenTypes.OPERATOR_CLOSE_PARENTHESIS) {
     let argument
     if (first) {
@@ -38,6 +38,7 @@ const parseCommaSeparatedArgs = (props) => {
       }))
     }
     args = append(argument, args)
+    nextToken = tokenList.get(0)
   }
   return { ...props, args, children, context, tokenList }
 }
@@ -48,10 +49,22 @@ const parseArgs = pipe(
   parseCloseParenthesisOperator
 )
 
-const parseCallee = pipe(parseIdentifier, ({ identifier, ...rest }) => ({
+const parseCalleeIdentifier = pipe(parseIdentifier, ({ identifier, ...rest }) => ({
   ...rest,
   callee: identifier
 }))
+
+const parseCallee = (props) => {
+  const { children, prevExpression } = props
+  if (prevExpression) {
+    return {
+      ...props,
+      callee: prevExpression,
+      children: append(prevExpression, children)
+    }
+  }
+  return parseCalleeIdentifier({ ...props })
+}
 
 const createCallExpression = pipe(
   parseCallee,
@@ -66,13 +79,19 @@ const createCallExpression = pipe(
 )
 
 const CallExpression = {
-  parse: (context, tokenList) => createCallExpression({ children: [], context, tokenList }),
-  test: (context, tokenList) => {
-    const identifierToken = findNextRealToken(tokenList)
-    if (!identifierToken || identifierToken.type !== TokenTypes.IDENTIFIER) {
-      return false
+  parse: (context, tokenList, prevExpression = null) =>
+    createCallExpression({ children: [], context, prevExpression, tokenList }),
+  test: (context, tokenList, prevExpression = null) => {
+    if (!prevExpression) {
+      const identifierToken = findNextRealToken(tokenList)
+      if (!identifierToken || identifierToken.type !== TokenTypes.IDENTIFIER) {
+        return false
+      }
     }
-    const operatorToken = findNextRealToken(tokenList, findNextRealTokenIndex(tokenList) + 1)
+    const operatorToken = findNextRealToken(
+      tokenList,
+      findNextRealTokenIndex(tokenList) + (prevExpression ? 0 : 1)
+    )
     return operatorToken && operatorToken.type === TokenTypes.OPERATOR_OPEN_PARENTHESIS
   },
   type: ParserTypes.EXPRESSION

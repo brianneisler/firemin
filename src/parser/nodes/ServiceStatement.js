@@ -1,6 +1,6 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
-import parseBlockStatement from '../pipes/parseBlockStatement'
+import parseBody from '../pipes/parseBody'
 import parseExpression from '../pipes/parseExpression'
 import parseServiceKeyword from '../pipes/parseServiceKeyword'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
@@ -8,11 +8,6 @@ import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 const parseId = pipe(parseExpression, ({ expression, ...rest }) => ({
   ...rest,
   id: expression
-}))
-
-const parseBody = pipe(parseBlockStatement, ({ blockStatement, ...rest }) => ({
-  ...rest,
-  body: blockStatement
 }))
 
 const createServiceStatement = pipe(

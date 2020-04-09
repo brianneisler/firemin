@@ -60,7 +60,10 @@ const AssignmentExpression = {
         return false
       }
     }
-    const operatorToken = findNextRealToken(tokenList, findNextRealTokenIndex(tokenList) + 1)
+    const operatorToken = findNextRealToken(
+      tokenList,
+      findNextRealTokenIndex(tokenList) + (prevExpression ? 0 : 1)
+    )
     return operatorToken && operatorToken.type === TokenTypes.OPERATOR_ASSIGNMENT
   },
 

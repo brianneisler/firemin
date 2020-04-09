@@ -1,12 +1,23 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
+import parseBody from '../pipes/parseBody'
+import parseMatchKeyword from '../pipes/parseMatchKeyword'
+import parsePath from '../pipes/parsePath'
+import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const createMatchStatement = pipe(({ body, children, path }) => ({
-  body,
-  children,
-  path,
-  type: NodeTypes.MATCH_STATEMENT
-}))
+const createMatchStatement = pipe(
+  parseMatchKeyword,
+  parseWhitespaceAndComments,
+  parsePath,
+  parseWhitespaceAndComments,
+  parseBody,
+  ({ body, children, path }) => ({
+    body,
+    children,
+    path,
+    type: NodeTypes.MATCH_STATEMENT
+  })
+)
 
 const MatchStatement = {
   parse: (context, tokenList) => createMatchStatement({ children: [], context, tokenList }),

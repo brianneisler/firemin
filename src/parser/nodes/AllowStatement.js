@@ -1,11 +1,32 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
+import parseAllowKeyword from '../pipes/parseAllowKeyword'
+import parseColonOperator from '../pipes/parseColonOperator'
+import parseIdentifier from '../pipes/parseIdentifier'
+import parseIfStatement from '../pipes/parseIfStatement'
+import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+
+const parseCondition = pipe(parseIfStatement, ({ statement, ...rest }) => ({
+  ...rest,
+  condition: statement
+}))
+
+const parsePermission = pipe(parseIdentifier, ({ identifier, ...rest }) => ({
+  ...rest,
+  permission: identifier
+}))
 
 const createAllowStatement = pipe(
-  // TODO
-  ({ children, expression, permission }) => ({
+  parseAllowKeyword,
+  parseWhitespaceAndComments,
+  parsePermission,
+  parseWhitespaceAndComments,
+  parseColonOperator,
+  parseWhitespaceAndComments,
+  parseCondition,
+  ({ children, condition, permission }) => ({
     children,
-    expression,
+    condition,
     permission,
     type: NodeTypes.ALLOW_STATEMENT
   })

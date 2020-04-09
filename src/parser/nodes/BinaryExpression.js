@@ -57,7 +57,10 @@ const BinaryExpression = {
         return false
       }
     }
-    const operatorToken = findNextRealToken(tokenList, findNextRealTokenIndex(tokenList) + 1)
+    const operatorToken = findNextRealToken(
+      tokenList,
+      findNextRealTokenIndex(tokenList) + (prevExpression ? 0 : 1)
+    )
     return operatorToken && has(operatorToken.type, BINARY_OPERATOR_TOKEN_TYPES)
   },
   type: ParserTypes.EXPRESSION

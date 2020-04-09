@@ -39,6 +39,45 @@ describe('parseString', () => {
     })
   })
 
+  test('parses a double StaticMemberExpression to AST', async () => {
+    const code = 'a.b.c;'
+    const context = { logger: console }
+    const result = await parseString(context, code)
+    expect(result).toEqual({
+      body: [
+        {
+          children: expect.any(Array),
+          expression: {
+            children: expect.any(Array),
+            object: {
+              children: expect.any(Array),
+              object: {
+                name: 'a',
+                tokenList: expect.any(List),
+                type: NodeTypes.IDENTIFIER
+              },
+              property: {
+                name: 'b',
+                tokenList: expect.any(List),
+                type: NodeTypes.IDENTIFIER
+              },
+              type: NodeTypes.STATIC_MEMBER_EXPRESSION
+            },
+            property: {
+              name: 'c',
+              tokenList: expect.any(List),
+              type: NodeTypes.IDENTIFIER
+            },
+            type: NodeTypes.STATIC_MEMBER_EXPRESSION
+          },
+          type: NodeTypes.EXPRESSION_STATEMENT
+        }
+      ],
+      children: expect.any(Array),
+      type: NodeTypes.PROGRAM
+    })
+  })
+
   test('parses a simple true boolean Literal', async () => {
     const code = 'true;'
     const context = { logger: console }
@@ -97,6 +136,13 @@ describe('parseString', () => {
 
   test('parses a simple UnaryExpression with a "!"', async () => {
     const code = '!a;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple AssignmentExpression', async () => {
+    const code = 'a = b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
@@ -193,8 +239,36 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
-  test('parses a simple AssignmentExpression', async () => {
-    const code = 'a = b;'
+  test('parses a simple CallExpression "foo()"', async () => {
+    const code = 'foo();'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple CallExpression with one argument "foo(\'bar\')"', async () => {
+    const code = 'foo();'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple CallExpression with two arguments "foo(\'bar\', 123)"', async () => {
+    const code = 'foo();'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple ComputedMemberExpression', async () => {
+    const code = 'a["b"];'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a double ComputedMemberExpression', async () => {
+    const code = 'a["b"]["c"];'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
@@ -207,8 +281,15 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
-  test('parses a simple StaticMemberExpression', async () => {
-    const code = 'a.b;'
+  test('parses a double StaticMemberExpression', async () => {
+    const code = 'a.b.c;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a multi StaticMemberExpression', async () => {
+    const code = 'a.b.c.d.e;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
@@ -236,7 +317,56 @@ describe('parseString', () => {
   })
 
   test('parses an IfStatement "if foo;"', async () => {
-    const code = 'if true;'
+    const code = 'if foo;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses an IfStatement "if foo() && bar();"', async () => {
+    const code = 'if foo() && bar();'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses an empty ListExpression "[];"', async () => {
+    const code = '[];'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple ListExpression "[\'foo\'];"', async () => {
+    const code = "['foo'];"
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a ListExpression "[ true, \'foo\', bar() ];"', async () => {
+    const code = "[ true, 'foo', bar() ];"
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses an empty MapExpression "{};"', async () => {
+    const code = '{};'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple MapExpression "{ \'foo\': bar };"', async () => {
+    const code = "{ 'foo': bar };"
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test("parses a MapExpression \"{ 'a': true, 'b':'foo', 'c':bar() };\"", async () => {
+    const code = "{ 'a': true, 'b':'foo', 'c':bar() };"
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)

@@ -372,6 +372,13 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
+  test('parses an empty ParenthesesExpression "(foo);"', async () => {
+    const code = '(foo);'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
   test('parses a simple ServiceStatement', async () => {
     const code = 'service cloud.firestore {}'
     const context = { logger: console }

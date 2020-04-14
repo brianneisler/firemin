@@ -1,4 +1,4 @@
-import { NodeTypes, OperatorTypes, Operators, TokenTypes } from '../../constants'
+import { NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
@@ -25,7 +25,8 @@ const ModulusOperator = {
       value: nextToken.value
     }
   },
-  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_MODULUS
+  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_MODULUS,
+  type: ParserTypes.OPERATOR
 }
 
 export default ModulusOperator

@@ -1,4 +1,4 @@
-import { NodeTypes, OperatorTypes, Operators, TokenTypes } from '../../constants'
+import { NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
@@ -25,7 +25,8 @@ const CloseCurlyBraceOperator = {
       value: nextToken.value
     }
   },
-  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_CLOSE_CURLY_BRACE
+  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_CLOSE_CURLY_BRACE,
+  type: ParserTypes.OPERATOR
 }
 
 export default CloseCurlyBraceOperator

@@ -1,4 +1,4 @@
-import { Keywords, NodeTypes, TokenTypes } from '../../constants'
+import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 import Keyword from './Keyword'
@@ -26,7 +26,8 @@ const IsOperator = {
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_IS
-  }
+  },
+  type: ParserTypes.OPERATOR
 }
 
 export default IsOperator

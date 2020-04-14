@@ -2,31 +2,31 @@ import { NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes } from '..
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 
-const ColonOperator = {
+const TildeOperator = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
       throw new Error(
-        `Expected operator '${Operators.COLON}'. Instead reached the end of the file.`
+        `Expected operator '${Operators.TILDE}'. Instead reached the end of the file.`
       )
     }
-    if (nextToken.type !== TokenTypes.OPERATOR_COLON) {
+    if (nextToken.type !== TokenTypes.OPERATOR_TILDE) {
       const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
       throw new Error(
-        `Expected operator '${Operators.COLON}'. Instead was given '${
+        `Expected operator '${Operators.TILDE}'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
     return {
-      operatorType: OperatorTypes.COLON,
+      operatorType: OperatorTypes.TILDE,
       tokenList: slice(0, 1, tokenList),
       type: NodeTypes.OPERATOR,
       value: nextToken.value
     }
   },
-  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_COLON,
+  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_TILDE,
   type: ParserTypes.OPERATOR
 }
 
-export default ColonOperator
+export default TildeOperator

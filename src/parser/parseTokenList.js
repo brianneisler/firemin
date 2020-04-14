@@ -14,6 +14,8 @@ const Declarations = filter(
   values(NodeParsers)
 )
 const Expressions = filter((parser) => parser.type === ParserTypes.EXPRESSION, values(NodeParsers))
+const Keywords = filter((parser) => parser.type === ParserTypes.KEYWORD, values(NodeParsers))
+const Operators = filter((parser) => parser.type === ParserTypes.OPERATOR, values(NodeParsers))
 const Statements = filter((parser) => parser.type === ParserTypes.STATEMENT, values(NodeParsers))
 
 const parseTokenList = (context, tokenList) => {
@@ -21,6 +23,8 @@ const parseTokenList = (context, tokenList) => {
     ...context,
     Declarations,
     Expressions,
+    Keywords,
+    Operators,
     Statements,
     originalTokenList: tokenList
   }

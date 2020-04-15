@@ -274,20 +274,6 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
-  test('parses a simple StaticMemberExpression', async () => {
-    const code = 'a.b;'
-    const context = { logger: console }
-    const ast = await parseString(context, code)
-    expect(generateString(context, { ast })).toEqual(code)
-  })
-
-  test('parses a double StaticMemberExpression', async () => {
-    const code = 'a.b.c;'
-    const context = { logger: console }
-    const ast = await parseString(context, code)
-    expect(generateString(context, { ast })).toEqual(code)
-  })
-
   test('parses a multi StaticMemberExpression', async () => {
     const code = 'a.b.c.d.e;'
     const context = { logger: console }
@@ -372,6 +358,34 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
+  test('parses a MatchStatement with single path part "/foo"', async () => {
+    const code = 'match /foo {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a MatchStatement with multiple path parts "/foo/bar/baz"', async () => {
+    const code = 'match /foo/bar/baz {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a MatchStatement with variable "/{foo}"', async () => {
+    const code = 'match /{foo} {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a MatchStatement with multiple nested variables "/some/{foo}/and/{bar}"', async () => {
+    const code = 'match /some/{foo}/and/{bar} {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
   test('parses an empty ParenthesesExpression "(foo);"', async () => {
     const code = '(foo);'
     const context = { logger: console }
@@ -379,8 +393,43 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
+  test('parses a PathExpression with single path part "/foo;"', async () => {
+    const code = '/foo;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a PathExpression with multiple path parts "/foo/bar/baz;"', async () => {
+    const code = '/foo/bar/baz;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a PathExpression with PathPartExpression "/$(foo);"', async () => {
+    const code = '/$(foo);'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
   test('parses a simple ServiceStatement', async () => {
     const code = 'service cloud.firestore {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple StaticMemberExpression', async () => {
+    const code = 'a.b;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a double StaticMemberExpression', async () => {
+    const code = 'a.b.c;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)

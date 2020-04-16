@@ -3,6 +3,7 @@
 const { minimize, setupCliContext } = require('../index.module')
 const { resolve } = require('path')
 const program = require('commander')
+const pino = require('pino')
 
 program
   .description('minimize a firebase firestore rules file')
@@ -21,18 +22,20 @@ program
 const exec = async (options) => {
   const context = await setupCliContext()
   const { logger } = context
+  logger.info('running...')
 
+  const finalLogger = pino.final(logger)
   try {
     await minimize(context, options)
     logger.info(`Minimized rules file generated ${options.outputFilePath}`)
   } catch (error) {
-    logger.warn('An error occured while trying to minimize the rules file')
+    finalLogger.warn('An error occured while trying to minimize the rules file')
     throw error
   }
 }
 
 exec(program)
-  .then(() => process.exit())
+  // .then(() => process.exit())
   .catch((error) => {
     // eslint-disable-next-line no-console
     console.error(error)

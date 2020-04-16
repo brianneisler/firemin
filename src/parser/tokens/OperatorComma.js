@@ -1,14 +1,14 @@
-import { OPERATOR_COMMA } from '../../constants/TOKEN_TYPES'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_COMMA_TEST = /^,/
 
 const OperatorComma = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_COMMA,
-    value: ','
+    type: TokenTypes.OPERATOR_COMMA,
+    value: Operators.COMMA
   }),
-  test: (data) => REGEX_OPERATOR_COMMA_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_COMMA_TEST.test(data)
 }
 
 export default OperatorComma

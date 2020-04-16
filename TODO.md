@@ -1,6 +1,11 @@
 FOCUS
+- AST parser
+- removal of unused functions
 
 TASKS
-- [ ] Remove unused functions
+- [ ] parse parentheses
+- [ ] parse PathExpression
+- [ ] Remove unused functions during minimization
 
 BUGS
+- [ ] Operators order is not being respected by the AST parser

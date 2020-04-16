@@ -1,14 +1,14 @@
-import { OPERATOR_LOGICAL_OR } from '../../constants/TOKEN_TYPES'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_LOGICAL_OR_TEST = /^\|\|/
 
 const OperatorLogicalOr = {
   parse: () => ({
     length: 2,
-    type: OPERATOR_LOGICAL_OR,
-    value: '||'
+    type: TokenTypes.OPERATOR_LOGICAL_OR,
+    value: Operators.LOGICAL_OR
   }),
-  test: (data) => REGEX_OPERATOR_LOGICAL_OR_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_LOGICAL_OR_TEST.test(data)
 }
 
 export default OperatorLogicalOr

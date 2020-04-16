@@ -1,14 +1,14 @@
-import { OPERATOR_MULTIPLY } from '../../constants/TOKEN_TYPES'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_MULTIPLY_TEST = /^\*/
 
 const OperatorMultiply = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_MULTIPLY,
-    value: '*'
+    type: TokenTypes.OPERATOR_MULTIPLY,
+    value: Operators.MULTIPLY
   }),
-  test: (data) => REGEX_OPERATOR_MULTIPLY_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_MULTIPLY_TEST.test(data)
 }
 
 export default OperatorMultiply

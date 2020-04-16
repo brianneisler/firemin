@@ -1,14 +1,14 @@
-import { OPERATOR_ASSIGNMENT } from '../../constants/TOKEN_TYPES'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_ASSIGNMENT_TEST = /^=([^=]|$)/
 
 const OperatorAssignment = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_ASSIGNMENT,
-    value: '='
+    type: TokenTypes.OPERATOR_ASSIGNMENT,
+    value: Operators.ASSIGNMENT
   }),
-  test: (data) => REGEX_OPERATOR_ASSIGNMENT_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_ASSIGNMENT_TEST.test(data)
 }
 
 export default OperatorAssignment

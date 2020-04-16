@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Some comment
+    // -----------------------------
+
+    function someFunc(someParam1, someParam2) {
+      return someParam1.keys().hasAll([ someParam2 ])
+    }
+
+    function someUnusedFunc(someParam1, someParam2) {
+      return someParam1.keys().hasAll([ someParam2 ])
+    }
+
+    // Some other comment
+    // -----------------------------
+
+    match /some/path/{arg1}/{arg2} {
+      allow read: if someFunc(arg1, arg2);
+      allow create: if someFunc(arg1, arg2);
+      allow update: if someFunc(arg1, arg2);
+      allow delete: if someFunc(arg1, arg2);
+    }
+  }
+}

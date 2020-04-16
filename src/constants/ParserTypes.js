@@ -1,0 +1,5 @@
+export const DECLARATION = 'Declaration'
+export const EXPRESSION = 'Expression'
+export const KEYWORD = 'Keyword'
+export const OPERATOR = 'Operator'
+export const STATEMENT = 'Statement'

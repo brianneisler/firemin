@@ -1,14 +1,14 @@
-import { OPERATOR_INFINITY } from '../../constants/TOKEN_TYPES'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_INFINITY_TEST = /^∞/
 
 const OperatorInfinity = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_INFINITY,
-    value: '∞'
+    type: TokenTypes.OPERATOR_INFINITY,
+    value: Operators.INFINITY
   }),
-  test: (data) => REGEX_OPERATOR_INFINITY_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_INFINITY_TEST.test(data)
 }
 
 export default OperatorInfinity

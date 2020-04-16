@@ -1,16 +1,9 @@
-import { createReadStream } from 'fs-extra'
-import tokenizeStream from './tokenizeStream'
+import parseTokenList from './parseTokenList'
+import tokenizeFile from './tokenizeFile'
 
-const parseFile = async (context, { filePath }) => {
-  const stream = createReadStream(filePath)
-
-  // const tokenList = await tokenizeStream(context, { stream })
-  // return parseTokenList(context, { tokenList })
-
-  // NOTE BRN: For not just simply returning tokens instead of an AST. Will do
-  // that on the next pass.
-
-  return tokenizeStream(context, { stream })
+const parseFile = async (context, filePath) => {
+  const tokenList = await tokenizeFile(context, filePath)
+  return parseTokenList(context, tokenList)
 }
 
 export default parseFile

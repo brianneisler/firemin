@@ -1,18 +1,23 @@
-import { IDENTIFIER } from '../../constants/TOKEN_TYPES'
+import { Keywords, TokenTypes } from '../../constants'
+import { join, map, values } from 'ramda'
 
-const REGEX_IDENTIFIER_TEST = /^[a-zA-Z_]/
-const REGEX_IDENTIFIER_TOKEN = /^[a-zA-Z_][a-zA-Z0-9_]*/
+const REGEX_KEYWORDS = join(
+  '|',
+  map((keyword) => `${keyword}([^a-zA-Z0-9_]|$)`, values(Keywords))
+)
+const REGEX_IDENTIFIER_TEST = new RegExp(`^(?!${REGEX_KEYWORDS})[a-zA-Z_][a-zA-Z0-9_]*`)
+const REGEX_IDENTIFIER_TOKEN = new RegExp(`^(?!${REGEX_KEYWORDS})[a-zA-Z_][a-zA-Z0-9_]*`)
 
 const Identifier = {
-  parse: (data) => {
+  parse: (context, data) => {
     const [match] = data.match(REGEX_IDENTIFIER_TOKEN)
     return {
       length: match.length,
-      type: IDENTIFIER,
+      type: TokenTypes.IDENTIFIER,
       value: match
     }
   },
-  test: (data) => REGEX_IDENTIFIER_TEST.test(data)
+  test: (context, data) => REGEX_IDENTIFIER_TEST.test(data)
 }
 
 export default Identifier

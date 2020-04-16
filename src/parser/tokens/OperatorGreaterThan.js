@@ -1,14 +1,14 @@
-import { OPERATOR_GREATER_THAN } from '../../constants/TOKEN_TYPES'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_GREATER_THAN_TEST = /^>([^=]|$)/
 
 const OperatorGreaterThan = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_GREATER_THAN,
-    value: '>'
+    type: TokenTypes.OPERATOR_GREATER_THAN,
+    value: Operators.GREATER_THAN
   }),
-  test: (data) => REGEX_OPERATOR_GREATER_THAN_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_GREATER_THAN_TEST.test(data)
 }
 
 export default OperatorGreaterThan

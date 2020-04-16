@@ -1,14 +1,14 @@
-import { OPERATOR_CLOSE_PARENTHESIS } from '../../constants/TOKEN_TYPES'
+import { Operators, TokenTypes } from '../../constants'
 
 const REGEX_OPERATOR_CLOSE_PARENTHESIS_TEST = /^\)/
 
 const OperatorCloseParenthesis = {
   parse: () => ({
     length: 1,
-    type: OPERATOR_CLOSE_PARENTHESIS,
-    value: ')'
+    type: TokenTypes.OPERATOR_CLOSE_PARENTHESIS,
+    value: Operators.CLOSE_PARENTHESIS
   }),
-  test: (data) => REGEX_OPERATOR_CLOSE_PARENTHESIS_TEST.test(data)
+  test: (context, data) => REGEX_OPERATOR_CLOSE_PARENTHESIS_TEST.test(data)
 }
 
 export default OperatorCloseParenthesis

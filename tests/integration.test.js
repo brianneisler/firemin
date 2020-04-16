@@ -2,6 +2,8 @@ import { exec } from 'child_process'
 import { generateString, minimize, parse, setupCliContext } from '../src'
 import { resolve as pathResolve } from 'path'
 import { readFile } from 'fs-extra'
+import { tmpdir } from 'os'
+import { v4 as uuidv4 } from 'uuid'
 
 describe('integration', () => {
   test('should install globally', async () => {
@@ -41,6 +43,24 @@ describe('integration', () => {
     const result = await minimize(context, {
       filePath: pathResolve(__dirname, 'files', 'firestore.rules')
     })
+    expect(result).toEqual(
+      "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function someFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if someFunc(arg1,arg2);allow create:if someFunc(arg1,arg2);allow update:if someFunc(arg1,arg2);allow delete:if someFunc(arg1,arg2);}}}"
+    )
+  })
+
+  test('minimize file and output to another file', async () => {
+    const context = setupCliContext({
+      logger: console
+    })
+    const outputFilePath = pathResolve(tmpdir(), uuidv4(), 'firestore.min.rules')
+    const returned = await minimize(context, {
+      filePath: pathResolve(__dirname, 'files', 'firestore.rules'),
+      outputFilePath
+    })
+
+    const result = await readFile(outputFilePath, 'utf-8')
+
+    expect(returned).toEqual(undefined)
     expect(result).toEqual(
       "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function someFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if someFunc(arg1,arg2);allow create:if someFunc(arg1,arg2);allow update:if someFunc(arg1,arg2);allow delete:if someFunc(arg1,arg2);}}}"
     )

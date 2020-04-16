@@ -1,16 +1,8 @@
-import { createReadStream, pathExists } from 'fs-extra'
-import { resolve } from 'path'
 import parseTokenList from './parseTokenList'
-import tokenizeStream from './tokenizeStream'
+import tokenizeFile from './tokenizeFile'
 
 const parseFile = async (context, filePath) => {
-  filePath = resolve(filePath)
-  if (!(await pathExists(filePath))) {
-    throw new Error(`rules file '${filePath}' does not exist`)
-  }
-
-  const stream = createReadStream(filePath)
-  const tokenList = await tokenizeStream(context, { stream })
+  const tokenList = await tokenizeFile(context, filePath)
   return parseTokenList(context, tokenList)
 }
 

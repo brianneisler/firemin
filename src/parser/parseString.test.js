@@ -154,6 +154,13 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
+  test('parses a AllowStatement "allow read: if true;"', async () => {
+    const code = 'allow read: if true;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
   test('parses a simple AssignmentExpression', async () => {
     const code = 'a = b;'
     const context = { logger: console }
@@ -366,6 +373,13 @@ describe('parseString', () => {
 
   test('parses an IfStatement "if foo() && bar();"', async () => {
     const code = 'if foo() && bar();'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a LetDeclaration "let foo = true"', async () => {
+    const code = 'let foo = true'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)

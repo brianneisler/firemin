@@ -1,10 +1,8 @@
 import parseTokenList from './parseTokenList'
-import stringToStream from 'string-to-stream'
-import tokenizeStream from './tokenizeStream'
+import tokenizeString from './tokenizeString'
 
 const parseString = async (context, string) => {
-  const stream = stringToStream(string)
-  const tokenList = await tokenizeStream(context, { stream })
+  const tokenList = await tokenizeString(context, string)
   return parseTokenList(context, tokenList)
 }
 

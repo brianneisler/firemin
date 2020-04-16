@@ -1,4 +1,3 @@
-import { pathExists } from 'fs-extra'
 import { resolve } from 'path'
 import generateFile from '../generator/generateFile'
 import generateString from '../generator/generateString'
@@ -8,16 +7,12 @@ import minimizeTokenList from './minimizeTokenList'
 import parseFile from '../parser/parseFile'
 
 const minimize = async (context, { filePath, outputFilePath }) => {
-  filePath = resolve(filePath)
-  if (!(await pathExists(filePath))) {
-    throw new Error(`rules file '${filePath}' does not exist`)
-  }
-
-  const ast = await parseFile(context, { filePath })
-  const minimizedAST = await minimizeAST(context, { ast })
-  const minimizedTokenList = minimizeTokenList(context, {
-    tokenList: generateTokenList(context, { ast: minimizedAST })
-  })
+  const ast = await parseFile(context, filePath)
+  const minimizedAST = await minimizeAST(context, ast)
+  const minimizedTokenList = minimizeTokenList(
+    context,
+    generateTokenList(context, { ast: minimizedAST })
+  )
 
   // let log = '['
   // minimizedTokenList.forEach((listToken) => {

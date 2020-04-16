@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
 import { generateTokenList, parseNextNode } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import Expression from './Expression'
 import Identifier from './Identifier'
 import Literal from './Literal'
@@ -34,6 +35,7 @@ const createLetDelcaration = pipe(
   parseInit,
   ({ children, identifier, init, operator }) => ({
     children,
+    id: uuidv4(),
     identifier,
     init,
     operator,

@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
 import parseEntry from '../pipes/parseEntry'
@@ -51,6 +52,7 @@ const createMapExpression = pipe(
   ({ children, entries }) => ({
     children,
     entries,
+    id: uuidv4(),
     type: NodeTypes.MAP_EXPRESSION
   })
 )

@@ -1,25 +1,27 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import parseBody from '../pipes/parseBody'
 import parseExpression from '../pipes/parseExpression'
 import parseServiceKeyword from '../pipes/parseServiceKeyword'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const parseId = pipe(parseExpression, ({ expression, ...rest }) => ({
+const parseName = pipe(parseExpression, ({ expression, ...rest }) => ({
   ...rest,
-  id: expression
+  name: expression
 }))
 
 const createServiceStatement = pipe(
   parseServiceKeyword,
   parseWhitespaceAndComments,
-  parseId,
+  parseName,
   parseWhitespaceAndComments,
   parseBody,
-  ({ body, children, id }) => ({
+  ({ body, children, name }) => ({
     body,
     children,
-    id,
+    id: uuidv4(),
+    name,
     type: NodeTypes.SERVICE_STATEMENT
   })
 )

@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import Identifier from './Identifier'
 import generateTokenList from '../../generator/generateTokenList'
 import parseDotOperator from '../pipes/parseDotOperator'
@@ -27,6 +28,7 @@ const createStaticMemberExpression = pipe(
   parseStaticProperty,
   ({ children, object, property }) => ({
     children,
+    id: uuidv4(),
     object,
     property,
     type: NodeTypes.STATIC_MEMBER_EXPRESSION

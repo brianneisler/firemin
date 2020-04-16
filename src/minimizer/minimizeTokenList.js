@@ -29,7 +29,7 @@ import {
   WHITESPACE
 } from '../constants/TokenTypes'
 
-const minimizeTokenList = (context, { tokenList }) =>
+const minimizeTokenList = (context, tokenList) =>
   tokenList
     // filter out comments
     .filter((token) => token.type !== COMMENT)

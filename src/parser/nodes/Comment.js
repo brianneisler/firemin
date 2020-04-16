@@ -1,5 +1,6 @@
 import { NodeTypes, TokenTypes } from '../../constants'
 import { slice } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import getTokenListPosition from '../util/getTokenListPosition'
 
 const Comment = {
@@ -17,6 +18,7 @@ const Comment = {
       )
     }
     return {
+      id: uuidv4(),
       tokenList: slice(0, 1, tokenList),
       type: NodeTypes.COMMENT,
       value: tokenList.get(0).value

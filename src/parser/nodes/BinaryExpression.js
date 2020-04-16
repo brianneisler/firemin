@@ -1,12 +1,17 @@
 import { NodeTypes, OperatorTypes, ParserTypes, TokenTypes } from '../../constants'
-import { findNextRealToken, findNextRealTokenIndex } from '../util'
+import { findNextRealToken, findNextRealTokenIndex, testNextNode } from '../util'
 import { has, pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
+import Identifier from './Identifier'
+import Literal from './Literal'
 import parseLeft from '../pipes/parseLeft'
 import parseOperator from '../pipes/parseOperator'
 import parseRight from '../pipes/parseRight'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
 const BINARY_OPERATOR_TOKEN_TYPES = {
+  [TokenTypes.KEYWORD_IS]: OperatorTypes.IS,
+  [TokenTypes.OPERATOR_COLON]: OperatorTypes.COLON,
   [TokenTypes.OPERATOR_DIVIDE]: OperatorTypes.DIVIDE,
   [TokenTypes.OPERATOR_EQUALITY]: OperatorTypes.EQUALITY,
   [TokenTypes.OPERATOR_GREATER_THAN]: OperatorTypes.GREATER_THAN,
@@ -30,12 +35,15 @@ const createBinaryExpression = pipe(
   parseRight,
   ({ children, left, operator, right }) => ({
     children,
+    id: uuidv4(),
     left,
     operator,
     right,
     type: NodeTypes.BINARY_EXPRESSION
   })
 )
+
+const LEFT_PARSERS = [Identifier, Literal]
 
 const BinaryExpression = {
   parse: (context, tokenList, prevExpression = null) =>
@@ -47,13 +55,7 @@ const BinaryExpression = {
     }),
   test: (context, tokenList, prevExpression = null) => {
     if (!prevExpression) {
-      // The first real token will be the identifier (can only be a single identifier
-      // in firestore rules)
-      const leftToken = findNextRealToken(tokenList)
-      if (
-        !leftToken ||
-        (leftToken.type !== TokenTypes.IDENTIFIER && leftToken.type !== TokenTypes.LITERAL)
-      ) {
+      if (!testNextNode(LEFT_PARSERS, context, tokenList)) {
         return false
       }
     }

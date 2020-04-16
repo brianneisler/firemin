@@ -1,6 +1,7 @@
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import Keyword from './Keyword'
 
 const AllowKeyword = {
@@ -18,6 +19,7 @@ const AllowKeyword = {
       )
     }
     return {
+      id: uuidv4(),
       name: Keyword.ALLOW,
       tokenList: slice(0, 1, tokenList),
       type: NodeTypes.KEYWORD

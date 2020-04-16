@@ -1,5 +1,6 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import parseBody from '../pipes/parseBody'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
@@ -65,6 +66,7 @@ const createFunctionDelcaration = pipe(
   ({ body, children, identifier, params }) => ({
     body,
     children,
+    id: uuidv4(),
     identifier,
     params,
     type: NodeTypes.FUNCTION_DECLARATION

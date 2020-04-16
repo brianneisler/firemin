@@ -1,5 +1,6 @@
 import { NodeTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import parseBodyUntil from '../pipes/parseBodyUntil'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
 import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
@@ -13,6 +14,7 @@ const createBlockStatement = pipe(
   ({ body, children }) => ({
     body,
     children,
+    id: uuidv4(),
     type: NodeTypes.BLOCK_STATEMENT
   })
 )

@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import Identifier from './Identifier'
 import generateTokenList from '../../generator/generateTokenList'
 import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
@@ -35,6 +36,7 @@ const createAssignmentExpression = pipe(
   parseRight,
   ({ children, left, operator, right }) => ({
     children,
+    id: uuidv4(),
     left,
     operator,
     right,

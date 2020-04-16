@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
 import { pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseExpression from '../pipes/parseExpression'
 import parseOpenParenthesisOperator from '../pipes/parseOpenParenthesisOperator'
@@ -15,6 +16,7 @@ const createParenthesesExpression = pipe(
   ({ children, expression }) => ({
     children,
     expression,
+    id: uuidv4(),
     type: NodeTypes.PARENTHESES_EXPRESSION
   })
 )

@@ -1,11 +1,13 @@
 import { NodeTypes, TokenTypes } from '../../constants'
 import { pipe, tail } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import Word from './Word'
 import parseDivideOperator from '../pipes/parseDivideOperator'
 import parseWord from '../pipes/parseWord'
 
 const createPathPartKeyword = pipe(parseDivideOperator, parseWord, ({ children, word }) => ({
   children,
+  id: uuidv4(),
   type: NodeTypes.PATH_PART_WORD,
   word
 }))

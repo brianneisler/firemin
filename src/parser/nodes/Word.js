@@ -2,6 +2,7 @@ import { List } from 'immutable'
 import { NodeTypes, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { has, tail } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import generateString from '../../generator/generateString'
 
 const WORD_TOKEN_TYPES = {
@@ -46,6 +47,7 @@ const Word = {
       nextToken = tokenList.get(0)
     }
     return {
+      id: uuidv4(),
       tokenList: wordTokenList,
       type: NodeTypes.WORD,
       value: generateString(context, { tokenList: wordTokenList })

@@ -1,6 +1,7 @@
 import { exec } from 'child_process'
-import { minimize, setupCliContext } from '../src'
+import { generateString, minimize, parse, setupCliContext } from '../src'
 import { resolve as pathResolve } from 'path'
+import { readFile } from 'fs-extra'
 
 describe('integration', () => {
   test('should install globally', async () => {
@@ -19,6 +20,18 @@ describe('integration', () => {
     expect(() => {
       require('../index.module')
     }).not.toThrow()
+  })
+
+  test('parse and regenerate file contents', async () => {
+    const context = setupCliContext({
+      logger: console
+    })
+    const string = await readFile(pathResolve(__dirname, 'files', 'firestore.rules'), 'utf-8')
+
+    const ast = await parse(context, {
+      string
+    })
+    expect(generateString(context, { ast })).toEqual(string)
   })
 
   test('minimize file', async () => {

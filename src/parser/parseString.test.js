@@ -13,28 +13,34 @@ describe('parseString', () => {
           children: expect.any(Array),
           expression: {
             children: expect.any(Array),
+            id: expect.any(String),
             left: {
+              id: expect.any(String),
               name: 'a',
               tokenList: expect.any(List),
               type: NodeTypes.IDENTIFIER
             },
             operator: {
+              id: expect.any(String),
               operatorType: OperatorTypes.ASSIGNMENT,
               tokenList: expect.any(List),
               type: NodeTypes.OPERATOR,
               value: '='
             },
             right: {
+              id: expect.any(String),
               name: 'b',
               tokenList: expect.any(List),
               type: NodeTypes.IDENTIFIER
             },
             type: NodeTypes.ASSIGNMENT_EXPRESSION
           },
+          id: expect.any(String),
           type: NodeTypes.EXPRESSION_STATEMENT
         }
       ],
       children: expect.any(Array),
+      id: expect.any(String),
       type: NodeTypes.PROGRAM
     })
   })
@@ -49,14 +55,18 @@ describe('parseString', () => {
           children: expect.any(Array),
           expression: {
             children: expect.any(Array),
+            id: expect.any(String),
             object: {
               children: expect.any(Array),
+              id: expect.any(String),
               object: {
+                id: expect.any(String),
                 name: 'a',
                 tokenList: expect.any(List),
                 type: NodeTypes.IDENTIFIER
               },
               property: {
+                id: expect.any(String),
                 name: 'b',
                 tokenList: expect.any(List),
                 type: NodeTypes.IDENTIFIER
@@ -64,16 +74,19 @@ describe('parseString', () => {
               type: NodeTypes.STATIC_MEMBER_EXPRESSION
             },
             property: {
+              id: expect.any(String),
               name: 'c',
               tokenList: expect.any(List),
               type: NodeTypes.IDENTIFIER
             },
             type: NodeTypes.STATIC_MEMBER_EXPRESSION
           },
+          id: expect.any(String),
           type: NodeTypes.EXPRESSION_STATEMENT
         }
       ],
       children: expect.any(Array),
+      id: expect.any(String),
       type: NodeTypes.PROGRAM
     })
   })
@@ -176,8 +189,29 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
+  test('parses a simple BinaryExpression that starts with a Literal "1 * a;"', async () => {
+    const code = '1 * a;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
   test('parses a simple BinaryExpression "a % b"', async () => {
     const code = 'a % b;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple BinaryExpression that starts with a Literal "1 % a;"', async () => {
+    const code = '1 % a;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple BinaryExpression "a : b"', async () => {
+    const code = 'a : b;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
@@ -239,6 +273,13 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
+  test('parses a simple BinaryExpression "a is b"', async () => {
+    const code = 'a is b;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
   test('parses a simple CallExpression "foo()"', async () => {
     const code = 'foo();'
     const context = { logger: console }
@@ -274,6 +315,13 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
+  test('parses a double ComputedMemberExpression that uses a BinaryExpression as the property "a[1 % b];"', async () => {
+    const code = 'a[1 % b];'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
   test('parses a multi StaticMemberExpression', async () => {
     const code = 'a.b.c.d.e;'
     const context = { logger: console }
@@ -283,6 +331,13 @@ describe('parseString', () => {
 
   test('parses a simple FunctionDeclaration', async () => {
     const code = 'function foo() {}'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a FunctionDeclaration with a keyword in the name', async () => {
+    const code = 'function isBoolean() {}'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)

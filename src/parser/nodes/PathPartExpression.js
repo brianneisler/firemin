@@ -1,5 +1,6 @@
 import { NodeTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseDivideOperator from '../pipes/parseDivideOperator'
 import parseDollarSignOperator from '../pipes/parseDollarSignOperator'
@@ -18,6 +19,7 @@ const createPathPartExpression = pipe(
   ({ children, expression }) => ({
     children,
     expression,
+    id: uuidv4(),
     type: NodeTypes.PATH_PART_EXPRESSION
   })
 )

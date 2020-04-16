@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import parseArgument from '../pipes/parseArgument'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
@@ -74,6 +75,7 @@ const createCallExpression = pipe(
     args,
     callee,
     children,
+    id: uuidv4(),
     type: NodeTypes.CALL_EXPRESSION
   })
 )

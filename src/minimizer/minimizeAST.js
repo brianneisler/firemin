@@ -1,10 +1,11 @@
-const minimizeAST = async (context, { ast }) => {
-  // - walk program starting at top. Find all function definitions within program
-  // - each scope needs to be treated as a separate minification
-  // - build scope at top level
-  // - recursively minimize each node on the ast passing in the node as the ast to
-  // each recursive call along with the scope
-  //
+import { Map } from 'immutable'
+import { buildScopes } from './util'
+import { pipe } from 'ramda'
+import { removeUnusedFunctions } from './pipes'
+
+const minimizeAST = async (context, ast) => {
+  const scopes = buildScopes(Map(), null, ast)
+  return pipe(removeUnusedFunctions(scopes))(ast)
 }
 
 export default minimizeAST

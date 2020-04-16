@@ -1,5 +1,6 @@
 import { NodeTypes, ParserTypes } from '../../constants'
 import { pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import Expression from './Expression'
 import Identifier from './Identifier'
 import Literal from './Literal'
@@ -17,6 +18,7 @@ const createExpressionStatement = pipe(
   ({ children, expression }) => ({
     children,
     expression,
+    id: uuidv4(),
     type: NodeTypes.EXPRESSION_STATEMENT
   })
 )

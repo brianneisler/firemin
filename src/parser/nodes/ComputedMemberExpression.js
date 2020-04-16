@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
 import { findNextRealToken, findNextRealTokenIndex, parseNextNode } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import Expression from './Expression'
 import Identifier from './Identifier'
 import Literal from './Literal'
@@ -35,6 +36,7 @@ const createComputedMemberExpression = pipe(
   parseCloseBracketOperator,
   ({ children, object, property }) => ({
     children,
+    id: uuidv4(),
     object,
     property,
     type: NodeTypes.STATIC_MEMBER_EXPRESSION

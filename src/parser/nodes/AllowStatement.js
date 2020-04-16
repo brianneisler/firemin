@@ -1,5 +1,6 @@
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import parseAllowKeyword from '../pipes/parseAllowKeyword'
 import parseColonOperator from '../pipes/parseColonOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
@@ -27,6 +28,7 @@ const createAllowStatement = pipe(
   ({ children, condition, permission }) => ({
     children,
     condition,
+    id: uuidv4(),
     permission,
     type: NodeTypes.ALLOW_STATEMENT
   })

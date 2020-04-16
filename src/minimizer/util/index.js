@@ -1,0 +1,6 @@
+export { default as buildScopes } from './buildScopes'
+export { default as findAllFunctionDeclrations } from './findAllFunctionDeclrations'
+export { default as findUnusedFunctions } from './findUnusedFunctions'
+export { default as getFunctionDeclarationByNameInScope } from './getFunctionDeclarationByNameInScope'
+export { default as newScope } from './newScope'
+export { default as removeFunctionDeclarations } from './removeFunctionDeclarations'

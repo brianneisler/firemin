@@ -1,6 +1,7 @@
 import { NodeTypes, ParserTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
 import { parseNextNode, testNextNode } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import PathPartExpression from './PathPartExpression'
 import PathPartVariable from './PathPartVariable'
 import PathPartWord from './PathPartWord'
@@ -34,6 +35,7 @@ const parsePath = (props) => {
 
 const createPathExpression = pipe(parsePath, ({ children, path }) => ({
   children,
+  id: uuidv4(),
   path,
   type: NodeTypes.PATH_EXPRESSION
 }))

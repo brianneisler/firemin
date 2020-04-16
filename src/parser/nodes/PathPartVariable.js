@@ -1,5 +1,6 @@
 import { NodeTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
 import parseDivideOperator from '../pipes/parseDivideOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
@@ -20,6 +21,7 @@ const createPathPartVariable = pipe(
   parseCloseCurlyBraceOperator,
   ({ children, identifier }) => ({
     children,
+    id: uuidv4(),
     identifier,
     type: NodeTypes.PATH_PART_VARIABLE
   })

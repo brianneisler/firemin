@@ -1,6 +1,7 @@
 import { NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes } from '../../constants'
 import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 
 const ModulusOperator = {
   parse: (context, tokenList) => {
@@ -19,6 +20,7 @@ const ModulusOperator = {
       )
     }
     return {
+      id: uuidv4(),
       operatorType: OperatorTypes.MODULUS,
       tokenList: slice(0, 1, tokenList),
       type: NodeTypes.OPERATOR,

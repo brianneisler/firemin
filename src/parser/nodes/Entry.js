@@ -1,6 +1,7 @@
 import { NodeTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
 import { parseNextNode } from '../util'
+import { v4 as uuidv4 } from 'uuid'
 import Expression from './Expression'
 import Identifier from './Identifier'
 import Literal from './Literal'
@@ -38,6 +39,7 @@ const createEntry = pipe(
   parseValue,
   ({ children, key, value }) => ({
     children,
+    id: uuidv4(),
     key,
     type: NodeTypes.ENTRY,
     value

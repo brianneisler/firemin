@@ -7,9 +7,8 @@ const generateFile = async (context, { outputFilePath, tokenList }) => {
   tokenList.forEach((token) => {
     fileStream.write(tokenToString(token))
   })
-  fileStream.end()
   return new Promise((resolve, reject) => {
-    fileStream.on('end', resolve)
+    fileStream.end(resolve)
     fileStream.on('error', reject)
   })
 }

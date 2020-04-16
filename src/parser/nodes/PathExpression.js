@@ -15,7 +15,7 @@ const parsePathPart = ({ children, context, tokenList, ...rest }) => {
   children = append(pathPart, children)
   const parsedTokenList = generateTokenList(context, { ast: pathPart })
   tokenList = slice(parsedTokenList.size, tokenList.size, tokenList)
-  return { ...rest, children, pathPart, tokenList }
+  return { ...rest, children, context, pathPart, tokenList }
 }
 
 const parsePath = (props) => {

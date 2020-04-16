@@ -64,11 +64,11 @@ This means the less the number of collections and subcollections, the less rules
 ## Features
 * Removes comments from firestore rules
 * Removes unnecessary whitespace
+* Removes unused functions from your rules file
 
 ## TODO
 - [ ] Replace function names and function parameter names with shorter single character names
 - [ ] Collapse single use functions
-- [ ] Remove unused functions
 
 ## Install
 

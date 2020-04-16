@@ -2,6 +2,9 @@ import { curry, find } from 'ramda'
 import getTokenListPosition from './getTokenListPosition'
 
 const parseNextNode = curry((parsers, context, tokenList, ...rest) => {
+  if (!context) {
+    throw new Error('context must be defined')
+  }
   const nodeParser = find((parser) => parser.test(context, tokenList, ...rest), parsers)
   if (!nodeParser) {
     const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)

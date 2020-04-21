@@ -6,7 +6,8 @@ service cloud.firestore {
     // -----------------------------
 
     function someFunc(someParam1, someParam2) {
-      return someParam1.keys().hasAll([ someParam2 ])
+      let foo = true;
+      return someParam1.keys().hasAll([ someParam2 ]) && foo;
     }
 
     // Some other comment

@@ -379,14 +379,14 @@ describe('parseString', () => {
   })
 
   test('parses a LetDeclaration "let foo = true"', async () => {
-    const code = 'let foo = true'
+    const code = 'let foo = true;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)
   })
 
   test('throws when missing identifier for LetDeclaration', async () => {
-    const code = 'let = true'
+    const code = 'let = true;'
     const context = { logger: console }
     expect(parseString(context, code)).rejects.toEqual(new Error('Expected Identifier'))
   })

@@ -9,6 +9,7 @@ import generateTokenList from '../../generator/generateTokenList'
 import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
 import parseLetKeyword from '../pipes/parseLetKeyword'
+import parseOptionalSemicolonOperator from '../pipes/parseOptionalSemicolonOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
 const INIT_PARSERS = [Expression, Identifier, Literal]
@@ -34,6 +35,8 @@ const createLetDelcaration = pipe(
   parseAssignmentOperator,
   parseWhitespaceAndComments,
   parseInit,
+  parseWhitespaceAndComments,
+  parseOptionalSemicolonOperator,
   ({ children, identifier, init, operator }) => ({
     children,
     id: uuidv4(),

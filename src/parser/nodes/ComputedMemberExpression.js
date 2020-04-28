@@ -5,13 +5,14 @@ import { v4 as uuidv4 } from 'uuid'
 import Expression from './Expression'
 import Identifier from './Identifier'
 import Literal from './Literal'
+import Range from './Range'
 import generateTokenList from '../../generator/generateTokenList'
 import parseCloseBracketOperator from '../pipes/parseCloseBracketOperator'
 import parseObject from '../pipes/parseObject'
 import parseOpenBracketOperator from '../pipes/parseOpenBracketOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const PROPERTY_PARSERS = [Expression, Identifier, Literal]
+const PROPERTY_PARSERS = [Range, Expression, Identifier, Literal]
 const parsePropertyNode = parseNextNode(PROPERTY_PARSERS)
 
 const parseProperty = (props) => {

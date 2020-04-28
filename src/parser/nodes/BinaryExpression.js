@@ -11,7 +11,6 @@ import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
 const BINARY_OPERATOR_TOKEN_TYPES = {
   [TokenTypes.KEYWORD_IS]: OperatorTypes.IS,
-  [TokenTypes.OPERATOR_COLON]: OperatorTypes.COLON,
   [TokenTypes.OPERATOR_DIVIDE]: OperatorTypes.DIVIDE,
   [TokenTypes.OPERATOR_EQUALITY]: OperatorTypes.EQUALITY,
   [TokenTypes.OPERATOR_GREATER_THAN]: OperatorTypes.GREATER_THAN,

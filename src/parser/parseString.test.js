@@ -217,13 +217,6 @@ describe('parseString', () => {
     expect(generateString(context, { ast })).toEqual(code)
   })
 
-  test('parses a simple BinaryExpression "a : b"', async () => {
-    const code = 'a : b;'
-    const context = { logger: console }
-    const ast = await parseString(context, code)
-    expect(generateString(context, { ast })).toEqual(code)
-  })
-
   test('parses a simple BinaryExpression "a == b"', async () => {
     const code = 'a == b;'
     const context = { logger: console }
@@ -324,6 +317,34 @@ describe('parseString', () => {
 
   test('parses a double ComputedMemberExpression that uses a BinaryExpression as the property "a[1 % b];"', async () => {
     const code = 'a[1 % b];'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a ComputedMemberExpression with a Range "foo[1:4];"', async () => {
+    const code = 'foo[1:4];'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a ComputedMemberExpression with a Range "foo[a:b];"', async () => {
+    const code = 'foo[a:b];'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a simple ConditionalExpression', async () => {
+    const code = 'true ? true : false;'
+    const context = { logger: console }
+    const ast = await parseString(context, code)
+    expect(generateString(context, { ast })).toEqual(code)
+  })
+
+  test('parses a ConditionalExpression "foo != null ? 123 : null', async () => {
+    const code = 'foo != null ? 123 : null;'
     const context = { logger: console }
     const ast = await parseString(context, code)
     expect(generateString(context, { ast })).toEqual(code)

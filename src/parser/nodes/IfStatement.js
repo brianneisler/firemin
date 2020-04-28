@@ -6,9 +6,9 @@ import parseIfKeyword from '../pipes/parseIfKeyword'
 import parseOptionalSemicolonOperator from '../pipes/parseOptionalSemicolonOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
 
-const parseTest = pipe(parseExpression, ({ expresion, ...rest }) => ({
+const parseTest = pipe(parseExpression, ({ expression, ...rest }) => ({
   ...rest,
-  test: expresion
+  test: expression
 }))
 
 const createIfStatement = pipe(

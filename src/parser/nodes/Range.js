@@ -33,7 +33,7 @@ const parseStart = (props) => {
 
 const parseEnd = pipe(parseExpression, ({ expression, ...rest }) => ({
   ...rest,
-  alternate: expression
+  end: expression
 }))
 
 const createRange = pipe(

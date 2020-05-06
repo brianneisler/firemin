@@ -91,6 +91,53 @@ describe('parseString', () => {
     })
   })
 
+  test('parse a simple ComputedMemberExpression with Range to AST', async () => {
+    const context = { logger: console }
+    const result = await parseString(context, 'a[1:2];')
+    expect(result).toEqual({
+      body: [
+        {
+          children: expect.any(Array),
+          expression: {
+            children: expect.any(Array),
+            id: expect.any(String),
+            object: {
+              id: expect.any(String),
+              name: 'a',
+              tokenList: expect.any(List),
+              type: NodeTypes.IDENTIFIER
+            },
+            property: {
+              children: expect.any(Array),
+              end: {
+                id: expect.any(String),
+                raw: '2',
+                tokenList: expect.any(List),
+                type: NodeTypes.LITERAL,
+                value: 2
+              },
+              id: expect.any(String),
+              start: {
+                id: expect.any(String),
+                raw: '1',
+                tokenList: expect.any(List),
+                type: NodeTypes.LITERAL,
+                value: 1
+              },
+              type: NodeTypes.RANGE
+            },
+            type: NodeTypes.COMPUTED_MEMBER_EXPRESSION
+          },
+          id: expect.any(String),
+          type: NodeTypes.EXPRESSION_STATEMENT
+        }
+      ],
+      children: expect.any(Array),
+      id: expect.any(String),
+      type: NodeTypes.PROGRAM
+    })
+  })
+
   test('parses a simple true boolean Literal', async () => {
     const code = 'true;'
     const context = { logger: console }

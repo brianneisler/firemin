@@ -40,7 +40,7 @@ const createComputedMemberExpression = pipe(
     id: uuidv4(),
     object,
     property,
-    type: NodeTypes.STATIC_MEMBER_EXPRESSION
+    type: NodeTypes.COMPUTED_MEMBER_EXPRESSION
   })
 )
 

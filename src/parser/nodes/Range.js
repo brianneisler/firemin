@@ -22,7 +22,7 @@ const parseStart = (props) => {
     }
   }
   const start = parseStartNode(context, tokenList)
-  const parsedTokenList = generateTokenList(context, { ast: test })
+  const parsedTokenList = generateTokenList(context, { ast: start })
   return {
     ...props,
     children: append(start, children),

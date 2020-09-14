@@ -1,13 +1,24 @@
-import { NodeTypes, OperatorTypes, ParserTypes, TokenTypes } from '../../constants'
-import { findNextRealToken, findNextRealTokenIndex, testNextNode } from '../util'
 import { has, pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
-import Identifier from './Identifier'
-import Literal from './Literal'
+
+import {
+  NodeTypes,
+  OperatorTypes,
+  ParserTypes,
+  TokenTypes
+} from '../../constants'
 import parseLeft from '../pipes/parseLeft'
 import parseOperator from '../pipes/parseOperator'
 import parseRight from '../pipes/parseRight'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import {
+  findNextRealToken,
+  findNextRealTokenIndex,
+  testNextNode
+} from '../util'
+
+import Identifier from './Identifier'
+import Literal from './Literal'
 
 const BINARY_OPERATOR_TOKEN_TYPES = {
   [TokenTypes.KEYWORD_IS]: OperatorTypes.IS,

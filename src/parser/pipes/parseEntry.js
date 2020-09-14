@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import Entry from '../nodes/Entry'
+
 import generateTokenList from '../../generator/generateTokenList'
+import Entry from '../nodes/Entry'
 
 const parseEntry = ({ children, context, tokenList, ...rest }) => {
   const entry = Entry.parse(context, tokenList)

@@ -1,8 +1,14 @@
 import { append, slice } from 'ramda'
-import GreaterThanEqualOperator from '../nodes/GreaterThanEqualOperator'
-import generateTokenList from '../../generator/generateTokenList'
 
-const parseGreaterThanEqualOperator = ({ children, context, tokenList, ...rest }) => {
+import generateTokenList from '../../generator/generateTokenList'
+import GreaterThanEqualOperator from '../nodes/GreaterThanEqualOperator'
+
+const parseGreaterThanEqualOperator = ({
+  children,
+  context,
+  tokenList,
+  ...rest
+}) => {
   const operator = GreaterThanEqualOperator.parse(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: operator })
   return {

@@ -1,11 +1,40 @@
 import { resolve } from 'path'
+
 import generateFile from '../generator/generateFile'
 import generateString from '../generator/generateString'
 import generateTokenList from '../generator/generateTokenList'
-import minimizeAST from './minimizeAST'
-import minimizeTokenList from './minimizeTokenList'
 import parseFile from '../parser/parseFile'
 
+import minimizeAST from './minimizeAST'
+import minimizeTokenList from './minimizeTokenList'
+
+/**
+ * Minimizes the rules contained at the given filePath.
+ * If given an outputFilePath this method will output the result to the given
+ * file path instead of returning a minimize string.
+ *
+ * @function
+ * @since v0.1.0
+ * @category minimizer
+ * @param {Context} context
+ * @param {{
+ *   filePath: String,
+ *   outputFilePath: String
+ * }}} options
+ * @example
+ * const context = setupContext()
+ *
+ * // minimze into a string
+ * const minimizedStringRules = await minimize(context, {
+ *   filePath: './path/to/firestore.rules'
+ * })
+ *
+ * // minimize and send output to a file
+ * await minimize(context, {
+ *   filePath: './path/to/firestore.rules',
+ *   outputFilePath: './path/to/firestore.min.rules'
+ * })
+ */
 const minimize = async (context, { filePath, outputFilePath }) => {
   const ast = await parseFile(context, filePath)
   const minimizedAST = await minimizeAST(context, ast)

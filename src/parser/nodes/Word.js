@@ -1,9 +1,10 @@
 import { List } from 'immutable'
-import { NodeTypes, TokenTypes } from '../../constants'
-import { getTokenListPosition } from '../util'
 import { has, tail } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, TokenTypes } from '../../constants'
 import generateString from '../../generator/generateString'
+import { getTokenListPosition } from '../util'
 
 const WORD_TOKEN_TYPES = {
   [TokenTypes.IDENTIFIER]: true,
@@ -30,10 +31,15 @@ const Word = {
   parse: (context, tokenList) => {
     let nextToken = tokenList.get(0)
     if (!nextToken) {
-      throw new Error(`Expected one of 'a-zA-Z0-9_-@~&*+%:.' Instead reached the end of the file.`)
+      throw new Error(
+        `Expected one of 'a-zA-Z0-9_-@~&*+%:.' Instead reached the end of the file.`
+      )
     }
     if (!has(nextToken.type, WORD_TOKEN_TYPES)) {
-      const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
+      const { lastLineCharacterCount, lineCount } = getTokenListPosition(
+        context,
+        tokenList
+      )
       throw new Error(
         `Expected one of 'a-zA-Z0-9_-@~&*+%:.'. Instead was given '${
           tokenList.get(0).value

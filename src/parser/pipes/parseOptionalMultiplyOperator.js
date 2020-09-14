@@ -1,4 +1,5 @@
 import MultiplyOperator from '../nodes/MultiplyOperator'
+
 import parseMultiplyOperator from './parseMultiplyOperator'
 
 const parseOptionalMultiplyOperator = (props) => {

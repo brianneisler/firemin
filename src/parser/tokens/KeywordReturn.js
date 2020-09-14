@@ -1,6 +1,8 @@
 import { Keywords, TokenTypes } from '../../constants'
 
-const REGEX_KEYWORD_RETURN_TEST = new RegExp(`^${Keywords.RETURN}([^a-zA-Z0-9_]|$)`)
+const REGEX_KEYWORD_RETURN_TEST = new RegExp(
+  `^${Keywords.RETURN}([^a-zA-Z0-9_]|$)`
+)
 
 const KeywordReturn = {
   parse: () => ({

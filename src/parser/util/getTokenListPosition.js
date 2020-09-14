@@ -1,5 +1,5 @@
-import { countLinesAndCharacters } from '../../utils'
 import generateString from '../../generator/generateString'
+import { countLinesAndCharacters } from '../../utils'
 
 const getTokenListPosition = (context, tokenList) => {
   const { originalTokenList } = context

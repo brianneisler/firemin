@@ -1,8 +1,10 @@
 import { Map } from 'immutable'
+
+import walkReduceAST from '../../ast/walkReduceAST'
 import { NodeTypes } from '../../constants'
+
 import findAllFunctionDeclrations from './findAllFunctionDeclrations'
 import getFunctionDeclarationByNameInScope from './getFunctionDeclarationByNameInScope'
-import walkReduceAST from '../../ast/walkReduceAST'
 
 const findUnusedFunctions = (scopes, ast) => {
   const functionDeclarations = findAllFunctionDeclrations(ast)
@@ -15,7 +17,10 @@ const findUnusedFunctions = (scopes, ast) => {
           if (!scope) {
             throw new Error(`Could not find scope for node ${node}`)
           }
-          const functionDeclaration = getFunctionDeclarationByNameInScope(callee.name, scope)
+          const functionDeclaration = getFunctionDeclarationByNameInScope(
+            callee.name,
+            scope
+          )
           if (functionDeclaration) {
             return accum.set(functionDeclaration.id, true)
           }

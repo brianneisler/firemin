@@ -1,7 +1,8 @@
-import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import { getTokenListPosition } from '../util'
 
 const FunctionKeyword = {
   parse: (context, tokenList) => {
@@ -12,7 +13,10 @@ const FunctionKeyword = {
       )
     }
     if (nextToken.type !== TokenTypes.KEYWORD_FUNCTION) {
-      const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
+      const { lastLineCharacterCount, lineCount } = getTokenListPosition(
+        context,
+        tokenList
+      )
       throw new Error(
         `Expected keyword '${Keywords.FUNCTION}'. Instead was given '${
           tokenList.get(0).value

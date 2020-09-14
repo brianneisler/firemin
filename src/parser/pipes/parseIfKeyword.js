@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import IfKeyword from '../nodes/IfKeyword'
+
 import generateTokenList from '../../generator/generateTokenList'
+import IfKeyword from '../nodes/IfKeyword'
 
 const parseIfKeyword = ({ children, context, tokenList, ...rest }) => {
   const keyword = IfKeyword.parse(context, tokenList)

@@ -1,5 +1,6 @@
 import { List } from 'immutable'
 import { concat, isEmpty, isNil } from 'ramda'
+
 import walkReduceAST from '../ast/walkReduceAST'
 
 const generateTokenList = (context, { ast }) => {

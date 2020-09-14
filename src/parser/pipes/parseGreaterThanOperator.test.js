@@ -1,14 +1,20 @@
 import { List } from 'immutable'
+
 import { NodeTypes, OperatorTypes, Operators } from '../../constants'
-import parseGreaterThanOperator from './parseGreaterThanOperator'
 import tokenize from '../tokenize'
+
+import parseGreaterThanOperator from './parseGreaterThanOperator'
 
 describe('parseGreaterThanOperator', () => {
   test('returns expected values', async () => {
     const children = []
     const context = { logger: console }
     const tokenList = await tokenize(context, { string: '>' })
-    const result = await parseGreaterThanOperator({ children, context, tokenList })
+    const result = await parseGreaterThanOperator({
+      children,
+      context,
+      tokenList
+    })
 
     const operator = {
       id: expect.any(String),

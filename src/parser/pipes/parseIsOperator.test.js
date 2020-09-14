@@ -1,7 +1,9 @@
-import { Keywords, NodeTypes } from '../../constants'
 import { List } from 'immutable'
-import parseIsOperator from './parseIsOperator'
+
+import { Keywords, NodeTypes } from '../../constants'
 import tokenize from '../tokenize'
+
+import parseIsOperator from './parseIsOperator'
 
 describe('parseIsOperator', () => {
   test('returns expected values', async () => {

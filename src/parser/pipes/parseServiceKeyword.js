@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import ServiceKeyword from '../nodes/ServiceKeyword'
+
 import generateTokenList from '../../generator/generateTokenList'
+import ServiceKeyword from '../nodes/ServiceKeyword'
 
 const parseServiceKeyword = ({ children, context, tokenList, ...rest }) => {
   const keyword = ServiceKeyword.parse(context, tokenList)

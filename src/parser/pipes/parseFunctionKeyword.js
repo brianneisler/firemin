@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import FunctionKeyword from '../nodes/FunctionKeyword'
+
 import generateTokenList from '../../generator/generateTokenList'
+import FunctionKeyword from '../nodes/FunctionKeyword'
 
 const parseFunctionKeyword = ({ children, context, tokenList, ...rest }) => {
   const keyword = FunctionKeyword.parse(context, tokenList)

@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import DotOperator from '../nodes/DotOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import DotOperator from '../nodes/DotOperator'
 
 const parseDotOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = DotOperator.parse(context, tokenList)

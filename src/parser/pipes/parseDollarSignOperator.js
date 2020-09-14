@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import DollarSignOperator from '../nodes/DollarSignOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import DollarSignOperator from '../nodes/DollarSignOperator'
 
 const parseDollarSignOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = DollarSignOperator.parse(context, tokenList)

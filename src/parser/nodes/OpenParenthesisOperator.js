@@ -1,7 +1,14 @@
-import { NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes } from '../../constants'
-import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import {
+  NodeTypes,
+  OperatorTypes,
+  Operators,
+  ParserTypes,
+  TokenTypes
+} from '../../constants'
+import { getTokenListPosition } from '../util'
 
 const OpenParenthesisOperator = {
   parse: (context, tokenList) => {
@@ -12,9 +19,14 @@ const OpenParenthesisOperator = {
       )
     }
     if (nextToken.type !== TokenTypes.OPERATOR_OPEN_PARENTHESIS) {
-      const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
+      const { lastLineCharacterCount, lineCount } = getTokenListPosition(
+        context,
+        tokenList
+      )
       throw new Error(
-        `Expected operator '${Operators.OPEN_PARENTHESIS}'. Instead was given '${
+        `Expected operator '${
+          Operators.OPEN_PARENTHESIS
+        }'. Instead was given '${
           tokenList.get(0).value
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
@@ -27,7 +39,8 @@ const OpenParenthesisOperator = {
       value: nextToken.value
     }
   },
-  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_OPEN_PARENTHESIS,
+  test: (context, tokenList) =>
+    tokenList.get(0).type === TokenTypes.OPERATOR_OPEN_PARENTHESIS,
   type: ParserTypes.OPERATOR
 }
 

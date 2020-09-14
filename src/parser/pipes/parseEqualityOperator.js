@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import EqualityOperator from '../nodes/EqualityOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import EqualityOperator from '../nodes/EqualityOperator'
 
 const parseEqualityOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = EqualityOperator.parse(context, tokenList)

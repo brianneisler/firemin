@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import LessThanOperator from '../nodes/LessThanOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import LessThanOperator from '../nodes/LessThanOperator'
 
 const parseLessThanOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = LessThanOperator.parse(context, tokenList)

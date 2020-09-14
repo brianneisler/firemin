@@ -1,6 +1,7 @@
-import { NodeTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, TokenTypes } from '../../constants'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseDivideOperator from '../pipes/parseDivideOperator'
 import parseDollarSignOperator from '../pipes/parseDollarSignOperator'
@@ -25,7 +26,8 @@ const createPathPartExpression = pipe(
 )
 
 const PathPartExpression = {
-  parse: (context, tokenList) => createPathPartExpression({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createPathPartExpression({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (prevExpression) {
       // In this case, it's a CallExpression

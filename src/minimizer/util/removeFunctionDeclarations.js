@@ -1,8 +1,10 @@
-import { NodeTypes } from '../../constants'
-import { assoc, map, prop, reject } from 'ramda'
 import { isObject } from 'lodash'
+import { assoc, map, prop, reject } from 'ramda'
 
-const update = (propName, updater, value) => assoc(propName, updater(prop(propName, value)), value)
+import { NodeTypes } from '../../constants'
+
+const update = (propName, updater, value) =>
+  assoc(propName, updater(prop(propName, value)), value)
 
 const removeFunctionDeclarations = (unusedFunctionIdMap, node) => {
   if (isObject(node.children)) {
@@ -10,7 +12,8 @@ const removeFunctionDeclarations = (unusedFunctionIdMap, node) => {
       'children',
       reject(
         (childNode) =>
-          childNode.type === NodeTypes.FUNCTION_DECLARATION && unusedFunctionIdMap.has(childNode.id)
+          childNode.type === NodeTypes.FUNCTION_DECLARATION &&
+          unusedFunctionIdMap.has(childNode.id)
       ),
       node
     )
@@ -38,7 +41,9 @@ const removeFunctionDeclarations = (unusedFunctionIdMap, node) => {
     // model to be mutable instead of immutable
     return update(
       'children',
-      map((childNode) => removeFunctionDeclarations(unusedFunctionIdMap, childNode)),
+      map((childNode) =>
+        removeFunctionDeclarations(unusedFunctionIdMap, childNode)
+      ),
       node
     )
   }

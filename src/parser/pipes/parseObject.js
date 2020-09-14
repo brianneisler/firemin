@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import Identifier from '../nodes/Identifier'
+
 import generateTokenList from '../../generator/generateTokenList'
+import Identifier from '../nodes/Identifier'
 
 const parseObject = (props) => {
   const { children, context, prevExpression, tokenList } = props

@@ -1,4 +1,5 @@
 import { createWriteStream, ensureFile } from 'fs-extra'
+
 import tokenToString from '../token/tokenToString'
 
 const generateFile = async (context, { outputFilePath, tokenList }) => {

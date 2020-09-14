@@ -1,7 +1,14 @@
-import { NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes } from '../../constants'
-import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import {
+  NodeTypes,
+  OperatorTypes,
+  Operators,
+  ParserTypes,
+  TokenTypes
+} from '../../constants'
+import { getTokenListPosition } from '../util'
 
 const TildeOperator = {
   parse: (context, tokenList) => {
@@ -12,7 +19,10 @@ const TildeOperator = {
       )
     }
     if (nextToken.type !== TokenTypes.OPERATOR_TILDE) {
-      const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
+      const { lastLineCharacterCount, lineCount } = getTokenListPosition(
+        context,
+        tokenList
+      )
       throw new Error(
         `Expected operator '${Operators.TILDE}'. Instead was given '${
           tokenList.get(0).value
@@ -27,7 +37,8 @@ const TildeOperator = {
       value: nextToken.value
     }
   },
-  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_TILDE,
+  test: (context, tokenList) =>
+    tokenList.get(0).type === TokenTypes.OPERATOR_TILDE,
   type: ParserTypes.OPERATOR
 }
 

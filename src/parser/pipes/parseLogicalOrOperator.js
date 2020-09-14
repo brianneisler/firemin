@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import LogicalOrOperator from '../nodes/LogicalOrOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import LogicalOrOperator from '../nodes/LogicalOrOperator'
 
 const parseLogicalOrOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = LogicalOrOperator.parse(context, tokenList)

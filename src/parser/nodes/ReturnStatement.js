@@ -1,6 +1,7 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseArgument from '../pipes/parseArgument'
 import parseOptionalSemicolonOperator from '../pipes/parseOptionalSemicolonOperator'
 import parseReturnKeyword from '../pipes/parseReturnKeyword'
@@ -21,7 +22,8 @@ const createReturnStatement = pipe(
 )
 
 const ReturnStatement = {
-  parse: (context, tokenList) => createReturnStatement({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createReturnStatement({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_RETURN

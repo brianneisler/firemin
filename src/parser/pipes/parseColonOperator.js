@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import ColonOperator from '../nodes/ColonOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import ColonOperator from '../nodes/ColonOperator'
 
 const parseColonOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = ColonOperator.parse(context, tokenList)

@@ -1,16 +1,18 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { parseNextNode } from '../util'
 import { v4 as uuidv4 } from 'uuid'
-import Expression from './Expression'
-import Identifier from './Identifier'
-import Literal from './Literal'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
 import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
 import parseLetKeyword from '../pipes/parseLetKeyword'
 import parseOptionalSemicolonOperator from '../pipes/parseOptionalSemicolonOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import { parseNextNode } from '../util'
+
+import Expression from './Expression'
+import Identifier from './Identifier'
+import Literal from './Literal'
 
 const INIT_PARSERS = [Expression, Identifier, Literal]
 const parseInitNode = parseNextNode(INIT_PARSERS)
@@ -48,7 +50,8 @@ const createLetDelcaration = pipe(
 )
 
 const LetDeclaration = {
-  parse: (context, tokenList) => createLetDelcaration({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createLetDelcaration({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_LET

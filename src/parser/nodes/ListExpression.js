@@ -1,15 +1,21 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { findNextRealToken, findNextRealTokenIndex, parseNextNode } from '../util'
 import { v4 as uuidv4 } from 'uuid'
-import Expression from './Expression'
-import Identifier from './Identifier'
-import Literal from './Literal'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
 import parseCloseBracketOperator from '../pipes/parseCloseBracketOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
 import parseOpenBracketOperator from '../pipes/parseOpenBracketOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import {
+  findNextRealToken,
+  findNextRealTokenIndex,
+  parseNextNode
+} from '../util'
+
+import Expression from './Expression'
+import Identifier from './Identifier'
+import Literal from './Literal'
 
 const ELEMENT_PARSERS = [Expression, Identifier, Literal]
 const parseElementNode = parseNextNode(ELEMENT_PARSERS)
@@ -28,14 +34,20 @@ const parseElementAndWhitespace = pipe(
   parseWhitespaceAndComments
 )
 
-const parseCommaElementAndWhitespace = pipe(parseCommaOperator, parseElementAndWhitespace)
+const parseCommaElementAndWhitespace = pipe(
+  parseCommaOperator,
+  parseElementAndWhitespace
+)
 
 const parseElements = (props) => {
   let { children, context, tokenList } = props
   let elements = []
   let first = true
   let nextToken = tokenList.get(0)
-  while (tokenList.size > 0 && nextToken.type !== TokenTypes.OPERATOR_CLOSE_BRACKET) {
+  while (
+    tokenList.size > 0 &&
+    nextToken.type !== TokenTypes.OPERATOR_CLOSE_BRACKET
+  ) {
     let element
     if (first) {
       first = false
@@ -45,7 +57,12 @@ const parseElements = (props) => {
         tokenList
       }))
     } else {
-      ;({ children, context, element, tokenList } = parseCommaElementAndWhitespace({
+      ;({
+        children,
+        context,
+        element,
+        tokenList
+      } = parseCommaElementAndWhitespace({
         children,
         context,
         tokenList
@@ -72,14 +89,20 @@ const createListExpression = pipe(
 )
 
 const ListExpression = {
-  parse: (context, tokenList) => createListExpression({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createListExpression({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (prevExpression) {
       // In this case, it's a ComputedMemberExpression
       return false
     }
-    const operatorToken = findNextRealToken(tokenList, findNextRealTokenIndex(tokenList))
-    return operatorToken && operatorToken.type === TokenTypes.OPERATOR_OPEN_BRACKET
+    const operatorToken = findNextRealToken(
+      tokenList,
+      findNextRealTokenIndex(tokenList)
+    )
+    return (
+      operatorToken && operatorToken.type === TokenTypes.OPERATOR_OPEN_BRACKET
+    )
   },
   type: ParserTypes.EXPRESSION
 }

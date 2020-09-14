@@ -1,1 +1,1 @@
-export { default as setupCliContext } from './setupCliContext'
+export { default as setupContext } from './setupContext'

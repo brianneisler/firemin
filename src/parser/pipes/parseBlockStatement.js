@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import BlockStatement from '../nodes/BlockStatement'
+
 import generateTokenList from '../../generator/generateTokenList'
+import BlockStatement from '../nodes/BlockStatement'
 
 const parseBlockStatement = ({ children, context, tokenList, ...rest }) => {
   const blockStatement = BlockStatement.parse(context, tokenList)

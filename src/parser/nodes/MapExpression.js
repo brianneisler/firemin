@@ -1,12 +1,13 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
-import { findNextRealToken, findNextRealTokenIndex } from '../util'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
 import parseEntry from '../pipes/parseEntry'
 import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import { findNextRealToken, findNextRealTokenIndex } from '../util'
 
 const parseEntryAndWhitespace = pipe(
   parseWhitespaceAndComments,
@@ -14,14 +15,20 @@ const parseEntryAndWhitespace = pipe(
   parseWhitespaceAndComments
 )
 
-const parseCommaEntryAndWhitespace = pipe(parseCommaOperator, parseEntryAndWhitespace)
+const parseCommaEntryAndWhitespace = pipe(
+  parseCommaOperator,
+  parseEntryAndWhitespace
+)
 
 const parseEntries = (props) => {
   let { children, context, tokenList } = props
   let entries = []
   let first = true
   let nextToken = tokenList.get(0)
-  while (tokenList.size > 0 && nextToken.type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE) {
+  while (
+    tokenList.size > 0 &&
+    nextToken.type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE
+  ) {
     let entry
     if (first) {
       first = false
@@ -58,13 +65,20 @@ const createMapExpression = pipe(
 )
 
 const MapExpression = {
-  parse: (context, tokenList) => createMapExpression({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createMapExpression({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (prevExpression) {
       return false
     }
-    const operatorToken = findNextRealToken(tokenList, findNextRealTokenIndex(tokenList))
-    return operatorToken && operatorToken.type === TokenTypes.OPERATOR_OPEN_CURLY_BRACE
+    const operatorToken = findNextRealToken(
+      tokenList,
+      findNextRealTokenIndex(tokenList)
+    )
+    return (
+      operatorToken &&
+      operatorToken.type === TokenTypes.OPERATOR_OPEN_CURLY_BRACE
+    )
   },
   type: ParserTypes.EXPRESSION
 }

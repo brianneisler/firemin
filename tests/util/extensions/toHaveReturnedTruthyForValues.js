@@ -17,7 +17,12 @@ function toHaveReturnedTruthyForValues(func, values) {
   }
 
   const message = () =>
-    this.utils.matcherHint('toHaveReturnedTruthyForValues', undefined, undefined, options) +
+    this.utils.matcherHint(
+      'toHaveReturnedTruthyForValues',
+      undefined,
+      undefined,
+      options
+    ) +
     '\n\n' +
     `Expected: ${this.utils.printExpected(expected)}\n` +
     `Received: ${this.utils.printReceived(received)}`

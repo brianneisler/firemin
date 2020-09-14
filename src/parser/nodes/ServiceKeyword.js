@@ -1,7 +1,8 @@
-import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import { getTokenListPosition } from '../util'
 
 const ServiceKeyword = {
   parse: (context, tokenList) => {
@@ -12,7 +13,10 @@ const ServiceKeyword = {
       )
     }
     if (nextToken.type !== TokenTypes.KEYWORD_SERVICE) {
-      const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
+      const { lastLineCharacterCount, lineCount } = getTokenListPosition(
+        context,
+        tokenList
+      )
       throw new Error(
         `Expected keyword '${Keywords.SERVICE}'. Instead was given '${
           tokenList.get(0).value

@@ -1,8 +1,9 @@
 import { append, slice } from 'ramda'
-import { parseNextNode } from '../util'
+
+import generateTokenList from '../../generator/generateTokenList'
 import Identifier from '../nodes/Identifier'
 import Literal from '../nodes/Literal'
-import generateTokenList from '../../generator/generateTokenList'
+import { parseNextNode } from '../util'
 
 const TEST_PARSERS = [Identifier, Literal]
 const parseTestNode = parseNextNode(TEST_PARSERS)

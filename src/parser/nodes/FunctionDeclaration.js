@@ -1,6 +1,7 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseBody from '../pipes/parseBody'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
@@ -20,14 +21,20 @@ const parseParamAndWhitespace = pipe(
   parseWhitespaceAndComments
 )
 
-const parseCommaParamAndWhitespace = pipe(parseCommaOperator, parseParamAndWhitespace)
+const parseCommaParamAndWhitespace = pipe(
+  parseCommaOperator,
+  parseParamAndWhitespace
+)
 
 const parseCommaSeparatedParams = (props) => {
   let { children, context, tokenList } = props
   let params = []
   let first = true
   let nextToken = tokenList.get(0)
-  while (tokenList.size > 0 && nextToken.type !== TokenTypes.OPERATOR_CLOSE_PARENTHESIS) {
+  while (
+    tokenList.size > 0 &&
+    nextToken.type !== TokenTypes.OPERATOR_CLOSE_PARENTHESIS
+  ) {
     let param
     if (first) {
       first = false
@@ -74,7 +81,8 @@ const createFunctionDelcaration = pipe(
 )
 
 const FunctionDeclaration = {
-  parse: (context, tokenList) => createFunctionDelcaration({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createFunctionDelcaration({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_FUNCTION

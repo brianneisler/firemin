@@ -1,16 +1,22 @@
-import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import { getTokenListPosition } from '../util'
 
 const IfKeyword = {
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
-      throw new Error(`Expected keyword '${Keywords.IF}'. Instead reached the end of the file.`)
+      throw new Error(
+        `Expected keyword '${Keywords.IF}'. Instead reached the end of the file.`
+      )
     }
     if (nextToken.type !== TokenTypes.KEYWORD_IF) {
-      const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
+      const { lastLineCharacterCount, lineCount } = getTokenListPosition(
+        context,
+        tokenList
+      )
       throw new Error(
         `Expected keyword '${Keywords.IF}'. Instead was given '${
           tokenList.get(0).value

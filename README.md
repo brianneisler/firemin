@@ -4,10 +4,15 @@ Firebase Firestore/Storage security rules minifier
 
 ## Project Status
 
+[![license](https://img.shields.io/npm/l/moltres.svg)](https://github.com/brianneisler/moltres/blob/master/LICENSE)
 [![npm version](https://badge.fury.io/js/firemin.svg)](https://badge.fury.io/js/firemin)<br />
 [![Build Status](https://travis-ci.org/brianneisler/firemin.svg)](https://travis-ci.org/brianneisler/firemin)<br />
 [![Code coverage](https://codecov.io/gh/brianneisler/firemin/branch/master/graph/badge.svg)](https://codecov.io/gh/brianneisler/firemin/branch/master/)<br />
 [![NPM](https://nodei.co/npm/firemin.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/firemin/)
+
+## Documentation
+
+[Full API documentation](docs/API.md) - Learn about each method
 
 
 ## why?
@@ -115,4 +120,23 @@ path you can use the `-o` option.
 
 ```sh
 firemin minimie -f ./path/to/my-firestore.rules -o ./output/file/my-firestore.min.rules
+```
+
+## Using Programmatically
+
+You can also use this project programmatically if need be. To do so, simply
+install firemin as a project dependency and then
+import the necessary methods from the firemin package
+
+```sh
+npm install --save firemin
+```
+
+```js
+import { minimize, setupContext } from 'firemin'
+
+const context = setupContext()
+const result = await minimize(context, {
+  filePath: './path/to/firestore.rules'
+})
 ```

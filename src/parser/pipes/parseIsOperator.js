@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import IsOperator from '../nodes/IsOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import IsOperator from '../nodes/IsOperator'
 
 const parseIsOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = IsOperator.parse(context, tokenList)

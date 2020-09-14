@@ -1,6 +1,7 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseBody from '../pipes/parseBody'
 import parseExpression from '../pipes/parseExpression'
 import parseServiceKeyword from '../pipes/parseServiceKeyword'
@@ -27,7 +28,8 @@ const createServiceStatement = pipe(
 )
 
 const ServiceStatement = {
-  parse: (context, tokenList) => createServiceStatement({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createServiceStatement({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_SERVICE

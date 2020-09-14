@@ -5,6 +5,8 @@
   * [function setupContext()](#function-setupcontext)
 - [minimizer](#minimizer)
   * [function minimize()](#function-minimize)
+- [parser](#parser)
+  * [function parse()](#function-parse)
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 <!-- AUTO-GENERATED-CONTENT:START (METHODS) -->
@@ -44,7 +46,7 @@ file path instead of returning a minimize string.</p>
 }}</code> - </p>
 
 **Returns**
-<br /><code>undefined</code>
+<br /><p><code>String | Null</code> - </p>
 
 **Example**
 ```js
@@ -59,6 +61,39 @@ const minimizedStringRules = await minimize(context, {
 await minimize(context, {
   filePath: './path/to/firestore.rules',
   outputFilePath: './path/to/firestore.min.rules'
+})
+```
+<br /><br />
+
+## parser
+
+### function parse()
+
+[source](https://github.com/brianneisler/firemin.git/tree/v0.1.3/src/parser/parse.js#L4)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
+<p>parses the rules file at the given <code>filePath</code> or parse the given <code>string</code>.</p>
+
+**Params**
+<p><code>context</code>: <code>Context</code> - </p>
+<p><code>options</code>: <code>{<br />
+  filePath: String,<br />
+  string: String<br />
+}}</code> - </p>
+
+**Returns**
+<br /><p><code>AST</code> - </p>
+
+**Example**
+```js
+const context = setupContext()
+
+// parse file into an AST
+const ast = await parse(context, {
+  filePath: './path/to/firestore.rules'
+})
+
+// parse string into an AST
+const ast = await minimize(context, {
+  string: someRulesString
 })
 ```
 <br /><br />

@@ -21,6 +21,7 @@ import minimizeTokenList from './minimizeTokenList'
  *   filePath: String,
  *   outputFilePath: String
  * }}} options
+ * @returns {String | Null}
  * @example
  * const context = setupContext()
  *

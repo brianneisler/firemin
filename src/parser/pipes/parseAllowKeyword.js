@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import AllowKeyword from '../nodes/AllowKeyword'
+
 import generateTokenList from '../../generator/generateTokenList'
+import AllowKeyword from '../nodes/AllowKeyword'
 
 const parseAllowKeyword = (props) => {
   const { children, context, tokenList } = props

@@ -1,6 +1,7 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseExpression from '../pipes/parseExpression'
 import parseIfKeyword from '../pipes/parseIfKeyword'
 import parseOptionalSemicolonOperator from '../pipes/parseOptionalSemicolonOperator'
@@ -26,7 +27,8 @@ const createIfStatement = pipe(
 )
 
 const IfStatement = {
-  parse: (context, tokenList) => createIfStatement({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createIfStatement({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_IF

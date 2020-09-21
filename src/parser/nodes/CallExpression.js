@@ -1,13 +1,14 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe } from 'ramda'
-import { findNextRealToken, findNextRealTokenIndex } from '../util'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseArgument from '../pipes/parseArgument'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseCommaOperator from '../pipes/parseCommaOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
 import parseOpenParenthesisOperator from '../pipes/parseOpenParenthesisOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import { findNextRealToken, findNextRealTokenIndex } from '../util'
 
 const parseArgumentAndWhitespace = pipe(
   parseWhitespaceAndComments,
@@ -15,24 +16,37 @@ const parseArgumentAndWhitespace = pipe(
   parseWhitespaceAndComments
 )
 
-const parseCommaArgumentAndWhitespace = pipe(parseCommaOperator, parseArgumentAndWhitespace)
+const parseCommaArgumentAndWhitespace = pipe(
+  parseCommaOperator,
+  parseArgumentAndWhitespace
+)
 
 const parseCommaSeparatedArgs = (props) => {
   let { children, context, tokenList } = props
   let args = []
   let first = true
   let nextToken = tokenList.get(0)
-  while (tokenList.size > 0 && nextToken.type !== TokenTypes.OPERATOR_CLOSE_PARENTHESIS) {
+  while (
+    tokenList.size > 0 &&
+    nextToken.type !== TokenTypes.OPERATOR_CLOSE_PARENTHESIS
+  ) {
     let argument
     if (first) {
       first = false
-      ;({ argument, children, context, tokenList } = parseArgumentAndWhitespace({
+      ;({ argument, children, context, tokenList } = parseArgumentAndWhitespace(
+        {
+          children,
+          context,
+          tokenList
+        }
+      ))
+    } else {
+      ;({
+        argument,
         children,
         context,
         tokenList
-      }))
-    } else {
-      ;({ argument, children, context, tokenList } = parseCommaArgumentAndWhitespace({
+      } = parseCommaArgumentAndWhitespace({
         children,
         context,
         tokenList
@@ -50,10 +64,13 @@ const parseArgs = pipe(
   parseCloseParenthesisOperator
 )
 
-const parseCalleeIdentifier = pipe(parseIdentifier, ({ identifier, ...rest }) => ({
-  ...rest,
-  callee: identifier
-}))
+const parseCalleeIdentifier = pipe(
+  parseIdentifier,
+  ({ identifier, ...rest }) => ({
+    ...rest,
+    callee: identifier
+  })
+)
 
 const parseCallee = (props) => {
   const { children, prevExpression } = props
@@ -94,7 +111,10 @@ const CallExpression = {
       tokenList,
       findNextRealTokenIndex(tokenList) + (prevExpression ? 0 : 1)
     )
-    return operatorToken && operatorToken.type === TokenTypes.OPERATOR_OPEN_PARENTHESIS
+    return (
+      operatorToken &&
+      operatorToken.type === TokenTypes.OPERATOR_OPEN_PARENTHESIS
+    )
   },
   type: ParserTypes.EXPRESSION
 }

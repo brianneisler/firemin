@@ -1,4 +1,5 @@
 import stringToStream from 'string-to-stream'
+
 import tokenizeStream from './tokenizeStream'
 
 const tokenizeString = async (context, string) => {

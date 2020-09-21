@@ -1,13 +1,15 @@
-import { NodeTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { findNextRealToken, parseNextNode, testNextNode } from '../util'
 import { v4 as uuidv4 } from 'uuid'
-import Identifier from './Identifier'
-import Literal from './Literal'
+
+import { NodeTypes, TokenTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
 import parseColonOperator from '../pipes/parseColonOperator'
 import parseExpression from '../pipes/parseExpression'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import { findNextRealToken, parseNextNode, testNextNode } from '../util'
+
+import Identifier from './Identifier'
+import Literal from './Literal'
 
 const START_PARSERS = [Identifier, Literal]
 const parseStartNode = parseNextNode(START_PARSERS)
@@ -52,7 +54,8 @@ const createRange = pipe(
 )
 
 const Range = {
-  parse: (context, tokenList) => createRange({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createRange({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (!prevExpression) {
       if (!testNextNode(START_PARSERS, context, tokenList)) {

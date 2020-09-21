@@ -1,5 +1,6 @@
-import generateTokenList from './generateTokenList'
 import tokenToString from '../token/tokenToString'
+
+import generateTokenList from './generateTokenList'
 
 const generateString = (context, { ast, tokenList }) => {
   if (ast) {

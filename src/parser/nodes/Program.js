@@ -1,6 +1,7 @@
-import { PROGRAM } from '../../constants/NodeTypes'
 import { pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { PROGRAM } from '../../constants/NodeTypes'
 import parseBodyUntil from '../pipes/parseBodyUntil'
 
 const createProgram = pipe(

@@ -1,4 +1,5 @@
 import { curry } from 'ramda'
+
 import { findUnusedFunctions, removeFunctionDeclarations } from '../util'
 
 const removeUnusedFunctions = curry((scopes, ast) => {

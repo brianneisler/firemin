@@ -1,8 +1,14 @@
 import { append, slice } from 'ramda'
-import OpenCurlyBraceOperator from '../nodes/OpenCurlyBraceOperator'
-import generateTokenList from '../../generator/generateTokenList'
 
-const parseOpenCurlyBraceOperator = ({ children, context, tokenList, ...rest }) => {
+import generateTokenList from '../../generator/generateTokenList'
+import OpenCurlyBraceOperator from '../nodes/OpenCurlyBraceOperator'
+
+const parseOpenCurlyBraceOperator = ({
+  children,
+  context,
+  tokenList,
+  ...rest
+}) => {
   const operator = OpenCurlyBraceOperator.parse(context, tokenList)
   const parsedTokenList = generateTokenList(context, { ast: operator })
   return {

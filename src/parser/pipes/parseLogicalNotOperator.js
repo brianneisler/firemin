@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import LogicalNotOperator from '../nodes/LogicalNotOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import LogicalNotOperator from '../nodes/LogicalNotOperator'
 
 const parseLogicalNotOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = LogicalNotOperator.parse(context, tokenList)

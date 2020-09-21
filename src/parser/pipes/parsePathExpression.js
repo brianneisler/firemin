@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import PathExpression from '../nodes/PathExpression'
+
 import generateTokenList from '../../generator/generateTokenList'
+import PathExpression from '../nodes/PathExpression'
 
 const parsePathExpression = (props) => {
   const { children, context, tokenList } = props

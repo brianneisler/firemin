@@ -1,4 +1,5 @@
 import SemicolonOperator from '../nodes/SemicolonOperator'
+
 import parseSemicolonOperator from './parseSemicolonOperator'
 
 const parseOptionalSemicolonOperator = (props) => {

@@ -1,13 +1,15 @@
-import { NodeTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { parseNextNode } from '../util'
 import { v4 as uuidv4 } from 'uuid'
-import Expression from './Expression'
-import Identifier from './Identifier'
-import Literal from './Literal'
+
+import { NodeTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
 import parseColonOperator from '../pipes/parseColonOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import { parseNextNode } from '../util'
+
+import Expression from './Expression'
+import Identifier from './Identifier'
+import Literal from './Literal'
 
 const VALUE_PARSERS = [Expression, Identifier, Literal]
 const parseValueNode = parseNextNode(VALUE_PARSERS)
@@ -47,7 +49,8 @@ const createEntry = pipe(
 )
 
 const Entry = {
-  parse: (context, tokenList) => createEntry({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createEntry({ children: [], context, tokenList }),
   test: () => false
 }
 

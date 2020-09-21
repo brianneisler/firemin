@@ -1,5 +1,6 @@
-import { concat, curry, forEach } from 'ramda'
 import { isObject } from 'lodash'
+import { concat, curry, forEach } from 'ramda'
+
 import { walk } from '../utils'
 
 const astReduceWalkee = (accum, node, keys, iteratee, recur) => {

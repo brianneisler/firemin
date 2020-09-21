@@ -2,7 +2,8 @@ import { keys, omit } from 'ramda'
 
 function toEqualPrintDiff(received, expecteds) {
   const options = {
-    comment: 'Checks for a value equality between two objects and prints a usable diff',
+    comment:
+      'Checks for a value equality between two objects and prints a usable diff',
     isNot: this.isNot,
     promise: this.promise
   }
@@ -19,7 +20,12 @@ function toEqualPrintDiff(received, expecteds) {
   const pass = remainingProps.length === 0
   const message = pass
     ? () =>
-        this.utils.matcherHint('toHaveReturnedTruthyForValues', undefined, undefined, options) +
+        this.utils.matcherHint(
+          'toHaveReturnedTruthyForValues',
+          undefined,
+          undefined,
+          options
+        ) +
         '\n\n' +
         `Expected: ${this.utils.printExpected(expecteds)}\n` +
         `Received: ${this.utils.printReceived(received)}`

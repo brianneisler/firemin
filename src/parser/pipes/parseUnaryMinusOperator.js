@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import UnaryMinusOperator from '../nodes/UnaryMinusOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import UnaryMinusOperator from '../nodes/UnaryMinusOperator'
 
 const parseUnaryMinusOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = UnaryMinusOperator.parse(context, tokenList)

@@ -1,5 +1,7 @@
-import { createReadStream, pathExists } from 'fs-extra'
 import { resolve } from 'path'
+
+import { createReadStream, pathExists } from 'fs-extra'
+
 import tokenizeStream from './tokenizeStream'
 
 const tokenizeFile = async (context, filePath) => {

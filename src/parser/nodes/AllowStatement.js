@@ -1,6 +1,7 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseAllowKeyword from '../pipes/parseAllowKeyword'
 import parseColonOperator from '../pipes/parseColonOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
@@ -35,7 +36,8 @@ const createAllowStatement = pipe(
 )
 
 const AllowStatement = {
-  parse: (context, tokenList) => createAllowStatement({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createAllowStatement({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_ALLOW

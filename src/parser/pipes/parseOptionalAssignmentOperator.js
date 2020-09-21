@@ -1,4 +1,5 @@
 import AssignmentOperator from '../nodes/AssignmentOperator'
+
 import parseAssignmentOperator from './parseAssignmentOperator'
 
 const parseOptionalAssignmentOperator = (props) => {

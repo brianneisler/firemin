@@ -1,6 +1,7 @@
-import { NodeTypes, TokenTypes } from '../../constants'
 import { pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, TokenTypes } from '../../constants'
 import parseBodyUntil from '../pipes/parseBodyUntil'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
 import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
@@ -8,7 +9,8 @@ import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
 const createBlockStatement = pipe(
   parseOpenCurlyBraceOperator,
   parseBodyUntil(
-    ({ tokenList }) => tokenList.get(0).type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE
+    ({ tokenList }) =>
+      tokenList.get(0).type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE
   ),
   parseCloseCurlyBraceOperator,
   ({ body, children }) => ({

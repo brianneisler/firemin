@@ -1,6 +1,7 @@
-import { NodeTypes, TokenTypes } from '../../constants'
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, TokenTypes } from '../../constants'
 
 const Whitespace = {
   parse: (context, tokenList) => {

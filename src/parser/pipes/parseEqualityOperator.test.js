@@ -1,7 +1,9 @@
 import { List } from 'immutable'
+
 import { NodeTypes, OperatorTypes, Operators } from '../../constants'
-import parseEqualityOperator from './parseEqualityOperator'
 import tokenize from '../tokenize'
+
+import parseEqualityOperator from './parseEqualityOperator'
 
 describe('parseEqualityOperator', () => {
   test('returns expected values', async () => {

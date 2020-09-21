@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import DivideOperator from '../nodes/DivideOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import DivideOperator from '../nodes/DivideOperator'
 
 const parseDivideOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = DivideOperator.parse(context, tokenList)

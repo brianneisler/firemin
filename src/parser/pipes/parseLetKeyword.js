@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import LetKeyword from '../nodes/LetKeyword'
+
 import generateTokenList from '../../generator/generateTokenList'
+import LetKeyword from '../nodes/LetKeyword'
 
 const parseLetKeyword = ({ children, context, tokenList, ...rest }) => {
   const keyword = LetKeyword.parse(context, tokenList)

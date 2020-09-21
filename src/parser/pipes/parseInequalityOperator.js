@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import InequalityOperator from '../nodes/InequalityOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import InequalityOperator from '../nodes/InequalityOperator'
 
 const parseInequalityOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = InequalityOperator.parse(context, tokenList)

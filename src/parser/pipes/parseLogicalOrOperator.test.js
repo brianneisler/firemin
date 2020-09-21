@@ -1,14 +1,20 @@
 import { List } from 'immutable'
+
 import { NodeTypes, OperatorTypes, Operators } from '../../constants'
-import parseLogicalOrOperator from './parseLogicalOrOperator'
 import tokenize from '../tokenize'
+
+import parseLogicalOrOperator from './parseLogicalOrOperator'
 
 describe('parseLogicalOrOperator', () => {
   test('returns expected values', async () => {
     const children = []
     const context = { logger: console }
     const tokenList = await tokenize(context, { string: '||' })
-    const result = await parseLogicalOrOperator({ children, context, tokenList })
+    const result = await parseLogicalOrOperator({
+      children,
+      context,
+      tokenList
+    })
 
     const operator = {
       id: expect.any(String),

@@ -1,6 +1,12 @@
-import { NodeTypes, OperatorTypes, ParserTypes, TokenTypes } from '../../constants'
 import { has, pipe } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import {
+  NodeTypes,
+  OperatorTypes,
+  ParserTypes,
+  TokenTypes
+} from '../../constants'
 import parseArgument from '../pipes/parseArgument'
 import parseOperator from '../pipes/parseOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'

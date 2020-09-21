@@ -1,6 +1,7 @@
 import { List } from 'immutable'
-import { NodeTypes } from '../../constants'
+
 import walkReduceAST from '../../ast/walkReduceAST'
+import { NodeTypes } from '../../constants'
 
 const findAllFunctionDeclrations = (ast) =>
   walkReduceAST(

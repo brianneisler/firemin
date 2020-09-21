@@ -1,12 +1,14 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { findNextRealToken, findNextRealTokenIndex } from '../util'
 import { v4 as uuidv4 } from 'uuid'
-import Identifier from './Identifier'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
 import parseDotOperator from '../pipes/parseDotOperator'
 import parseObject from '../pipes/parseObject'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import { findNextRealToken, findNextRealTokenIndex } from '../util'
+
+import Identifier from './Identifier'
 
 const parseStaticProperty = (props) => {
   const { children, context, tokenList } = props

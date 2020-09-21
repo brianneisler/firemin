@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import ReturnKeyword from '../nodes/ReturnKeyword'
+
 import generateTokenList from '../../generator/generateTokenList'
+import ReturnKeyword from '../nodes/ReturnKeyword'
 
 const parseReturnKeyword = ({ children, context, tokenList, ...rest }) => {
   const keyword = ReturnKeyword.parse(context, tokenList)

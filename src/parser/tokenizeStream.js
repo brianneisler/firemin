@@ -1,9 +1,12 @@
-import * as Tokens from './tokens'
 import { List } from 'immutable'
 import { assoc, find, keys, map } from 'ramda'
+
 import { countLinesAndCharacters } from '../utils'
 
+import * as Tokens from './tokens'
+
 const TokenParsers = map((name) => {
+  // eslint-disable-next-line import/namespace
   const TokenParser = Tokens[name]
   TokenParser.name = name
   return TokenParser

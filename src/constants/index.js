@@ -5,4 +5,11 @@ import * as Operators from './Operators'
 import * as ParserTypes from './ParserTypes'
 import * as TokenTypes from './TokenTypes'
 
-export { Keywords, NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes }
+export {
+  Keywords,
+  NodeTypes,
+  OperatorTypes,
+  Operators,
+  ParserTypes,
+  TokenTypes
+}

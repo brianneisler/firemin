@@ -1,7 +1,9 @@
 import { Buffer } from 'buffer'
-import { NodeTypes, TokenTypes } from '../../constants'
+
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, TokenTypes } from '../../constants'
 
 const Literal = {
   parse: (context, tokenList) => {
@@ -13,7 +15,9 @@ const Literal = {
       type: NodeTypes.LITERAL,
       value:
         identifier.type === TokenTypes.BYTES
-          ? Buffer.from(eval(identifier.value.substring(1, identifier.value.length)))
+          ? Buffer.from(
+              eval(identifier.value.substring(1, identifier.value.length))
+            )
           : eval(identifier.value)
     }
   },

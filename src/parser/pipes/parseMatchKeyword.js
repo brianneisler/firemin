@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import MatchKeyword from '../nodes/MatchKeyword'
+
 import generateTokenList from '../../generator/generateTokenList'
+import MatchKeyword from '../nodes/MatchKeyword'
 
 const parseMatchKeyword = ({ children, context, tokenList, ...rest }) => {
   const keyword = MatchKeyword.parse(context, tokenList)

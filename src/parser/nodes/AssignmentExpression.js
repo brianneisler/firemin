@@ -1,12 +1,14 @@
-import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { findNextRealToken, findNextRealTokenIndex } from '../util'
 import { v4 as uuidv4 } from 'uuid'
-import Identifier from './Identifier'
+
+import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
 import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
 import parseRight from '../pipes/parseRight'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import { findNextRealToken, findNextRealTokenIndex } from '../util'
+
+import Identifier from './Identifier'
 
 // NOTE BRN: The left of an AssignmentExpression MUST be an identifier
 const parseLeft = (props) => {
@@ -66,7 +68,9 @@ const AssignmentExpression = {
       tokenList,
       findNextRealTokenIndex(tokenList) + (prevExpression ? 0 : 1)
     )
-    return operatorToken && operatorToken.type === TokenTypes.OPERATOR_ASSIGNMENT
+    return (
+      operatorToken && operatorToken.type === TokenTypes.OPERATOR_ASSIGNMENT
+    )
   },
 
   // NOTE BRN: The first token of a Statement cannot be Whitespace or a Comment

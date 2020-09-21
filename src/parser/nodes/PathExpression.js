@@ -1,11 +1,13 @@
-import { NodeTypes, ParserTypes } from '../../constants'
 import { append, pipe, slice } from 'ramda'
-import { parseNextNode, testNextNode } from '../util'
 import { v4 as uuidv4 } from 'uuid'
+
+import { NodeTypes, ParserTypes } from '../../constants'
+import generateTokenList from '../../generator/generateTokenList'
+import { parseNextNode, testNextNode } from '../util'
+
 import PathPartExpression from './PathPartExpression'
 import PathPartVariable from './PathPartVariable'
 import PathPartWord from './PathPartWord'
-import generateTokenList from '../../generator/generateTokenList'
 
 const PATH_PART_PARSERS = [PathPartExpression, PathPartVariable, PathPartWord]
 const parsePathPartNode = parseNextNode(PATH_PART_PARSERS)
@@ -41,7 +43,8 @@ const createPathExpression = pipe(parsePath, ({ children, path }) => ({
 }))
 
 const PathExpression = {
-  parse: (context, tokenList) => createPathExpression({ children: [], context, tokenList }),
+  parse: (context, tokenList) =>
+    createPathExpression({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) =>
     testNextNode(PATH_PART_PARSERS, context, tokenList, prevExpression),
   type: ParserTypes.EXPRESSION

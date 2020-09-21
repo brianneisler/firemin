@@ -1,6 +1,7 @@
 function toThrowMatchingObject(func, expected) {
   const options = {
-    comment: 'Expects the function to throw an value that matches the given object',
+    comment:
+      'Expects the function to throw an value that matches the given object',
     isNot: this.isNot,
     promise: this.promise
   }
@@ -21,12 +22,22 @@ function toThrowMatchingObject(func, expected) {
 
   const message = pass
     ? () =>
-        this.utils.matcherHint('toThrowMatchingObject', undefined, undefined, options) +
+        this.utils.matcherHint(
+          'toThrowMatchingObject',
+          undefined,
+          undefined,
+          options
+        ) +
         '\n\n' +
         `Expected: ${this.utils.printExpected(expected)}\n` +
         `Received: ${this.utils.printReceived(received)}`
     : () =>
-        this.utils.matcherHint('toThrowMatchingObject', undefined, undefined, options) +
+        this.utils.matcherHint(
+          'toThrowMatchingObject',
+          undefined,
+          undefined,
+          options
+        ) +
         '\n\n' +
         `Expected: ${this.utils.printExpected(expected)}\n` +
         'Received function did not throw'

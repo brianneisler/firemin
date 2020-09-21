@@ -1,6 +1,6 @@
 module.exports = {
   arrowParens: 'always',
-  printWidth: 100,
+  printWidth: 80,
   semi: false,
   singleQuote: true,
   tabWidth: 2,

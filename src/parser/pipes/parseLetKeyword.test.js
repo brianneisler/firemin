@@ -1,7 +1,9 @@
-import { Keywords, NodeTypes } from '../../constants'
 import { List } from 'immutable'
-import parseLetKeyword from './parseLetKeyword'
+
+import { Keywords, NodeTypes } from '../../constants'
 import tokenize from '../tokenize'
+
+import parseLetKeyword from './parseLetKeyword'
 
 describe('parseLetKeyword', () => {
   test('returns expected values', async () => {

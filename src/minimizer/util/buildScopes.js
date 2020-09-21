@@ -1,10 +1,15 @@
-import { NodeTypes } from '../../constants'
 import { isObject } from 'lodash'
 import { reduce } from 'ramda'
+
+import { NodeTypes } from '../../constants'
+
 import newScope from './newScope'
 
 const buildScopes = (scopes, currentScope, node) => {
-  if (node.type === NodeTypes.PROGRAM || node.type === NodeTypes.BLOCK_STATEMENT) {
+  if (
+    node.type === NodeTypes.PROGRAM ||
+    node.type === NodeTypes.BLOCK_STATEMENT
+  ) {
     currentScope = newScope(currentScope)
   }
   // NOTE BRN: Record all functions by name

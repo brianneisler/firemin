@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import IfStatement from '../nodes/IfStatement'
+
 import generateTokenList from '../../generator/generateTokenList'
+import IfStatement from '../nodes/IfStatement'
 
 const parseIfStatement = ({ children, context, tokenList, ...rest }) => {
   const statement = IfStatement.parse(context, tokenList)

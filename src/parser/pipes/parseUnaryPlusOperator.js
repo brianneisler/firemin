@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import UnaryPlusOperator from '../nodes/UnaryPlusOperator'
+
 import generateTokenList from '../../generator/generateTokenList'
+import UnaryPlusOperator from '../nodes/UnaryPlusOperator'
 
 const parseUnaryPlusOperator = ({ children, context, tokenList, ...rest }) => {
   const operator = UnaryPlusOperator.parse(context, tokenList)

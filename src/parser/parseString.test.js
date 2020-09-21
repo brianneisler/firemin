@@ -1,6 +1,8 @@
 import { List } from 'immutable'
+
 import { NodeTypes, OperatorTypes } from '../constants'
 import generateString from '../generator/generateString'
+
 import parseString from './parseString'
 
 describe('parseString', () => {
@@ -456,7 +458,9 @@ describe('parseString', () => {
   test('throws when missing identifier for LetDeclaration', async () => {
     const code = 'let = true;'
     const context = { logger: console }
-    expect(parseString(context, code)).rejects.toEqual(new Error('Expected Identifier'))
+    expect(parseString(context, code)).rejects.toEqual(
+      new Error('Expected Identifier')
+    )
   })
 
   test('parses an empty ListExpression "[];"', async () => {

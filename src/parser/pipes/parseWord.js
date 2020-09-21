@@ -1,6 +1,7 @@
 import { append, slice } from 'ramda'
-import Word from '../nodes/Word'
+
 import generateTokenList from '../../generator/generateTokenList'
+import Word from '../nodes/Word'
 
 const parseWord = (props) => {
   const { children, context, tokenList } = props

@@ -1,26 +1,51 @@
 language: node_js
-version: 1.0
 sudo: false
+
 node_js:
+- 14
 - 12
 - 10
+
 os:
 - linux
 - osx
 - windows
+
 install:
 - npm run setup
+
 script:
-- npm run lint
 - npm run test:ci
-deploy:
-  edge: true
-  provider: npm
-  email: me@brianneisler.com
-  skip_cleanup: true
-  on:
-    branch: master
-    tags: true
-    repo: brianneisler/firemin
-  api_key:
-    secure: Yzfa+tfgEQlJOEJ0yH8DhwKIO9f9Z+gLD52G62lMf7UyA/OU5BtzhMR9mEvVfYU1X9f6X0JyqJZwbKUtiRjFNsJ/omEEt9RwkOzEiCK5r0g1sVl080ybheoxr1TRRHogdx2DDDh1t0X+GKdHNQKgm+HRmYNhXZVS+Nl1bcwYOLl4JQlZFvWMfQ4UtPev+Y0PgckSBPwDAuJXOKAp2OXlAGP/woV1Q7JX+YhEh66uEVPjQ0U6SW4wSz9mXBbYgIF46EaLCSGw8JTxl+NbWg9RGyVZKS7CjXb7pZqs9hNEvdWizzmlnuP6olWpiYOeVy9upCmgYJ+Svj2WoYYe60YKMnV1yqPmINHGI39UTHeNFVhe9yTF2u5URtxo5sKZAdLu4zEq4OrVDymdIkFhjuO853+yEFEso1PWDxob4UxvtO5JXLt7cTZMzu5wm7QUgtpjfQUjecoc8WcwH+MDje+2/3ik9cx7mSf8ice5lNdmQGAC09MkzHVH5rQQDbwOVfxP/1IARvCBQW6cW6Z8MBaKnFOpYzmvUppO+/k2MnYCCxR7lZuLhlAqqvYhrw5dQliYHw4J7ERK/eKiKxV898TgRfb9ABK33MvuQNAqhAkQoGy84WjxFoOBpGH6DUeL08LLXYkLWXi/NufCqCDGSId2bRZp+TungMeQUyxtA1zOlvc=
+
+stages:
+- audit
+- lint
+- test
+- name: deploy
+  if: tag=~^v AND repo=brianneisler/firemin
+
+jobs:
+  include:
+  - stage: audit
+    node_js: 14
+    os: linux
+    script: npm run security:audit
+  - stage: lint
+    node_js: 14
+    os: linux
+    script: npm run lint
+  - stage: deploy
+    node_js: 14
+    os: linux
+    script: echo "Deploying to npm ..."
+    deploy:
+      provider: npm
+      skip_cleanup: true
+      email: me@brianneisler.com
+      api_key: "$NPM_TOKEN"
+      on:
+        tags: true
+
+env:
+  global:
+    secure: Xo7UinKqo0N68mQwo7mKceh0b51HBLMgSneG4avWuTrOPoo6MUQJE2VWaBF3eE3O74mPR1Fj/slpyPkiHwPDMU1AA+bqHUN0kTrsAikhEzqSYW8PWMwkBGtEYuxmUpY2Y/3aFnZ4IFMNeqYhkBq7n/66sWoIO7ue52mW1XjwIx+UEAGQEj62GKpZ4Y4LhmyMqTaZoxUPNhjXx0wshOO5lwxqFy/hUoOS+Taxt/aKk+jfSyzLcUedP73mY+gFh/0m0GBQBNCprwY6lt0gsy2K8hazcesitCBifCfz7BVK27j1pci3XUp83mvCXAHG0eC/F1mQzCVlsCyV0ighUhNvMjBsUsM5EpvKOVzQiGfjyVBX8gveWnBlXl7/m0AMjDNJ8dmQLu3sIlpRv4pi9toqXV8NVMDQgRANpa3k1XvvXbvQtXCWUIlJ/DMptl04KlFOJSDswYCenqZ58M9+aqdzDz+RBP22/onatkF0TcZ28Dtix7bhOX08VLQ2HPXgZ0Wq/EyvJhM2GdLSzNTOX6vPmugBhdruuzLmwJENHjs7WdK4bUhjfTJZTnDi7XE2Du2ctlTvlEcsUtU1+qQGIRUZhXgQ8GsE56tpYcOld8wbxaTELDm/OPuBC6MP192RRmw3WwW8vJiOTjYs3kCO1hcfQ3VqU0TDlOUJFet3HBjYz5o=

@@ -1,7 +1,14 @@
-import { NodeTypes, OperatorTypes, Operators, ParserTypes, TokenTypes } from '../../constants'
-import { getTokenListPosition } from '../util'
 import { slice } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
+
+import {
+  NodeTypes,
+  OperatorTypes,
+  Operators,
+  ParserTypes,
+  TokenTypes
+} from '../../constants'
+import { getTokenListPosition } from '../util'
 
 const OpenBracketOperator = {
   parse: (context, tokenList) => {
@@ -12,7 +19,10 @@ const OpenBracketOperator = {
       )
     }
     if (nextToken.type !== TokenTypes.OPERATOR_OPEN_BRACKET) {
-      const { lastLineCharacterCount, lineCount } = getTokenListPosition(context, tokenList)
+      const { lastLineCharacterCount, lineCount } = getTokenListPosition(
+        context,
+        tokenList
+      )
       throw new Error(
         `Expected operator '${Operators.OPEN_BRACKET}'. Instead was given '${
           tokenList.get(0).value
@@ -27,7 +37,8 @@ const OpenBracketOperator = {
       value: nextToken.value
     }
   },
-  test: (context, tokenList) => tokenList.get(0).type === TokenTypes.OPERATOR_OPEN_BRACKET,
+  test: (context, tokenList) =>
+    tokenList.get(0).type === TokenTypes.OPERATOR_OPEN_BRACKET,
   type: ParserTypes.OPERATOR
 }
 

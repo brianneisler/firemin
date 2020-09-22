@@ -47,6 +47,9 @@ const createAssignmentExpression = pipe(
 )
 
 const AssignmentExpression = {
+  // TODO BRN: Might be able to insert methods here for assoc, remove, etc
+  // these methods would need to recalculate the values of the node. This is not
+  // the same as an original parse, instead,
   parse: (context, tokenList, prevExpression = null) =>
     createAssignmentExpression({
       children: [],

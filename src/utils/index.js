@@ -1,2 +1,7 @@
+export { default as cacheChain } from './cacheChain'
 export { default as countLinesAndCharacters } from './countLinesAndCharacters'
+export { default as functionDefineLength } from './functionDefineLength'
+export { default as update } from './update'
 export { default as walk } from './walk'
+export { default as weakMemoize } from './weakMemoize'
+export { default as weakMemoizeWith } from './weakMemoizeWith'

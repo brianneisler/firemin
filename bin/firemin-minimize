@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-const { minimize, setupContext } = require('../index.module')
 const { resolve } = require('path')
+
 const program = require('commander')
 const pino = require('pino')
+
+const { minimize, setupContext } = require('../index.bin')
 
 program
   .description('minimize a firebase firestore rules file')

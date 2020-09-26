@@ -2,6 +2,12 @@ FOCUS
 - Bug fixing
 - Minimizer optmizations
 
+
+TASK
+- [ ] add `is` methods to Nodes
+- [ ] add `createX` methods
+- [ ] add `identify` methods to Nodes 
+
 FEATURES
 - [ ] Collapse single use functions
 - [ ] Replace function names and function parameter names with shorter single character names

@@ -3,14 +3,9 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import parseBody from '../pipes/parseBody'
-import parseExpression from '../pipes/parseExpression'
+import parseName from '../pipes/parseName'
 import parseServiceKeyword from '../pipes/parseServiceKeyword'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
-
-const parseName = pipe(parseExpression, ({ expression, ...rest }) => ({
-  ...rest,
-  name: expression
-}))
 
 const createServiceStatement = pipe(
   parseServiceKeyword,

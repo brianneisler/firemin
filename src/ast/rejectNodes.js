@@ -1,18 +1,11 @@
-import { reject } from 'ramda'
+import { curry, pipe, reject } from 'ramda'
 
-import { NodeTypes } from '../constants'
 import { update } from '../utils'
 
-const rejectNodes = (predicate, node) => {
-  node = update('children', reject(predicate), node)
-  if (
-    node.type === NodeTypes.PROGRAM ||
-    node.type === NodeTypes.BLOCK_STATEMENT ||
-    node.type === NodeTypes.MATCH_STATEMENT
-  ) {
-    node = update('body', reject(predicate), node)
-  }
-  return node
-}
+import identifyNode from './identifyNode'
+
+const rejectNodes = curry((context, predicate, node) =>
+  pipe(update('children', reject(predicate)), identifyNode(context))(node)
+)
 
 export default rejectNodes

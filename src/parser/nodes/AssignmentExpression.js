@@ -1,11 +1,15 @@
 import { append, pipe, slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
+import createAssignmentExpression from '../pipes/createAssignmentExpression'
+import identifyAssignmentOperator from '../pipes/identifyAssignmentOperator'
+import identifyLeftIdentifier from '../pipes/identifyLeftIdentifier'
+import identifyRight from '../pipes/identifyRight'
 import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
 import parseRight from '../pipes/parseRight'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
 
 import Identifier from './Identifier'
@@ -30,28 +34,38 @@ const parseLeft = (props) => {
   }
 }
 
-const createAssignmentExpression = pipe(
+const parseAssignmentExpressionTokens = pipe(
   parseLeft,
   parseWhitespaceAndComments,
   parseAssignmentOperator,
   parseWhitespaceAndComments,
   parseRight,
-  ({ children, left, operator, right }) => ({
-    children,
-    id: uuidv4(),
-    left,
-    operator,
-    right,
-    type: NodeTypes.ASSIGNMENT_EXPRESSION
-  })
+  createAssignmentExpression
+)
+
+const identifyAssignmentExpressionChildren = pipe(
+  identifyLeftIdentifier,
+  skipWhitespaceAndComments,
+  identifyAssignmentOperator,
+  skipWhitespaceAndComments,
+  identifyRight
 )
 
 const AssignmentExpression = {
+  identify: (context, node) =>
+    createAssignmentExpression({
+      ...identifyAssignmentExpressionChildren({
+        children: node.children,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.ASSIGNMENT_EXPRESSION,
   // TODO BRN: Might be able to insert methods here for assoc, remove, etc
   // these methods would need to recalculate the values of the node. This is not
   // the same as an original parse, instead,
   parse: (context, tokenList, prevExpression = null) =>
-    createAssignmentExpression({
+    parseAssignmentExpressionTokens({
       children: [],
       context,
       prevExpression,

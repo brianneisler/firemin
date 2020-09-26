@@ -7,7 +7,7 @@ import { weakMemoize } from '../../utils'
 import findAllFunctionDeclrations from './findAllFunctionDeclarations'
 import getFunctionDeclarationByNameInScope from './getFunctionDeclarationByNameInScope'
 
-const countFunctionUses = weakMemoize((scopes, ast) => {
+const countFunctionUses = weakMemoize(({ scopes }, ast) => {
   const functionDeclarations = findAllFunctionDeclrations(ast)
   return walkReduceTree(
     (accum, node) => {

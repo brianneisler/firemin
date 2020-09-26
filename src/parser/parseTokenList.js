@@ -5,32 +5,32 @@ import { ParserTypes } from '../constants'
 import * as Nodes from './nodes'
 import { Program } from './nodes'
 
-const NodeParsers = map((name) => {
+const NamedNodes = map((name) => {
   // eslint-disable-next-line import/namespace
-  const NodeParser = Nodes[name]
-  NodeParser.name = name
-  return NodeParser
+  const Node = Nodes[name]
+  Node.name = name
+  return Node
 }, keys(Nodes))
 
 const Declarations = filter(
   (parser) => parser.type === ParserTypes.DECLARATION,
-  values(NodeParsers)
+  values(NamedNodes)
 )
 const Expressions = filter(
   (parser) => parser.type === ParserTypes.EXPRESSION,
-  values(NodeParsers)
+  values(NamedNodes)
 )
 const Keywords = filter(
   (parser) => parser.type === ParserTypes.KEYWORD,
-  values(NodeParsers)
+  values(NamedNodes)
 )
 const Operators = filter(
   (parser) => parser.type === ParserTypes.OPERATOR,
-  values(NodeParsers)
+  values(NamedNodes)
 )
 const Statements = filter(
   (parser) => parser.type === ParserTypes.STATEMENT,
-  values(NodeParsers)
+  values(NamedNodes)
 )
 
 const parseTokenList = (context, tokenList) => {

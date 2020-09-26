@@ -11,6 +11,11 @@ import {
 import { getTokenListPosition } from '../util'
 
 const CloseBracketOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.OPERATOR &&
+    value.operatorType === OperatorTypes.CLOSE_BRACKET,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {

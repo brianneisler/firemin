@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { reduce } from 'ramda'
+import { curry, reduce } from 'ramda'
 
 import {
   buildScopes,
@@ -7,22 +7,27 @@ import {
   findSingleUseFunctions
 } from '../util'
 
-const collapseSingleUseFunctions = (ast) => {
-  const singleUseFunctionIdMap = findSingleUseFunctions(
-    buildScopes(Map(), null, ast),
-    ast
-  )
+const collapseSingleUseFunctions = curry((context, ast) => {
+  context = {
+    ...context,
+    scopes: buildScopes(Map(), null, ast)
+  }
+  const singleUseFunctionIdMap = findSingleUseFunctions(context, ast)
   return reduce(
     (accum, functionId) =>
       collapseFunctionDeclaration(
-        // NOTE BRN: Need to rebuild the scopes after every
-        buildScopes(Map(), null, accum),
+        // NOTE BRN: Need to rebuild the scopes after every function collapse
+        // since the scopes will have changed as a result of the collapse
+        {
+          ...context,
+          scopes: buildScopes(Map(), null, accum)
+        },
         accum,
         functionId
       ),
     ast,
     singleUseFunctionIdMap.keys()
   )
-}
+})
 
 export default collapseSingleUseFunctions

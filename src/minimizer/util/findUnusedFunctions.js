@@ -1,7 +1,7 @@
 import countFunctionUses from './countFunctionUses'
 
-const findUnusedFunctions = (scopes, ast) => {
-  const functionUses = countFunctionUses(scopes, ast)
+const findUnusedFunctions = (context, ast) => {
+  const functionUses = countFunctionUses(context, ast)
   return functionUses.filter((used) => !used)
 }
 

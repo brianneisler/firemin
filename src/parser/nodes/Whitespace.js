@@ -1,15 +1,20 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, TokenTypes } from '../../constants'
+import createWhitespace from '../pipes/createWhitespace'
 
 const Whitespace = {
+  is: (value) => value && value.type === NodeTypes.WHITESPACE,
   parse: (context, tokenList) => {
-    return {
-      id: uuidv4(),
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.WHITESPACE
+    const nextToken = tokenList.get(0)
+    if (!nextToken) {
+      throw new Error(
+        `Expected whitespace . Instead reached the end of the file.`
+      )
     }
+    return createWhitespace({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) => tokenList.get(0).type === TokenTypes.WHITESPACE
 }

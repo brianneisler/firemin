@@ -2,12 +2,12 @@ import { propEq } from 'ramda'
 
 import { assocNodePath, findNodeInTree, findNodePathInTree } from '../../ast'
 import { NodeTypes } from '../../constants'
-import { update } from '../../utils'
 
 import getCallExpressionByNameInScope from './getCallExpressionByNameInScope'
 import replaceParamsWithArgs from './replaceParamsWithArgs'
 
-const collapseFunctionDeclaration = (scopes, ast, functionId) => {
+const collapseFunctionDeclaration = (context, ast, functionId) => {
+  const { scopes } = context
   const functionDeclaration = findNodeInTree(propEq('id', functionId), ast)
 
   // TODO BRN: Add support for function bodies that are more than one line long
@@ -32,6 +32,7 @@ const collapseFunctionDeclaration = (scopes, ast, functionId) => {
 
   if (functionDeclaration.params.length > 0) {
     statement = replaceParamsWithArgs(
+      context,
       statement,
       functionDeclaration.params,
       callExpression.args
@@ -50,7 +51,7 @@ const collapseFunctionDeclaration = (scopes, ast, functionId) => {
 
   // TODO BRN: This will not update any node where the callExpression is
   // embedded within an expression
-  return assocNodePath(callExpressionPath, statement, ast)
+  return assocNodePath(context, callExpressionPath, statement, ast)
 }
 
 export default collapseFunctionDeclaration

@@ -1,7 +1,7 @@
 import countFunctionUses from './countFunctionUses'
 
-const findSingleUseFunctions = (scopes, ast) => {
-  const functionUseCounts = countFunctionUses(scopes, ast)
+const findSingleUseFunctions = (context, ast) => {
+  const functionUseCounts = countFunctionUses(context, ast)
   return functionUseCounts.filter((count) => count === 1)
 }
 

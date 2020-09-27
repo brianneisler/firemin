@@ -1,17 +1,10 @@
-import { tail } from 'ramda'
+import { pipe } from 'ramda'
 
-import Expression from '../nodes/Expression'
-import Identifier from '../nodes/Identifier'
-import Literal from '../nodes/Literal'
-import { identifyNextNode } from '../util'
+import identifyExpression from './identifyExpression'
 
-const RIGHT_IDENTIFIERS = [Expression, Identifier, Literal]
-const identifyRightNode = identifyNextNode(RIGHT_IDENTIFIERS)
-
-const identifyRight = ({ children, context, ...rest }) => {
-  const right = identifyRightNode(context, children)
-  children = tail(children)
-  return { ...rest, children, context, right }
-}
+const identifyRight = pipe(identifyExpression, ({ expression, ...rest }) => ({
+  ...rest,
+  right: expression
+}))
 
 export default identifyRight

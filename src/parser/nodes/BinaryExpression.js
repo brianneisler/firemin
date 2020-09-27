@@ -64,7 +64,7 @@ const BinaryExpression = {
   identify: (context, node) =>
     createBinaryExpression({
       ...identifyBinaryExpressionChildren({
-        children: node.children,
+        ...node,
         context
       }),
       children: node.children

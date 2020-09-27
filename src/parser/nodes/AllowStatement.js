@@ -37,7 +37,7 @@ const identifyAllowStatementChildren = pipe(
 const AllowStatement = {
   identify: (context, node) =>
     createAllowStatement({
-      ...identifyAllowStatementChildren({ children: node.children, context }),
+      ...identifyAllowStatementChildren({ ...node, context }),
       children: node.children
     }),
   is: (value) => value && value.type === NodeTypes.ALLOW_STATEMENT,

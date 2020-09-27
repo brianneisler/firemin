@@ -2,7 +2,10 @@ import { pipe } from 'ramda'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
 import createConditionalExpression from '../pipes/createConditionalExpression'
+import expectColonOperator from '../pipes/expectColonOperator'
 import expectQuestionMarkOperator from '../pipes/expectQuestionMarkOperator'
+import identifyAlternate from '../pipes/identifyAlternate'
+import identifyConsequent from '../pipes/identifyConsequent'
 import identifyTest from '../pipes/identifyTest'
 import parseAlternate from '../pipes/parseAlternate'
 import parseColonOperator from '../pipes/parseColonOperator'
@@ -51,7 +54,7 @@ const ConditionalExpression = {
   identify: (context, node) =>
     createConditionalExpression({
       ...identifyConditionalExpressionChildren({
-        children: node.children,
+        ...node,
         context
       }),
       children: node.children

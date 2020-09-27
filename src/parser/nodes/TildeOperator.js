@@ -1,5 +1,4 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -8,9 +7,15 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createTildeOperator from '../pipes/createTildeOperator'
 import { getTokenListPosition } from '../util'
 
 const TildeOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.OPERATOR &&
+    value.operatorType === OperatorTypes.TILDE,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -29,13 +34,9 @@ const TildeOperator = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      operatorType: OperatorTypes.TILDE,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.OPERATOR,
-      value: nextToken.value
-    }
+    return createTildeOperator({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) =>
     tokenList.get(0).type === TokenTypes.OPERATOR_TILDE,

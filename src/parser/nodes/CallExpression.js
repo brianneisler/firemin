@@ -27,7 +27,7 @@ const CallExpression = {
   identify: (context, node) =>
     createCallExpression({
       ...identifyCallExpressionChildren({
-        children: node.children,
+        ...node,
         context
       }),
       children: node.children

@@ -1,4 +1,4 @@
-import { tail } from 'ramda'
+import { head, tail } from 'ramda'
 
 import Expression from '../nodes/Expression'
 import Identifier from '../nodes/Identifier'
@@ -8,7 +8,8 @@ const LEFT_IDENTIFIER_IDENTIFIERS = [Expression, Identifier]
 const identifyLeftIdentifierNode = identifyNextNode(LEFT_IDENTIFIER_IDENTIFIERS)
 
 const identifyLeftIdentifier = ({ children, context, ...rest }) => {
-  const left = identifyLeftIdentifierNode(context, children)
+  const nextChild = head(children)
+  const left = identifyLeftIdentifierNode(context, nextChild)
   children = tail(children)
   return { ...rest, children, context, left }
 }

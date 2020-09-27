@@ -1,72 +1,46 @@
-import { append, pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
+import { pipe } from 'ramda'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createMapExpression from '../pipes/createMapExpression'
+import expectCloseCurlyBraceOperator from '../pipes/expectCloseCurlyBraceOperator'
+import expectOpenCurlyBraceOperator from '../pipes/expectOpenCurlyBraceOperator'
+import identifyEntries from '../pipes/identifyEntries'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
-import parseCommaOperator from '../pipes/parseCommaOperator'
-import parseEntry from '../pipes/parseEntry'
+import parseEntries from '../pipes/parseEntries'
 import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
 
-const parseEntryAndWhitespace = pipe(
-  parseWhitespaceAndComments,
-  parseEntry,
-  parseWhitespaceAndComments
-)
-
-const parseCommaEntryAndWhitespace = pipe(
-  parseCommaOperator,
-  parseEntryAndWhitespace
-)
-
-const parseEntries = (props) => {
-  let { children, context, tokenList } = props
-  let entries = []
-  let first = true
-  let nextToken = tokenList.get(0)
-  while (
-    tokenList.size > 0 &&
-    nextToken.type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE
-  ) {
-    let entry
-    if (first) {
-      first = false
-      ;({ children, context, entry, tokenList } = parseEntryAndWhitespace({
-        children,
-        context,
-        tokenList
-      }))
-    } else {
-      ;({ children, context, entry, tokenList } = parseCommaEntryAndWhitespace({
-        children,
-        context,
-        tokenList
-      }))
-    }
-    entries = append(entry, entries)
-    nextToken = tokenList.get(0)
-  }
-  return { ...props, children, context, entries, tokenList }
-}
-
-const createMapExpression = pipe(
+const parseMapExpressionTokens = pipe(
   parseOpenCurlyBraceOperator,
   parseWhitespaceAndComments,
   parseEntries,
   parseWhitespaceAndComments,
   parseCloseCurlyBraceOperator,
-  ({ children, entries }) => ({
-    children,
-    entries,
-    id: uuidv4(),
-    type: NodeTypes.MAP_EXPRESSION
-  })
+  createMapExpression
+)
+
+const identifyMapExpressionChildren = pipe(
+  expectOpenCurlyBraceOperator,
+  skipWhitespaceAndComments,
+  identifyEntries,
+  skipWhitespaceAndComments,
+  expectCloseCurlyBraceOperator
 )
 
 const MapExpression = {
+  identify: (context, node) =>
+    createMapExpression({
+      ...identifyMapExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.MAP_EXPRESSION,
   parse: (context, tokenList) =>
-    createMapExpression({ children: [], context, tokenList }),
+    parseMapExpressionTokens({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (prevExpression) {
       return false

@@ -6,12 +6,13 @@ const createConditionalExpression = ({
   alternate,
   children,
   consequent,
+  id,
   test
 }) => ({
   alternate,
   children,
   consequent,
-  id: uuidv4(),
+  id: id || uuidv4(),
   test,
   type: NodeTypes.CONDITIONAL_EXPRESSION
 })

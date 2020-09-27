@@ -1,7 +1,11 @@
 import { pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, TokenTypes } from '../../constants'
+import createPathPartVariable from '../pipes/createPathPartVariable'
+import expectCloseCurlyBraceOperator from '../pipes/expectCloseCurlyBraceOperator'
+import expectDivideOperator from '../pipes/expectDivideOperator'
+import expectOpenCurlyBraceOperator from '../pipes/expectOpenCurlyBraceOperator'
+import identifyIdentifier from '../pipes/identifyIdentifier'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
 import parseDivideOperator from '../pipes/parseDivideOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
@@ -9,8 +13,11 @@ import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
 import parseOptionalAssignmentOperator from '../pipes/parseOptionalAssignmentOperator'
 import parseOptionalMultiplyOperator from '../pipes/parseOptionalMultiplyOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipAssignmentOperator from '../pipes/skipAssignmentOperator'
+import skipMultiplyOperator from '../pipes/skipMultiplyOperator'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 
-const createPathPartVariable = pipe(
+const parsePathPartVariableTokens = pipe(
   parseDivideOperator,
   parseOpenCurlyBraceOperator,
   parseWhitespaceAndComments,
@@ -20,17 +27,33 @@ const createPathPartVariable = pipe(
   parseOptionalMultiplyOperator,
   parseWhitespaceAndComments,
   parseCloseCurlyBraceOperator,
-  ({ children, identifier }) => ({
-    children,
-    id: uuidv4(),
-    identifier,
-    type: NodeTypes.PATH_PART_VARIABLE
-  })
+  createPathPartVariable
+)
+
+const identifyPathPartVariableChildren = pipe(
+  expectDivideOperator,
+  expectOpenCurlyBraceOperator,
+  skipWhitespaceAndComments,
+  identifyIdentifier,
+  skipAssignmentOperator,
+  skipMultiplyOperator,
+  skipMultiplyOperator,
+  skipWhitespaceAndComments,
+  expectCloseCurlyBraceOperator
 )
 
 const PathPartVariable = {
+  identify: (context, node) =>
+    createPathPartVariable({
+      ...identifyPathPartVariableChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.PATH_PART_VARIABLE,
   parse: (context, tokenList) =>
-    createPathPartVariable({ children: [], context, tokenList }),
+    parsePathPartVariableTokens({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (prevExpression) {
       // In this case, it's a CallExpression

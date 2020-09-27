@@ -1,10 +1,13 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createMatchKeyword from '../pipes/createMatchKeyword'
 import { getTokenListPosition } from '../util'
 
 const MatchKeyword = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value && value.type === NodeTypes.KEYWORD && value.name === Keywords.MATCH,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -23,12 +26,9 @@ const MatchKeyword = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      name: Keywords.MATCH,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.KEYWORD
-    }
+    return createMatchKeyword({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)

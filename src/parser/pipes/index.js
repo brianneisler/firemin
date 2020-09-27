@@ -5,6 +5,7 @@ export { default as createAssignmentExpression } from './createAssignmentExpress
 export { default as createAssignmentOperator } from './createAssignmentOperator'
 export { default as createAtSignOperator } from './createAtSignOperator'
 export { default as createBackwardSlashOperator } from './createBackwardSlashOperator'
+export { default as createCloseBracketOperator } from './createCloseBracketOperator'
 export { default as createComment } from './createComment'
 export { default as createComputedMemberExpression } from './createComputedMemberExpression'
 export { default as createConditionalExpression } from './createConditionalExpression'

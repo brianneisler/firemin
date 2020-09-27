@@ -2,10 +2,10 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes } from '../../constants'
 
-const createBlockStatement = ({ body, children }) => ({
+const createBlockStatement = ({ body, children, id }) => ({
   body,
   children,
-  id: uuidv4(),
+  id: id || uuidv4(),
   type: NodeTypes.BLOCK_STATEMENT
 })
 

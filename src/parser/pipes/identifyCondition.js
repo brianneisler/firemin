@@ -1,16 +1,13 @@
-import { head, tail } from 'ramda'
+import { pipe } from 'ramda'
 
-import IfStatement from '../nodes/IfStatement'
-import { identifyNextNode } from '../util'
+import identifyIfStatement from './identifyIfStatement'
 
-const CONDITION_IDENTIFIERS = [IfStatement]
-const identifyConditionNode = identifyNextNode(CONDITION_IDENTIFIERS)
-
-const identifyCondition = ({ children, context, ...rest }) => {
-  const nextChild = head(children)
-  const condition = identifyConditionNode(context, nextChild)
-  children = tail(children)
-  return { ...rest, children, condition, context }
-}
+const identifyCondition = pipe(
+  identifyIfStatement,
+  ({ statement, ...rest }) => ({
+    ...rest,
+    condition: statement
+  })
+)
 
 export default identifyCondition

@@ -2,9 +2,15 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes } from '../../constants'
 
-const createAssignmentExpression = ({ children, left, operator, right }) => ({
+const createAssignmentExpression = ({
   children,
-  id: uuidv4(),
+  id,
+  left,
+  operator,
+  right
+}) => ({
+  children,
+  id: id || uuidv4(),
   left,
   operator,
   right,

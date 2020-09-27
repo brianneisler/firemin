@@ -1,30 +1,42 @@
 import { pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createServiceStatement from '../pipes/createServiceStatement'
+import expectServiceKeyword from '../pipes/expectServiceKeyword'
+import identifyBody from '../pipes/identifyBody'
+import identifyName from '../pipes/identifyName'
 import parseBody from '../pipes/parseBody'
 import parseName from '../pipes/parseName'
 import parseServiceKeyword from '../pipes/parseServiceKeyword'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 
-const createServiceStatement = pipe(
+const parseServiceStatementTokens = pipe(
   parseServiceKeyword,
   parseWhitespaceAndComments,
   parseName,
   parseWhitespaceAndComments,
   parseBody,
-  ({ body, children, name }) => ({
-    body,
-    children,
-    id: uuidv4(),
-    name,
-    type: NodeTypes.SERVICE_STATEMENT
-  })
+  createServiceStatement
+)
+
+const identifyServiceStatementChildren = pipe(
+  expectServiceKeyword,
+  skipWhitespaceAndComments,
+  identifyName,
+  skipWhitespaceAndComments,
+  identifyBody
 )
 
 const ServiceStatement = {
+  identify: (context, node) =>
+    createServiceStatement({
+      ...identifyServiceStatementChildren({ ...node, context }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.SERVICE_STATEMENT,
   parse: (context, tokenList) =>
-    createServiceStatement({ children: [], context, tokenList }),
+    parseServiceStatementTokens({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_SERVICE

@@ -5,6 +5,7 @@ import createFunctionKeyword from '../pipes/createFunctionKeyword'
 import { getTokenListPosition } from '../util'
 
 const FunctionKeyword = {
+  identify: (context, node) => node,
   is: (value) =>
     value &&
     value.type === NodeTypes.KEYWORD &&

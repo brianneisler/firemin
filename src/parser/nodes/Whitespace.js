@@ -4,6 +4,7 @@ import { NodeTypes, TokenTypes } from '../../constants'
 import createWhitespace from '../pipes/createWhitespace'
 
 const Whitespace = {
+  identify: (context, node) => node,
   is: (value) => value && value.type === NodeTypes.WHITESPACE,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)

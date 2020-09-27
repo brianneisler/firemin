@@ -33,7 +33,7 @@ const BlockStatement = {
   identify: (context, node) =>
     createBlockStatement({
       ...identifyBlockStatementChildren({
-        children: node.children,
+        ...node,
         context
       }),
       children: node.children

@@ -1,4 +1,4 @@
-import { tail } from 'ramda'
+import { head, tail } from 'ramda'
 
 import Expression from '../nodes/Expression'
 import Identifier from '../nodes/Identifier'
@@ -10,7 +10,8 @@ const PROPERTY_IDENTIFIERS = [Range, Expression, Identifier, Literal]
 const identifyPropertyNode = identifyNextNode(PROPERTY_IDENTIFIERS)
 
 const identifyProperty = ({ children, context, ...rest }) => {
-  const right = identifyPropertyNode(context, children)
+  const nextChild = head(children)
+  const right = identifyPropertyNode(context, nextChild)
   children = tail(children)
   return { ...rest, children, context, right }
 }

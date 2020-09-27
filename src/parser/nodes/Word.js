@@ -27,6 +27,7 @@ const WORD_TOKEN_TYPES = {
 }
 
 const Word = {
+  identify: (context, node) => node,
   is: (value) => value && value.type === NodeTypes.WORD,
   parse: (context, tokenList) => {
     let nextToken = tokenList.get(0)

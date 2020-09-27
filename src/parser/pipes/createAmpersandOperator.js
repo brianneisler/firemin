@@ -2,8 +2,8 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, OperatorTypes } from '../../constants'
 
-const createAmpersandOperator = ({ tokenList }) => ({
-  id: uuidv4(),
+const createAmpersandOperator = ({ id, tokenList }) => ({
+  id: id || uuidv4(),
   operatorType: OperatorTypes.AMPERSAND,
   tokenList,
   type: NodeTypes.OPERATOR,

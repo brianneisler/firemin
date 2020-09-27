@@ -1,5 +1,4 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -8,6 +7,7 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createCommaOperator from '../pipes/createCommaOperator'
 import { getTokenListPosition } from '../util'
 
 const CommaOperator = {
@@ -34,13 +34,9 @@ const CommaOperator = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      operatorType: OperatorTypes.COMMA,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.OPERATOR,
-      value: nextToken.value
-    }
+    return createCommaOperator({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) =>
     tokenList.get(0).type === TokenTypes.OPERATOR_COMMA,

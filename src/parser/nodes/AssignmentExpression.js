@@ -55,7 +55,7 @@ const AssignmentExpression = {
   identify: (context, node) =>
     createAssignmentExpression({
       ...identifyAssignmentExpressionChildren({
-        children: node.children,
+        ...node,
         context
       }),
       children: node.children

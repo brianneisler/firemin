@@ -39,7 +39,7 @@ const ComputedMemberExpression = {
   identify: (context, node) =>
     createComputedMemberExpression({
       ...identifyComputedMemberExpressionChildren({
-        children: node.children,
+        ...node,
         context
       }),
       children: node.children

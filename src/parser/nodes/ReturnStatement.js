@@ -31,7 +31,7 @@ const identifyReturnStatementChildren = pipe(
 const ReturnStatement = {
   identify: (context, node) =>
     createReturnStatement({
-      ...identifyReturnStatementChildren({ children: node.children, context }),
+      ...identifyReturnStatementChildren({ ...node, context }),
       children: node.children
     }),
   is: (value) => value.type === NodeTypes.RETURN_STATEMENT,

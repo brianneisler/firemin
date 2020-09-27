@@ -2,10 +2,10 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes } from '../../constants'
 
-const createAllowStatement = ({ children, condition, permission }) => ({
+const createAllowStatement = ({ children, condition, id, permission }) => ({
   children,
   condition,
-  id: uuidv4(),
+  id: id || uuidv4(),
   permission,
   type: NodeTypes.ALLOW_STATEMENT
 })

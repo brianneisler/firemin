@@ -1,4 +1,4 @@
-import { fromPairs, includes, map, prop, zip } from 'ramda'
+import { fromPairs, has, map, prop, zip } from 'ramda'
 
 import { walkMapTree } from '../../ast'
 import { NodeTypes } from '../../constants'
@@ -6,6 +6,9 @@ import { NodeTypes } from '../../constants'
 const replaceParamsWithArgs = (context, statement, params, args) => {
   // get the parameter identifier names
   const paramNames = map(prop('name'), params)
+  // NOTE BRN: If there is a mismatch between number of params and number of
+  // args then this will drop to the minimum set that exists in both. This
+  // prevents replacing param names with undefined args.
   const paramNamesToArgs = fromPairs(zip(paramNames, args))
   // immutably replace the parameter identifiers with the arguments from the CallExpression
   return walkMapTree(
@@ -15,29 +18,8 @@ const replaceParamsWithArgs = (context, statement, params, args) => {
       // these kinds of changes anymore since these values will automatically be
       // regenerated anytime the children are changed
 
-      // if (node.type === NodeTypes.BINARY_EXPRESSION) {
-      //   if (
-      //     node.left.type === NodeTypes.IDENTIFIER &&
-      //     includes(node.left.name, paramNames)
-      //   ) {
-      //     node = assoc('left', paramNamesToArgs[node.left.name], node)
-      //   }
-      //   if (
-      //     node.right.type === NodeTypes.IDENTIFIER &&
-      //     includes(node.right.name, paramNames)
-      //   ) {
-      //     node = assoc('right', paramNamesToArgs[node.right.name], node)
-      //   }
-      // } else if (node.type === NodeTypes.UNARY_EXPRESSION) {
-      //   if (
-      //     node.argument.type === NodeTypes.IDENTIFIER &&
-      //     includes(node.argument.name, paramNames)
-      //   ) {
-      //     node = assoc('argument', paramNamesToArgs[node.argument.name], node)
-      //   }
-      // } else
       if (node.type === NodeTypes.IDENTIFIER) {
-        if (includes(node.name, paramNames)) {
+        if (has(node.name, paramNamesToArgs)) {
           return paramNamesToArgs[node.name]
         }
       }

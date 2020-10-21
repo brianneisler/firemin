@@ -1,6 +1,7 @@
 import { List } from 'immutable'
 
 import { NodeTypes, OperatorTypes, Operators } from '../../constants'
+import { setupContext } from '../../context'
 import tokenize from '../tokenize'
 
 import parseLogicalOrOperator from './parseLogicalOrOperator'
@@ -8,7 +9,7 @@ import parseLogicalOrOperator from './parseLogicalOrOperator'
 describe('parseLogicalOrOperator', () => {
   test('returns expected values', async () => {
     const children = []
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const tokenList = await tokenize(context, { string: '||' })
     const result = await parseLogicalOrOperator({
       children,

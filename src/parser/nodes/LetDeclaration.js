@@ -49,7 +49,7 @@ const LetDeclaration = {
       }),
       children: node.children
     }),
-  is: (value) => value && value.type === NodeTypes.FUNCTION_DECLARATION,
+  is: (value) => value && value.type === NodeTypes.LET_DECLARATION,
   parse: (context, tokenList) =>
     parseLetDelcarationTokens({ children: [], context, tokenList }),
   test: (context, tokenList) => {

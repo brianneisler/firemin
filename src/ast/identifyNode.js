@@ -1,7 +1,7 @@
-import { isFunction } from 'lodash'
-import { curry } from 'ramda'
+import { curry, find } from 'ramda'
 
 import {
+  BlockStatement,
   Comment,
   Declaration,
   Expression,
@@ -9,9 +9,12 @@ import {
   Keyword,
   Literal,
   Operator,
+  PathPartVariable,
+  PathPartWord,
   Program,
   Statement,
-  Whitespace
+  Whitespace,
+  Word
 } from '../parser/nodes'
 
 const IDENTIFIERS = [
@@ -19,20 +22,26 @@ const IDENTIFIERS = [
   Declaration,
   Expression,
   Statement,
+  BlockStatement,
   Identifier,
   Keyword,
   Literal,
   Operator,
   Comment,
-  Whitespace
+  Whitespace,
+  Word,
+  PathPartWord,
+  PathPartVariable
 ]
 
 const identifyNode = curry((context, node) => {
-  // TODO BRN: Find the Node that is responsible for this node.
-  // Check if Node has an identify implementation.
-  // If so, call that method, otherwise, return node
-
-  return node
+  const identifier = find((Node) => Node.is(node), IDENTIFIERS)
+  if (!identifier) {
+    throw new Error(
+      `Could not find Identifier for ${JSON.stringify(node, null, 2)}`
+    )
+  }
+  return identifier.identify(context, node)
 })
 
 export default identifyNode

@@ -1,3 +1,4 @@
+import { setupContext } from '../context'
 import { generateString } from '../generator'
 import { parseString } from '../parser'
 
@@ -7,7 +8,7 @@ describe('minimizeAST', () => {
   test('collapses a simple single use function that returns a Literal', async () => {
     const code = 'function foo() { return true; }' + 'foo();'
 
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
     expect(generateString(context, { ast: minimizedAST })).toEqual('true;')
@@ -16,7 +17,7 @@ describe('minimizeAST', () => {
   test('replaces params with args in function collapse', async () => {
     const code = 'function foo(param1) { return param1; }' + 'foo(true);'
 
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
     expect(generateString(context, { ast: minimizedAST })).toEqual('true;')
@@ -25,7 +26,7 @@ describe('minimizeAST', () => {
   test('replaces params with args in function collapse of UnaryExpression', async () => {
     const code = 'function foo(param1) { return !param1; }' + 'foo(true);'
 
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
     expect(generateString(context, { ast: minimizedAST })).toEqual('!true;')
@@ -36,7 +37,7 @@ describe('minimizeAST', () => {
       'function foo(param1, param2) { return param1 && param2; }' +
       'foo(true, false);'
 
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
     expect(generateString(context, { ast: minimizedAST })).toEqual(
@@ -49,7 +50,7 @@ describe('minimizeAST', () => {
       'function foo(param1, param2, param3) { return param1 && param2 && param3; }' +
       'foo(true, false, true);'
 
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
     expect(generateString(context, { ast: minimizedAST })).toEqual(
@@ -64,7 +65,7 @@ describe('minimizeAST', () => {
       'b();' +
       'b();'
 
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
     expect(generateString(context, { ast: minimizedAST })).toEqual(

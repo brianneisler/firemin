@@ -6,16 +6,16 @@ service cloud.firestore {
       return someParam1.keys().hasAll([ someParam2 ])
     }
 
-    function nestedSingleUseFunction2(someParam1) {
-      return !someParam1
+    function nestedSingleUseFunction2(nestedSingleUseFunction2Param1) {
+      return !nestedSingleUseFunction2Param1
     }
 
-    function nestedSingleUseFunction1(someParam1) {
-      return nestedSingleUseFunction2(someParam1)
+    function nestedSingleUseFunction1(nestedSingleUseFunction1Param1) {
+      return nestedSingleUseFunction2(nestedSingleUseFunction1Param1)
     }
 
-    function singleUseFunction(someParam1, someParam2) {
-      return someParam1 && someParam2
+    function singleUseFunction(singleUseFunctionParam1, singleUseFunctionParam2) {
+      return singleUseFunctionParam1 && singleUseFunctionParam2
     }
 
     match /some/path/{arg1}/{arg2} {

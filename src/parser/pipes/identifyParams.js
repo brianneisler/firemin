@@ -1,4 +1,4 @@
-import { append, head, pipe } from 'ramda'
+import { append, head, length, pipe } from 'ramda'
 
 import CloseParenthesisOperator from '../nodes/CloseParenthesisOperator'
 

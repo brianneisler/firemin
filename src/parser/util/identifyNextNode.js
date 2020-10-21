@@ -5,11 +5,13 @@ const identifyNextNode = curry((identifiers, context, node, ...rest) => {
     throw new Error('context must be defined')
   }
   const nodeIdentifier = find(
-    (identifier) => identifier.is(context, node, ...rest),
+    (identifier) => identifier.is(node, ...rest),
     identifiers
   )
   if (!nodeIdentifier) {
-    throw new Error(`Could not identify node '${node}'`)
+    throw new Error(
+      `Could not identify node '${JSON.stringify(node, null, 2)}'`
+    )
   }
   if (!nodeIdentifier.identify) {
     throw new Error(

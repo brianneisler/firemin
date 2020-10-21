@@ -16,8 +16,19 @@ Firebase Firestore/Storage security rules minifier
 
 
 ## why?
-If you've ever reached Firestore's maximum security rule file size of 64KB, the next question is...
+If you've ever reached Firestore's maximum security rule file size of 256KB, the next question is...
 "now what?".
+
+At the moment, the limit **is actually around 50KB**. As you get close to this
+size the rules upload API will occasionally begin throwing... 
+```
+HTTP Error: 400, Request contains an invalid argument.
+```
+This will continue to get worse as the rules file gets larger until it happens
+so frequently that the rules are undeployable.
+
+See more information here...
+https://stackoverflow.com/questions/63925021/firestore-uploading-larger-rules-file-results-in-error-400-request-contains-a
 
 
 ## Firebase Support's answer
@@ -58,22 +69,28 @@ This means the less the number of collections and subcollections, the less rules
 * A minifier can do the following before deployment  
   * Remove comments
   * Remove unnecessary whitespace
+  * Remove unused functions
   * Replace function names and function parameter names with shorter single
     character names
   * Collapse single use functions
+  * and much more...
 
 
 ## Enter Firemin...
 * Firemin is a minifier for Firebase Firestore security rules
 
 ## Features
-* Removes comments from firestore rules
-* Removes unnecessary whitespace
-* Removes unused functions from your rules file
+- [x] Removes comments from firestore rules
+- [x] Removes unnecessary whitespace
+- [x] Removes unused functions from your rules file
+- [x] Collapses single use functions (functions that are only invoked once)
 
 ## TODO
 - [ ] Replace function names and function parameter names with shorter single character names
-- [ ] Collapse single use functions
+- [ ] Collapse single use let declarations
+- [ ] Collapse single operation functions (functions that only perform one
+  operation do not necessarily save us anything on code size and create more
+  operation overhead)
 
 ## Install
 

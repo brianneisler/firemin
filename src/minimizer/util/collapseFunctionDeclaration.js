@@ -19,7 +19,6 @@ const collapseFunctionDeclaration = (context, ast, functionId) => {
     functionDeclaration.identifier.name,
     scope
   )
-  console.log('callExpression:', callExpression)
 
   const functionBody = functionDeclaration.body.body[0]
   // console.log('functionDeclaration:', functionDeclaration)
@@ -39,15 +38,11 @@ const collapseFunctionDeclaration = (context, ast, functionId) => {
     )
   }
 
-  console.log('statement:', statement)
-
   // replace CallExpression with statement
   const callExpressionPath = findNodePathInTree(
     propEq('id', callExpression.id),
     ast
   )
-
-  console.log('callExpressionPath:', callExpressionPath)
 
   // TODO BRN: This will not update any node where the callExpression is
   // embedded within an expression

@@ -1,6 +1,7 @@
 import { List } from 'immutable'
 
 import { NodeTypes, OperatorTypes, Operators } from '../../constants'
+import { setupContext } from '../../context'
 import tokenize from '../tokenize'
 
 import parseBackwardSlashOperator from './parseBackwardSlashOperator'
@@ -8,7 +9,7 @@ import parseBackwardSlashOperator from './parseBackwardSlashOperator'
 describe('parseBackwardSlashOperator', () => {
   test('returns expected values', async () => {
     const children = []
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const tokenList = await tokenize(context, { string: '\\' })
     const result = await parseBackwardSlashOperator({
       children,

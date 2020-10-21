@@ -1,4 +1,4 @@
-import { append, head, length } from 'ramda'
+import { append, head, length, tail } from 'ramda'
 
 import PathPartExpression from '../nodes/PathPartExpression'
 import PathPartVariable from '../nodes/PathPartVariable'
@@ -15,7 +15,7 @@ const identifyPathPartNode = identifyNextNode(PATH_PART_IDENTIFIERS)
 const identifyPathPart = ({ children, context, ...rest }) => {
   const nextChild = head(children)
   const pathPart = identifyPathPartNode(context, nextChild)
-  children = append(pathPart, children)
+  children = tail(children)
   return { ...rest, children, context, pathPart }
 }
 

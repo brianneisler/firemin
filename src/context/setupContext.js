@@ -1,4 +1,36 @@
 import pino from 'pino'
+import { filter, keys, map, values } from 'ramda'
+
+import { ParserTypes } from '../constants'
+import * as Nodes from '../parser/nodes'
+
+const NamedNodes = map((name) => {
+  // eslint-disable-next-line import/namespace
+  const Node = Nodes[name]
+  Node.name = name
+  return Node
+}, keys(Nodes))
+
+const Declarations = filter(
+  (parser) => parser.type === ParserTypes.DECLARATION,
+  values(NamedNodes)
+)
+const Expressions = filter(
+  (parser) => parser.type === ParserTypes.EXPRESSION,
+  values(NamedNodes)
+)
+const Keywords = filter(
+  (parser) => parser.type === ParserTypes.KEYWORD,
+  values(NamedNodes)
+)
+const Operators = filter(
+  (parser) => parser.type === ParserTypes.OPERATOR,
+  values(NamedNodes)
+)
+const Statements = filter(
+  (parser) => parser.type === ParserTypes.STATEMENT,
+  values(NamedNodes)
+)
 
 /**
  * Sets up the Context object for use by the parser and minimizer
@@ -9,9 +41,14 @@ import pino from 'pino'
  * @example
  * const contxt = setupContext()
  */
-const setupContext = () => {
+const setupContext = ({ logger } = {}) => {
   return {
-    logger: pino({ prettyPrint: { colorize: true } })
+    Declarations,
+    Expressions,
+    Keywords,
+    Operators,
+    Statements,
+    logger: logger || pino({ prettyPrint: { colorize: true } })
   }
 }
 

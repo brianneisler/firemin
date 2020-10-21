@@ -9,7 +9,11 @@ import parseWord from '../pipes/parseWord'
 
 import Word from './Word'
 
-const parsePathPartWordTokens = pipe(parseDivideOperator, parseWord)
+const parsePathPartWordTokens = pipe(
+  parseDivideOperator,
+  parseWord,
+  createPathPartWord
+)
 
 const identifyPathPartWordChildren = pipe(expectDivideOperator, identifyWord)
 

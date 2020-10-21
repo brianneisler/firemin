@@ -1,6 +1,7 @@
 import { List } from 'immutable'
 
 import { NodeTypes, OperatorTypes, Operators } from '../../constants'
+import { setupContext } from '../../context'
 import tokenize from '../tokenize'
 
 import parseLogicalAndOperator from './parseLogicalAndOperator'
@@ -8,7 +9,7 @@ import parseLogicalAndOperator from './parseLogicalAndOperator'
 describe('parseLogicalAndOperator', () => {
   test('returns expected values', async () => {
     const children = []
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const tokenList = await tokenize(context, { string: '&&' })
     const result = await parseLogicalAndOperator({
       children,

@@ -1,9 +1,25 @@
-import { assocPath, chain } from 'ramda'
+import { head, length, tail } from 'ramda'
 
-// TODO BRN: Rework this to properly work with nodes and to trigger identify
-const assocNodePath = (context, path, value, node) => {
-  const propPath = chain((key) => ['children', key], path)
-  return assocPath(propPath, value, node)
+import assocNodeChild from './assocNodeChild'
+import getNodeChild from './getNodeChild'
+
+const assocNodePath = (context, path, child, node) => {
+  const size = length(path)
+  if (size === 0) {
+    return child
+  }
+  const part = head(path)
+  if (size > 1) {
+    const nextNode = getNodeChild(part, node)
+    if (!nextNode) {
+      throw new Error('nextNode not found - path:', path, ' node:', node)
+    }
+    // TODO BRN: This might fail if nextNode does not exist. May need to handle
+    // that case.
+    child = assocNodePath(context, tail(path), child, nextNode)
+  }
+
+  return assocNodeChild(context, part, child, node)
 }
 
 export default assocNodePath

@@ -9,6 +9,7 @@ const identifyPathExpression = ({ children, context, ...rest }) => {
   return {
     ...rest,
     children,
+    context,
     expression
   }
 }

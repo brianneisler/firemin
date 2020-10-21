@@ -15,7 +15,7 @@ const identifyBodyNode = identifyNextNode(BODY_IDENTIFIERS)
 const identifyBodyUntil = curry((predicate, { children, context, ...rest }) => {
   let body = []
 
-  while (length(children) > 0 && predicate({ children, context })) {
+  while (length(children) > 0 && !predicate({ children, context })) {
     const nextChild = head(children)
     const node = identifyBodyNode(context, nextChild)
     children = tail(children)

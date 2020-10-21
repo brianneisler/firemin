@@ -22,7 +22,7 @@ program
   .parse(process.argv)
 
 const exec = async (options) => {
-  const context = await setupContext()
+  const context = setupContext()
   const { logger } = context
   logger.info('running...')
 

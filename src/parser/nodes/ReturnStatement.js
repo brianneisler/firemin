@@ -29,11 +29,12 @@ const identifyReturnStatementChildren = pipe(
 )
 
 const ReturnStatement = {
-  identify: (context, node) =>
-    createReturnStatement({
+  identify: (context, node) => {
+    return createReturnStatement({
       ...identifyReturnStatementChildren({ ...node, context }),
       children: node.children
-    }),
+    })
+  },
   is: (value) => value.type === NodeTypes.RETURN_STATEMENT,
   parse: (context, tokenList) =>
     parseReturnStatementTokens({ children: [], context, tokenList }),

@@ -1,6 +1,7 @@
 import { List } from 'immutable'
 
 import { NodeTypes, OperatorTypes, Operators } from '../../constants'
+import { setupContext } from '../../context'
 import tokenize from '../tokenize'
 
 import parseModulusOperator from './parseModulusOperator'
@@ -8,7 +9,7 @@ import parseModulusOperator from './parseModulusOperator'
 describe('parseModulusOperator', () => {
   test('returns expected values', async () => {
     const children = []
-    const context = { logger: console }
+    const context = setupContext({ logger: console })
     const tokenList = await tokenize(context, { string: '%' })
     const result = await parseModulusOperator({ children, context, tokenList })
 

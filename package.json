@@ -42,6 +42,7 @@
     "setup": "bash ./scripts/setup.sh",
     "test": "bash ./scripts/test.sh",
     "test:ci": "bash ./scripts/test-ci.sh",
+    "test:debug": "bash ./scripts/test-debug.sh",
     "watch": "bash ./scripts/watch.sh"
   },
   "dependencies": {

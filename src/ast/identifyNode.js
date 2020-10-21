@@ -12,6 +12,7 @@ import {
   PathPartVariable,
   PathPartWord,
   Program,
+  Range,
   Statement,
   Whitespace,
   Word
@@ -31,7 +32,8 @@ const IDENTIFIERS = [
   Whitespace,
   Word,
   PathPartWord,
-  PathPartVariable
+  PathPartVariable,
+  Range
 ]
 
 const identifyNode = curry((context, node) => {

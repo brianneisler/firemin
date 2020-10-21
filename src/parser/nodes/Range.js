@@ -43,7 +43,7 @@ const Range = {
       }),
       children: node.children
     }),
-  is: (value) => value && value.type === NodeTypes.PARENTHESES_EXPRESSION,
+  is: (value) => value && value.type === NodeTypes.RANGE,
   parse: (context, tokenList) =>
     parseRangeTokens({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {

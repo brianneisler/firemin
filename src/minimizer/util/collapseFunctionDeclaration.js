@@ -8,6 +8,9 @@ import replaceParamsWithArgs from './replaceParamsWithArgs'
 
 const collapseFunctionDeclaration = (context, ast, functionId) => {
   const { scopes } = context
+  // TODO BRN: Replace this with a lookup by id. Should introduce a function
+  // that collapses the tree to a map of ids that can then be used to look up
+  // any node in the tree by id
   const functionDeclaration = findNodeInTree(propEq('id', functionId), ast)
 
   // TODO BRN: Add support for function bodies that are more than one line long

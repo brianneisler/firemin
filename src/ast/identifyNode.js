@@ -4,11 +4,13 @@ import {
   BlockStatement,
   Comment,
   Declaration,
+  Entry,
   Expression,
   Identifier,
   Keyword,
   Literal,
   Operator,
+  PathPartExpression,
   PathPartVariable,
   PathPartWord,
   Program,
@@ -31,9 +33,11 @@ const IDENTIFIERS = [
   Comment,
   Whitespace,
   Word,
+  PathPartExpression,
   PathPartWord,
   PathPartVariable,
-  Range
+  Range,
+  Entry
 ]
 
 const identifyNode = curry((context, node) => {

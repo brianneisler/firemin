@@ -17,7 +17,15 @@ FEATURES
   operation overhead)
 - [ ] Replace function names and function parameter names with shorter single character names
 
+IMPROVEMENTS
+- [ ] Performance: buildScopes needs memoization
+- [ ] Performance: switch children to immutable List so tree changes don't
+  require copying large lists
+- [ ] Performance: findNodeInTree should use a map to look up node by id
+  
+
 BUGS
 - [x] replacement of children when using assocNodePath does not update
   properties like body, argument, etc of nodes
 - [ ] Operators order is not being respected by the AST parser
+

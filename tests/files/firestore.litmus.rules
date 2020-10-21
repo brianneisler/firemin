@@ -969,7 +969,8 @@ service cloud.firestore {
       let conversationMemberAfter = getConversationMemberAfter(conversationId, userId);
       let conversationMemberBefore = getConversationMemberBefore(conversationId, userId);
       return conversation != null &&
-        conversationMember != null &&
+        conversationMemberAfter != null &&
+        conversationMemberBefore != null &&
         validateConversationMember(conversation, conversationMemberAfter) &&
         currentUserCanUpdateConversationMember(auth, conversation, conversationMemberAfter, conversationMemberBefore);
     }
@@ -1060,7 +1061,7 @@ service cloud.firestore {
         validateConversationMessageData(conversation, conversationMessage.data)
     }
 
-    function checkReadConversationMessage(auth, conversationId, messageId, conversationMessage) {
+    function checkReadConversationMessage(auth, conversationId, conversationMessage) {
       let conversation = getConversationAfter(conversationId);
       return currentUserCanReadConversationMessage(auth, conversation, conversationMessage);
     }
@@ -1079,7 +1080,8 @@ service cloud.firestore {
       let conversationMessageAfter = getConversationMessageAfter(conversationId, messageId);
       let conversationMessageBefore = getConversationMessageBefore(conversationId, messageId);
       return conversation != null &&
-        conversationMessage != null &&
+        conversationMessageAfter != null &&
+        conversationMessageBefore != null &&
         validateConversationMessage(conversation, conversationMessageAfter) &&
         currentUserCanUpdateConversationMessage(auth, conversation, conversationMessageAfter, conversationMessageBefore);
     }
@@ -1090,7 +1092,7 @@ service cloud.firestore {
     }
 
     match /Conversations/{conversationId}/ConversationMessages/{messageId} {
-      allow read: if checkReadConversationMessage(request.auth, conversationId, messageId, resource);
+      allow read: if checkReadConversationMessage(request.auth, conversationId, resource);
       allow create: if checkCreateConversationMessage(request.auth, conversationId, messageId);
       allow update: if checkUpdateConversationMessage(request.auth, conversationId, messageId);
       allow delete: if checkDeleteConversationMessage(request.auth);

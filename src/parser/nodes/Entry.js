@@ -37,7 +37,7 @@ const Entry = {
       }),
       children: node.children
     }),
-  is: (value) => value && value.type === NodeTypes.COMPUTED_MEMBER_EXPRESSION,
+  is: (value) => value && value.type === NodeTypes.ENTRY,
   parse: (context, tokenList) =>
     parseEntryTokens({ children: [], context, tokenList }),
   test: () => false

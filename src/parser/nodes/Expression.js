@@ -27,7 +27,6 @@ const Expression = {
     value.type === NodeTypes.MAP_EXPRESSION ||
     value.type === NodeTypes.PARENTHESES_EXPRESSION ||
     value.type === NodeTypes.PATH_EXPRESSION ||
-    value.type === NodeTypes.PATH_PART_EXPRESSION ||
     value.type === NodeTypes.STATIC_MEMBER_EXPRESSION ||
     value.type === NodeTypes.UNARY_EXPRESSION,
   parse: (context, tokenList, prevExpression = null) => {

@@ -17,7 +17,7 @@
 
 ### function setupContext()
 
-[source](https://github.com/brianneisler/firemin.git/tree/v0.1.3/src/context/setupContext.js#L35)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
+[source](https://github.com/brianneisler/firemin.git/tree/v0.1.3/src/context/setupContext.js#L74)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
 <p>Sets up the Context object for use by the parser and minimizer</p>
 
 **Params**

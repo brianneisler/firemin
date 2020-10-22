@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import { OrderedMap } from 'immutable'
 
 import walkReduceTree from '../../ast/walkReduceTree'
 import { NodeTypes } from '../../constants'
@@ -31,7 +31,11 @@ const countFunctionUses = weakMemoize(({ scopes }, ast) => {
     },
     functionDeclarations.reduce(
       (accum, functionDeclaration) => accum.set(functionDeclaration.id, 0),
-      Map()
+      // NOTE BRN: This OrderedMap ensures that the function map is iterated in
+      // a deterministic way. Since this map is used to make minifications, it
+      // ensures that the minifications always happen in the same order which
+      // can make debugging a lot easier.
+      OrderedMap()
     ),
     ast
   )

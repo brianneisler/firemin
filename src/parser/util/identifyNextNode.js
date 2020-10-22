@@ -1,13 +1,12 @@
-import { curry, find } from 'ramda'
+import { curry } from 'ramda'
+
+import { findIdentifier } from '../../ast'
 
 const identifyNextNode = curry((identifiers, context, node, ...rest) => {
   if (!context) {
     throw new Error('context must be defined')
   }
-  const nodeIdentifier = find(
-    (identifier) => identifier.is(node, ...rest),
-    identifiers
-  )
+  const nodeIdentifier = findIdentifier(identifiers, node)
   if (!nodeIdentifier) {
     throw new Error(
       `Could not identify node '${JSON.stringify(node, null, 2)}'`

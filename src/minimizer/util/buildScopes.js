@@ -2,6 +2,7 @@ import { isObject } from 'lodash'
 import { reduce } from 'ramda'
 
 import { NodeTypes } from '../../constants'
+import { measure } from '../../utils'
 
 import newScope from './newScope'
 
@@ -9,6 +10,8 @@ import newScope from './newScope'
 // then to generate the flattened map of every scope. This will allow for each
 // scope to be generated in an immutable way and will allow for memoization of
 // the generation of each scope
+
+// - build the scope tree depth first. This way we can memoize
 const buildScopes = (scopes, currentScope, node) => {
   if (
     node.type === NodeTypes.PROGRAM ||
@@ -36,4 +39,4 @@ const buildScopes = (scopes, currentScope, node) => {
   return scopes
 }
 
-export default buildScopes
+export default measure('buildScopes', buildScopes)

@@ -27,5 +27,8 @@ IMPROVEMENTS
 BUGS
 - [x] replacement of children when using assocNodePath does not update
   properties like body, argument, etc of nodes
+- [ ] Functions are not always being collapsed. This seems to happen when a nested
+  function callee's funct is declared after the nested parent has already been
+  collapsed. 
 - [ ] Operators order is not being respected by the AST parser
 

@@ -1,5 +1,4 @@
-import { find } from 'ramda'
-
+import { findIdentifier } from '../../ast'
 import { NodeTypes } from '../../constants'
 import parseNextNode from '../util/parseNextNode'
 import testNextNode from '../util/testNextNode'
@@ -7,7 +6,7 @@ import testNextNode from '../util/testNextNode'
 const Declaration = {
   identify: (context, node, ...rest) => {
     const { Declarations } = context
-    const type = find((declaration) => declaration.is(node), Declarations)
+    const type = findIdentifier(Declarations, node)
     if (!type) {
       throw new Error(`Could not find Declaration Identifier for ${node}`)
     }

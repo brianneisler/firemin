@@ -1,5 +1,6 @@
-import { find, slice } from 'ramda'
+import { slice } from 'ramda'
 
+import { findIdentifier } from '../../ast'
 import { NodeTypes } from '../../constants'
 import generateTokenList from '../../generator/generateTokenList'
 import parseNextNode from '../util/parseNextNode'
@@ -8,7 +9,7 @@ import testNextNode from '../util/testNextNode'
 const Expression = {
   identify: (context, node, ...rest) => {
     const { Expressions } = context
-    const type = find((expression) => expression.is(node), Expressions)
+    const type = findIdentifier(Expressions, node)
     if (!type) {
       throw new Error(`Could not find Expression Node for ${node}`)
     }

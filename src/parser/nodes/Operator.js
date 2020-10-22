@@ -1,5 +1,4 @@
-import { find } from 'ramda'
-
+import { findIdentifier } from '../../ast'
 import { NodeTypes } from '../../constants'
 import parseNextNode from '../util/parseNextNode'
 import testNextNode from '../util/testNextNode'
@@ -7,7 +6,7 @@ import testNextNode from '../util/testNextNode'
 const Operator = {
   identify: (context, node, ...rest) => {
     const { Operators } = context
-    const type = find((operator) => operator.is(node), Operators)
+    const type = findIdentifier(Operators, node)
     if (!type) {
       throw new Error(`Could not find Operator Identifier for ${node}`)
     }

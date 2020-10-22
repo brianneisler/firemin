@@ -1,7 +1,7 @@
 import { isArray, isObject } from 'lodash'
 import { concat, curry, keys, reduce, reduced } from 'ramda'
 
-import { walk } from '../utils'
+import { measure, walk } from '../utils'
 
 const findWalkee = (node, path, predicate, recur) => {
   const bool = predicate(node, path)
@@ -30,8 +30,10 @@ const findWalkee = (node, path, predicate, recur) => {
   }
 }
 
-const findNodeInTree = curry((predicate, tree) =>
-  walk(findWalkee, tree, [], predicate)
+const findNodeInTree = curry(
+  measure('findNodeInTree', (predicate, tree) =>
+    walk(findWalkee, tree, [], predicate)
+  )
 )
 
 export default findNodeInTree

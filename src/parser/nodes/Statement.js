@@ -1,5 +1,4 @@
-import { find } from 'ramda'
-
+import { findIdentifier } from '../../ast'
 import { NodeTypes } from '../../constants'
 import parseNextNode from '../util/parseNextNode'
 import testNextNode from '../util/testNextNode'
@@ -7,7 +6,7 @@ import testNextNode from '../util/testNextNode'
 const Statement = {
   identify: (context, node, ...rest) => {
     const { Statements } = context
-    const type = find((statement) => statement.is(node), Statements)
+    const type = findIdentifier(Statements, node)
     if (!type) {
       throw new Error(`Could not find Statement Identifier for ${node}`)
     }

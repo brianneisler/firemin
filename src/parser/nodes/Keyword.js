@@ -1,5 +1,4 @@
-import { find } from 'ramda'
-
+import { findIdentifier } from '../../ast'
 import { NodeTypes } from '../../constants'
 import parseNextNode from '../util/parseNextNode'
 import testNextNode from '../util/testNextNode'
@@ -7,7 +6,7 @@ import testNextNode from '../util/testNextNode'
 const Keyword = {
   identify: (context, node, ...rest) => {
     const { Keywords } = context
-    const type = find((keyword) => keyword.is(node), Keywords)
+    const type = findIdentifier(Keywords, node)
     if (!type) {
       throw new Error(`Could not find Keyword parser for ${node}`)
     }

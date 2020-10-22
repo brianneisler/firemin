@@ -12,6 +12,7 @@ const collapseSingleUseFunctions = curry((context, ast) => {
     ...context,
     scopes: buildScopes(Map(), null, ast)
   }
+
   const singleUseFunctionIdMap = findSingleUseFunctions(context, ast)
   return reduce(
     (accum, functionId) =>

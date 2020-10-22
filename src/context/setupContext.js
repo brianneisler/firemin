@@ -3,6 +3,25 @@ import { filter, keys, map, values } from 'ramda'
 
 import { ParserTypes } from '../constants'
 import * as Nodes from '../parser/nodes'
+import {
+  BlockStatement,
+  Comment,
+  Declaration,
+  Entry,
+  Expression,
+  Identifier,
+  Keyword,
+  Literal,
+  Operator,
+  PathPartExpression,
+  PathPartVariable,
+  PathPartWord,
+  Program,
+  Range,
+  Statement,
+  Whitespace,
+  Word
+} from '../parser/nodes'
 
 const NamedNodes = map((name) => {
   // eslint-disable-next-line import/namespace
@@ -32,6 +51,26 @@ const Statements = filter(
   values(NamedNodes)
 )
 
+const Identifiers = [
+  Program,
+  Declaration,
+  Expression,
+  Statement,
+  BlockStatement,
+  Identifier,
+  Keyword,
+  Literal,
+  Operator,
+  Comment,
+  Whitespace,
+  Word,
+  PathPartExpression,
+  PathPartWord,
+  PathPartVariable,
+  Range,
+  Entry
+]
+
 /**
  * Sets up the Context object for use by the parser and minimizer
  * @function
@@ -45,6 +84,7 @@ const setupContext = ({ logger } = {}) => {
   return {
     Declarations,
     Expressions,
+    Identifiers,
     Keywords,
     Operators,
     Statements,

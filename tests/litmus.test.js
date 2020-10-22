@@ -11,8 +11,6 @@ describe('litmus', () => {
       pathResolve(__dirname, 'files', 'firestore.litmus.min.rules'),
       'utf8'
     )
-    // eslint-disable-next-line no-console
-    console.log('expected:', expected)
     const context = setupContext({
       logger: console
     })

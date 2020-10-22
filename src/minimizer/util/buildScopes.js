@@ -2,9 +2,16 @@ import { isObject } from 'lodash'
 import { reduce } from 'ramda'
 
 import { NodeTypes } from '../../constants'
+import { measure } from '../../utils'
 
 import newScope from './newScope'
 
+// TODO BRN: Rework this to first build the tree structure of the scopes and
+// then to generate the flattened map of every scope. This will allow for each
+// scope to be generated in an immutable way and will allow for memoization of
+// the generation of each scope
+
+// - build the scope tree depth first. This way we can memoize
 const buildScopes = (scopes, currentScope, node) => {
   if (
     node.type === NodeTypes.PROGRAM ||
@@ -16,6 +23,9 @@ const buildScopes = (scopes, currentScope, node) => {
   if (node.type === NodeTypes.FUNCTION_DECLARATION) {
     // HACK BRN: Mutable change. Rework this to be immutable
     currentScope.functions[node.identifier.name] = node
+  }
+  if (node.type === NodeTypes.CALL_EXPRESSION) {
+    currentScope.calls[node.callee.name] = node
   }
   scopes = scopes.set(node.id, currentScope)
   const { children } = node
@@ -29,4 +39,4 @@ const buildScopes = (scopes, currentScope, node) => {
   return scopes
 }
 
-export default buildScopes
+export default measure('buildScopes', buildScopes)

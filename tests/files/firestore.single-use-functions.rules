@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function multiUseFunc(someParam1, someParam2) {
+      return someParam1.keys().hasAll([ someParam2 ])
+    }
+
+    function nestedSingleUseFunction2(nestedSingleUseFunction2Param1) {
+      return !nestedSingleUseFunction2Param1
+    }
+
+    function nestedSingleUseFunction1(nestedSingleUseFunction1Param1) {
+      return nestedSingleUseFunction2(nestedSingleUseFunction1Param1)
+    }
+
+    function singleUseFunction(singleUseFunctionParam1, singleUseFunctionParam2) {
+      return singleUseFunctionParam1 && singleUseFunctionParam2
+    }
+
+    match /some/path/{arg1}/{arg2} {
+      allow read: if singleUseFunction(arg1, arg2);
+      allow create: if nestedSingleUseFunction1(arg1);
+      allow update: if multiUseFunc(arg1, arg2);
+      allow delete: if multiUseFunc(arg1, arg2);
+    }
+  }
+}

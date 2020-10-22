@@ -1,5 +1,4 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -8,9 +7,15 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createBackwardSlashOperator from '../pipes/createBackwardSlashOperator'
 import { getTokenListPosition } from '../util'
 
 const BackwardSlashOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.OPERATOR &&
+    value.operatorType === OperatorTypes.BACKWARD_SLASH,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -29,13 +34,9 @@ const BackwardSlashOperator = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      operatorType: OperatorTypes.BACKWARD_SLASH,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.OPERATOR,
-      value: nextToken.value
-    }
+    return createBackwardSlashOperator({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) =>
     tokenList.get(0).type === TokenTypes.OPERATOR_BACKWARD_SLASH,

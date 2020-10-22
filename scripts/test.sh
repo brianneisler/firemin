@@ -3,7 +3,7 @@ set -e
 
 echo "testing..."
 
-jest $@ --expand
+jest --expand $@
 
 echo "test complete!"
 

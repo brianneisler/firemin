@@ -1,0 +1,2659 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Core methods
+    // -----------------------------
+
+    function has(prop, data) {
+      return data.keys().hasAll([ prop ])
+    }
+
+    function includes(value, list) {
+      return list.hasAll([ value ])
+    }
+
+    function isBoolean(value) {
+      return value is bool
+    }
+
+    function isBytes(value) {
+      return value is bytes
+    }
+
+    function isConstraint(value) {
+      return value is constraint
+    }
+
+    function isDuration(value) {
+      return value is duration
+    }
+
+    function isFloat(value) {
+      return value is float
+    }
+
+    function isHex(value) {
+      return isString(value) &&
+        value.matches('^[a-z0-9]+$')
+    }
+
+    function isImageContentType(value) {
+      return isString(value) &&
+        (
+          value == 'image/jpg' ||
+          value == 'image/jpeg' ||
+          value == 'image/png'
+        )
+    }
+
+    function isIndex(value) {
+      return isInteger(value) && value >= 0
+    }
+
+    function isInteger(value) {
+      return value is int
+    }
+
+    function isLatLng(value) {
+      return value is latlng
+    }
+
+    function isList(value) {
+      return value is list
+    }
+
+    function isMap(value) {
+      return value is map
+    }
+
+    function isNull(value) {
+      return value == null
+    }
+
+    function isNumber(value) {
+      return value is number
+    }
+
+    function isPath(value) {
+      return value is path
+    }
+
+    function isPhrase(value) {
+      return isString(value) &&
+        value.size() <= 40 &&
+        value.size() >= 1 &&
+        value.upper() == value;
+    }
+
+    function isString(value) {
+      return value is string
+    }
+
+    function isTimestamp(value) {
+      return value is timestamp
+    }
+
+    function join(joiner, list) {
+      return list.join(joiner)
+    }
+
+    function join2Args(joiner, a, b) {
+      return string(a) + joiner + string(b)
+    }
+
+    function join3Args(joiner, a, b, c) {
+      return string(a) + joiner + string(b) + joiner + string(c)
+    }
+
+    function propsWithSize(properties, propsSize, obj) {
+      // Use modulous in order to avoid going out of bounds on selecting from an array
+      return slice(0, propsSize, [
+        obj.get(properties[0], null),
+        obj.get(properties[1 % propsSize], null),
+        obj.get(properties[2 % propsSize], null)
+      ])
+    }
+
+    function props(properties, obj) {
+      return propsWithSize(properties, size(properties), obj)
+    }
+
+    function size(value) {
+      return value.size()
+    }
+
+    function slice(start, end, list) {
+      return list[start:end]
+    }
+
+    function split(char, value) {
+      return value.split(char)
+    }
+
+    function tail(list) {
+      return list[1:list.size()]
+    }
+
+    function databasePath() {
+      return /databases/$(database)/documents
+    }
+
+    function matchesNumeric(value) {
+      return value.matches('^[0-9]+$')
+    }
+
+    function matchesRFC3339Timestamp(value) {
+      return isString(value)
+      // TODO BRN": Fix this regex. Firestore doesn't seem to like it
+      //return value.matches('^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]+)?(([Zz])|([\+|\-]([01][0-9]|2[0-3]):[0-5][0-9]))$')
+    }
+
+    function matchesStandardId(value) {
+      return value.matches('^[a-zA-Z0-9]{20}$')
+    }
+
+    function matchesUuidV4(value) {
+      return value.matches('^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
+    }
+
+
+    // Current authenticated user methods
+    // -----------------------------
+
+    function currentUserIsAuthenticated(auth) {
+      return auth != null && auth.uid != null;
+    }
+
+    function currentUserIsValid(auth) {
+      let user = getUserBefore(auth.uid);
+      return user != null && user.data.state == 'valid';
+    }
+
+    function currentUserHasAdminRole(auth) {
+      let role = getUserRoleBefore(auth.uid);
+      return role != null && role.data.role == 'admin';
+    }
+
+    function currentUserHasHilRole(auth) {
+      let role = getUserRoleBefore(auth.uid);
+      return role != null && role.data.role == 'hil';
+    }
+
+    function userIdEqualsAuthServiceAccountId(auth, userId) {
+      let serviceAccount = getServiceAccountBefore(userId);
+      return serviceAccount != null && serviceAccount.id == auth.token.serviceAccountId;
+    }
+
+    function authHasServiceAccountIdToken(auth) {
+      return auth.token != null && has('serviceAccountId', auth.token);
+    }
+
+    function currentUserIsServiceAccount(auth) {
+      return currentUserIsAuthenticated(auth) &&
+        authHasServiceAccountIdToken(auth) &&
+        userIdEqualsAuthServiceAccountId(auth, auth.uid)
+    }
+
+    function currentUserOwnsData(auth, data) {
+      return auth.uid == data.userId
+    }
+
+    function currentUserOwnsResource(auth, resource) {
+      return currentUserOwnsData(auth, resource.data)
+    }
+
+
+    // Entity methods
+    // -----------------------------
+
+    // NOTE BRN: This is a temporary workaround until the collection names are
+    // renamed to be singular
+    function pluralize(str) {
+      return {
+        'AccessToken': 'AccessTokens',
+        'Action': 'Actions',
+        'ChannelContext': 'ChannelContexts',
+        'Conversation': 'Conversations',
+        'ConversationMember': 'ConversationMembers',
+        'ConversationMessage': 'ConversationMessages',
+        'EntityStats': 'EntityStats',
+        'Error': 'Errors',
+        'Host': 'Hosts',
+        'Image': 'Images',
+        'Index': 'Indexes',
+        'InternalPhoneNumber': 'InternalPhoneNumbers',
+        'List':'Lists',
+        'ListEntity':'ListEntities',
+        'Notification': 'Notifications',
+        'NotificationSend': 'NotificationSends',
+        'PhoneNumber': 'PhoneNumbers',
+        'PhoneNumberClaim': 'PhoneNumberClaims',
+        'Preference': 'Preferences',
+        'Queue':'Queues',
+        'QueueEntity':'QueueEntities',
+        'ServiceAccount': 'ServiceAccounts',
+        'SMSChallenge': 'SMSChallenges',
+        'SMSChannel': 'SMSChannels',
+        'SMSMessage': 'SMSMessages',
+        'StatsShard': 'StatsShards',
+        'Upload': 'Uploads',
+        'Url': 'Urls',
+        'User': 'Users',
+        'UserImage': 'UserImages',
+        'UserPhoneNumber': 'UserPhoneNumbers',
+        'UserPreferences': 'UserPreferences',
+        'UserProfile': 'UserProfiles',
+        'UserProfileImage': 'UserProfileImages',
+        'UserRole': 'UserRoles',
+        'Variable': 'Variables'
+      }[string(str)]
+    }
+
+    function validateTimestampedData(data) {
+      return isTimestamp(data.createdAt) &&
+        isTimestamp(data.updatedAt) &&
+        (isTimestamp(data.removedAt) || data.removedAt == null)
+    }
+
+    function validateTimestamped(resource) {
+      return validateTimestampedData(resource.data)
+    }
+
+    function validateEntityData(data) {
+      return validateTimestampedData(data) &&
+        (
+          (!has('removedByEntityType', data) || data.removedByEntityType == null) &&
+          (!has('removedByEntityId', data) || data.removedByEntityId == null) &&
+          dataIsNotRemoved(data)
+        ) || (
+          entityExistsAfter(
+            data.removedByEntityType,
+            data.removedByEntityId
+          ) &&
+          dataIsRemoved(data)
+        )
+    }
+
+    function validateEntity(resource) {
+      return matchesStandardId(resource.id) &&
+        validateEntityData(resource.data)
+    }
+
+    function entityExistsAfter(entityType, entityId) {
+      return existsAfter(/$(databasePath())/$(pluralize(entityType))/$(entityId))
+    }
+
+    function entityExistsBefore(entityType, entityId) {
+      return exists(/$(databasePath())/$(pluralize(entityType))/$(entityId))
+    }
+
+    function entityPathExistsAfter(entityPath) {
+      return existsAfter(/$(databasePath())/$(path(entityPath)))
+    }
+
+    function entityPathExistsBefore(entityPath) {
+      return exists(/$(databasePath())/$(path(entityPath)))
+    }
+
+    function getEntityAfter(entityType, entityId) {
+      return getAfter(/$(databasePath())/$(pluralize(entityType))/$(entityId))
+    }
+
+    function getEntityBefore(entityType, entityId) {
+      return get(/$(databasePath())/$(pluralize(entityType))/$(entityId))
+    }
+
+    function resourceExists(resource) {
+      return resource != null
+      // && exists(resource['__name__'])
+    }
+
+    function dataIsNotRemoved(data) {
+      return data.removedAt == null
+    }
+
+    function dataIsRemoved(data) {
+      return isTimestamp(data.removedAt)
+    }
+
+    function currentUserCanReadPrivateEntity(auth, entity, userId) {
+      return (
+        (
+          currentUserOwnsResource(auth, entity) && dataIsNotRemoved(entity.data)
+        ) || (
+          currentUserIsAuthenticated(auth) && auth.uid == userId
+        ) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+
+    function currentUserCanReadProtectedEntity(auth, entity) {
+      return (
+        (dataIsNotRemoved(entity.data) && resourceExists(entity)) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function currentUserCanReadPublicEntity(auth, entity, allowReadRemoved) {
+      return (
+        (allowReadRemoved || dataIsNotRemoved(entity.data)) ||
+        !resourceExists(entity) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function currentUserCanCreateEntity(auth, entity) {
+      return (
+        (
+          currentUserIsAuthenticated(auth) &&
+          currentUserIsValid(auth) &&
+          currentUserOwnsResource(auth, entity)
+        ) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      );
+    }
+
+    function currentUserCanUpdateEntity(auth, entity, allowRestores) {
+      return (
+        (
+          currentUserIsAuthenticated(auth) &&
+          currentUserIsValid(auth) &&
+          currentUserOwnsResource(auth, entity) &&
+          // TODO BRN: A restore should be restricted to only being allowed by
+          // the  user that removed the entity
+          (allowRestores || dataIsNotRemoved(entity.data))
+        ) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+
+
+    // Index methods
+    // -----------------------------
+
+    function getIndexAfter(path) {
+      return getAfter(/$(databasePath())/Indexes/$(path))
+    }
+
+    function buildAndGetIndexAfter(entityType, fieldsKey, fieldsValue) {
+      return getIndexAfter(
+        /$(pluralize(entityType))/$(fieldsKey)/$(fieldsValue)
+      )
+    }
+
+    function buildAndGetIndexAfterWithFieldValues(entityType, fields, fieldValues) {
+      return buildAndGetIndexAfter(
+        entityType,
+        join('_', fields),
+        join('_', fieldValues)
+      )
+    }
+
+    function getIndexBefore(path) {
+      return get(/$(databasePath())/Indexes/$(path))
+    }
+
+    function indexExistsAfter(path) {
+      return existsAfter(/$(databasePath())/Indexes/$(path))
+    }
+
+    function indexExistsBefore(path) {
+      return exists(/$(databasePath())/Indexes/$(path))
+    }
+
+    function indexEqualsId(index, id) {
+      return index.data.value == id
+    }
+
+    function indexedIdMatchesAfterWithEntityData(entityType, entityData, fields, id) {
+      return indexEqualsId(
+        buildAndGetIndexAfterWithFieldValues(entityType, fields, props(fields, entityData)),
+        id
+      )
+    }
+
+    function indexedIdMatchesAfter(entityType, fields, id) {
+      return indexedIdMatchesAfterWithEntityData(
+        entityType,
+        getEntityAfter(entityType, id).data,
+        fields,
+        id
+      )
+    }
+
+    function indexedValuesMatchAfterWithEntityData(entityData, fields, fieldValues) {
+      return props(fields, entityData) == fieldValues
+    }
+
+    function indexedValueMatchesAfter(entityType, fieldsKey, fieldsValue) {
+      return indexedValuesMatchAfterWithEntityData(
+        getEntityAfter(
+          entityType,
+          buildAndGetIndexAfter(entityType, fieldsKey, fieldsValue).data.value
+        ).data,
+        split('_', fieldsKey),
+        split('_', fieldsValue)
+      )
+    }
+
+
+    // AccessToken implementation
+    // -----------------------------
+
+    function getAccessTokenAfter(id) {
+      return getAfter(/$(databasePath())/AccessTokens/$(id))
+    }
+
+    function getAccessTokenBefore(id) {
+      return get(/$(databasePath())/AccessTokens/$(id))
+    }
+
+    function accessTokenExistsAfter(id) {
+      return existsAfter(/$(databasePath())/AccessTokens/$(id))
+    }
+
+    function accessTokenExistsBefore(id) {
+      return exists(/$(databasePath())/AccessTokens/$(id))
+    }
+
+    function validateAccessTokenData(data) {
+      return matchesUuidV4(data.token) &&
+        isBoolean(data.valid) &&
+        userExistsAfter(data.userId)
+    }
+
+    function validateAccessToken(accessToken) {
+      return validateEntity(accessToken) &&
+        validateAccessTokenData(accessToken.data)
+    }
+
+    function checkReadAccessToken(auth) {
+      return currentUserIsServiceAccount(auth)
+    }
+
+    function checkCreateAccessToken(auth, id) {
+      let accessToken = getAccessTokenAfter(id);
+      return accessToken != null && currentUserIsServiceAccount(auth) && validateAccessToken(accessToken);
+    }
+
+    function checkUpdateAccessToken(auth, id) {
+      let accessToken = getAccessTokenAfter(id);
+      return accessToken != null && currentUserIsServiceAccount(auth) && validateAccessToken(accessToken);
+    }
+
+    function checkDeleteAccessToken(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /AccessTokens/{id} {
+      allow read: if checkReadAccessToken(request.auth);
+      allow create: if checkCreateAccessToken(request.auth, id);
+      allow update: if checkUpdateAccessToken(request.auth, id);
+      allow delete: if checkDeleteAccessToken(request.auth);
+    }
+
+
+    // Action implementation
+    // -----------------------------
+
+    function getActionAfter(type, bucket, id) {
+      return getAfter(/$(databasePath())/Actions/$(type)/$(bucket)/$(id))
+    }
+
+    function getActionBefore(type, bucket, id) {
+      return get(/$(databasePath())/Actions/$(type)/$(bucket)/$(id))
+    }
+
+    function actionExistsAfter(type, bucket, id) {
+      return existsAfter(/$(databasePath())/Actions/$(type)/$(bucket)/$(id))
+    }
+
+    function actionExistsBefore(type, bucket, id) {
+      return exists(/$(databasePath())/Actions/$(type)/$(bucket)/$(id))
+    }
+
+    function currentUserCausedActionMeta(meta, currentUserId) {
+      return meta.causedByEntityType == 'User' &&
+        meta.causedByEntityId == currentUserId
+    }
+
+    function currentUserCausedAction(auth, action) {
+      return currentUserCausedActionMeta(auth, action.data.action.meta)
+    }
+
+    function validateEntityChangedPayload(payload) {
+      return (
+        isString(payload.changeType) &&
+        (payload.data == null || isMap(payload.data)) &&
+        // TODO BRN: This fails for some reason with a "+1" in the path
+        // (entityPathExistsAfter(payload.entityPath) || entityPathExistsBefore(payload.entityPath)) &&
+        payload.entityPath.split('/').hasAll([pluralize(payload.entityType), payload.entityId]) &&
+        (payload.prevData == null || isMap(payload.prevData))
+      )
+    }
+
+    function validateUserRegisteredPayload(payload) {
+      return (
+        isMap(payload.data) &&
+        isString(payload.method) &&
+        userExistsAfter(payload.userId)
+      )
+    }
+
+    function validateStorageObjectPayload(payload) {
+      return (
+        isString(payload.bucket) &&
+        (!has('contentLanguage', payload) || isString(payload.contentLanguage)) &&
+        isString(payload.contentType) &&
+        isString(payload.crc32c) &&
+        isString(payload.etag) &&
+        isString(payload.generation) &&
+        isString(payload.id) &&
+        isString(payload.kind) &&
+        isString(payload.md5Hash) &&
+        isString(payload.mediaLink) &&
+        (!has('metadata', payload) || isMap(payload.metadata)) &&
+        isInteger(payload.metageneration) &&
+        isString(payload.name) &&
+        isString(payload.selfLink) &&
+        isInteger(payload.size) &&
+        isString(payload.storageClass) &&
+        isString(payload.timeCreated) &&
+        isString(payload.timeStorageClassUpdated) &&
+        isString(payload.updated)
+      )
+    }
+
+    function validateStorageObjectDeletePayload(payload) {
+      return validateStorageObjectPayload(payload)
+    }
+
+    function validateStorageObjectFinalizePayload(payload) {
+      return validateStorageObjectPayload(payload)
+    }
+
+    function validateStorageObjectMetadataUpdatePayload(payload) {
+      return validateStorageObjectPayload(payload)
+    }
+
+    // TODO BRN: Add support for storage actions
+    function validateActionPayload(payload, type) {
+      return (
+        type == 'ENTITY_CHANGED' &&
+        validateEntityChangedPayload(payload)
+      ) || (
+        type == 'auth.UserRegisteredAction' &&
+        validateUserRegisteredPayload(payload)
+      ) || (
+        type == 'STORAGE:OBJECT_DELETE' &&
+        validateStorageObjectDeletePayload(payload)
+      ) || (
+        type == 'STORAGE:OBJECT_FINALIZE' &&
+        validateStorageObjectFinalizePayload(payload)
+      ) || (
+        type == 'STORAGE:OBJECT_METADATA_UPDATE' &&
+        validateStorageObjectMetadataUpdatePayload(payload)
+      )
+    }
+
+    function validateEntityChangedMeta(meta) {
+      return (meta.causedByEntityType == null && meta.causedByEntityId == null)
+        || entityExistsAfter(meta.causedByEntityType, meta.causedByEntityId)
+    }
+
+    function validateActionMeta(meta, type) {
+      return (
+        type == 'ENTITY_CHANGED' &&
+        validateEntityChangedMeta(meta)
+      )
+    }
+
+    function validateActionDataAction(action, type, id) {
+      return action.id == id &&
+        action.type == type &&
+        isString(action.source) &&
+        action.specversion == '0.3-wip' &&
+        matchesRFC3339Timestamp(action.time) &&
+        isMap(action.payload) &&
+        validateActionPayload(action.payload, type) &&
+        (!has('meta', action) || validateActionMeta(action.meta, type))
+    }
+
+    function validateActionData(data, type, id) {
+      return isMap(data.action)
+        && validateActionDataAction(data.action, type, id)
+    }
+
+    function validateAction(action, type, id) {
+      return validateTimestamped(action) &&
+        matchesUuidV4(action.id) &&
+        validateActionData(action.data, type, id)
+    }
+
+    function checkCreateQueueAction(auth, type, id) {
+      let action = getActionAfter(type, 'queue', id);
+      return (
+        currentUserIsServiceAccount(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserCausedAction(auth, action)
+      ) && (
+        validateAction(action, type, id) &&
+        !actionExistsAfter(type, 'processing', id) &&
+        !actionExistsAfter(type, 'resolved', id) &&
+        !actionExistsAfter(type, 'rejected', id)
+      );
+    }
+
+    function checkCreateProcessingAction(auth, type, id, resourceAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateAction(resourceAfter, type, id) &&
+        !actionExistsAfter(type, 'queue', id) &&
+        !actionExistsAfter(type, 'resolved', id) &&
+        !actionExistsAfter(type, 'rejected', id);
+    }
+
+    function checkCreateResolvedAction(auth, type, id, resourceAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateAction(resourceAfter, type, id) &&
+        !actionExistsAfter(type, 'queue', id) &&
+        !actionExistsAfter(type, 'processing', id) &&
+        !actionExistsAfter(type, 'rejected', id);
+    }
+
+    function checkCreateRejectedAction(auth, type, id, resourceAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateAction(resourceAfter, type, id) &&
+        !actionExistsAfter(type, 'queue', id) &&
+        !actionExistsAfter(type, 'processing', id) &&
+        !actionExistsAfter(type, 'resolved', id);
+    }
+
+    match /Actions {
+      match /{type}/queue/{id} {
+        // NOTE: only allow ServiceAccounts to read and write
+        allow read: if currentUserIsServiceAccount(request.auth);
+        allow create: if checkCreateQueueAction(request.auth, type, id)
+        allow update: if false;
+        allow delete: if currentUserIsServiceAccount(request.auth);
+      }
+
+      match /{type}/processing/{id} {
+        // NOTE: only allow ServiceAccounts to read and write
+        allow read: if currentUserIsServiceAccount(request.auth);
+        allow create: if checkCreateProcessingAction(request.auth, type, id, getActionAfter(type, 'processing', id))
+        allow update: if false;
+        allow delete: if currentUserIsServiceAccount(request.auth);
+      }
+
+      match /{type}/resolved/{id} {
+        // NOTE: only allow ServiceAccounts to read and write
+        allow read: if currentUserIsServiceAccount(request.auth);
+        allow create: if checkCreateResolvedAction(request.auth, type, id, getActionAfter(type, 'resolved', id))
+        allow update: if false;
+        allow delete: if currentUserIsServiceAccount(request.auth);
+      }
+
+      match /{type}/rejected/{id} {
+        // NOTE: only allow ServiceAccounts to read and write
+        allow read: if currentUserIsServiceAccount(request.auth);
+        allow create: if checkCreateRejectedAction(request.auth, type, id, getActionAfter(type, 'rejected', id))
+        allow update: if false;
+        allow delete: if currentUserIsServiceAccount(request.auth);
+      }
+    }
+
+
+    // ChannelContext implementation
+    // -----------------------------
+
+    function channelContextExistsAfter(id) {
+      return existsAfter(/$(databasePath())/ChannelContexts/$(id))
+    }
+
+    function channelContextExistsBefore(id) {
+      return exists(/$(databasePath())/ChannelContexts/$(id))
+    }
+
+    function getChannelContextAfter(id) {
+      return getAfter(/$(databasePath())/ChannelContexts/$(id))
+    }
+
+    function getChannelContextBefore(id) {
+      return get(/$(databasePath())/ChannelContexts/$(id))
+    }
+
+    function validateChannelContext(resource) {
+      return validateEntity(resource) &&
+        isMap(resource.data.previous) &&
+        smsChannelExistsAfter(resource.data.channelId);
+    }
+
+    // NOTE: Only ServiceAccounts can read and write ChannelContexts.
+    function checkReadChannelContext(auth) {
+      return currentUserIsServiceAccount(auth)
+    }
+
+    function checkCreateChannelContext(auth, id) {
+      return currentUserIsServiceAccount(auth) &&
+        validateChannelContext(getChannelContextAfter(id));
+    }
+
+    function checkUpdateChannelContext() {
+      // ChannelContexts are immutable. No editing
+      return false
+    }
+
+    function checkDeleteChannelContext(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /ChannelContexts/{id} {
+      allow read: if checkReadChannelContext(request.auth);
+      allow create: if checkCreateChannelContext(request.auth, id);
+      allow update: if checkUpdateChannelContext();
+      allow delete: if checkDeleteChannelContext(request.auth);
+    }
+
+
+    // Conversation implementation
+    // -----------------------------
+
+    function getConversationAfter(id) {
+      return getAfter(/$(databasePath())/Conversations/$(id))
+    }
+
+    function getConversationBefore(id) {
+      return get(/$(databasePath())/Conversations/$(id))
+    }
+
+    function conversationExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Conversations/$(id))
+    }
+
+    function conversationExistsBefore(id) {
+      return exists(/$(databasePath())/Conversations/$(id))
+    }
+
+    function currentUserCanReadConversation(auth, conversation) {
+      return (
+        (
+          conversation.data.visibility == 'PUBLIC' &&
+          dataIsNotRemoved(conversation.data)
+        ) || (
+          currentUserIsConversationMember(auth, conversation) &&
+          dataIsNotRemoved(conversation.data)
+        ) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function currentUserCanCreateConversation(auth, conversation) {
+      return (
+        currentUserWillBeConversationOwner(auth, conversation) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function currentUserCanUpdateConversation(auth, conversationAfter, conversationBefore) {
+      return (
+        currentUserIsConversationOwnerOrAdmin(auth, conversationBefore) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function validateConversationData(data) {
+      return isString(data.visibility)
+    }
+
+    function validateConversation(entity) {
+      return validateEntity(entity) &&
+        validateConversationData(entity.data)
+    }
+
+    function checkReadConversation(auth, conversation) {
+      return currentUserCanReadConversation(auth, conversation);
+    }
+
+    function checkCreateConversation(auth, id) {
+      let conversation = getConversationAfter(id);
+      return conversation != null &&
+        validateConversation(conversation) &&
+        currentUserCanCreateConversation(auth, conversation);
+    }
+
+    function checkUpdateConversation(auth, id) {
+      let conversationAfter = getConversationAfter(id);
+      let conversationBefore = getConversationBefore(id);
+      return conversationAfter != null &&
+        conversationBefore != null &&
+        validateConversation(conversationAfter) &&
+        currentUserCanUpdateConversation(auth, conversationAfter, conversationBefore);
+    }
+
+    function checkDeleteConversation(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /Conversations/{id} {
+      allow read: if checkReadConversation(request.auth, resource);
+      allow create: if checkCreateConversation(request.auth, id);
+      allow update: if checkUpdateConversation(request.auth, id);
+      allow delete: if checkDeleteConversation(request.auth);
+    }
+
+
+    // ConversationMember implementation
+    // -----------------------------
+
+    function getConversationMemberAfter(conversationId, userId) {
+      return getAfter(/$(databasePath())/Conversations/$(conversationId)/ConversationMembers/$(userId))
+    }
+
+    function getConversationMemberBefore(conversationId, userId) {
+      return get(/$(databasePath())/Conversations/$(conversationId)/ConversationMembers/$(userId))
+    }
+
+    function conversationMemberExistsAfter(conversationId, userId) {
+      return existsAfter(/$(databasePath())/Conversations/$(conversationId)/ConversationMembers/$(userId))
+    }
+
+    function conversationMemberExistsBefore(conversationId, userId) {
+      return exists(/$(databasePath())/Conversations/$(conversationId)/ConversationMembers/$(userId))
+    }
+
+    function currentUserIsConversationMember(auth, conversation) {
+      let conversationMemberBefore = getConversationMemberBefore(conversation.id, auth.uid);
+      return conversationMemberBefore != null && !dataIsRemoved(conversationMemberBefore.data);
+    }
+
+    function currentUserIsConversationOwnerOrAdmin(auth, conversation) {
+      let conversationMemberBefore = getConversationMemberBefore(conversation.id, auth.uid);
+      return conversationMemberBefore != null &&
+        !dataIsRemoved(conversationMemberBefore.data) &&
+        includes(conversationMemberBefore.data.role, ['ADMIN', 'OWNER']);
+    }
+
+    function currentUserWillBeConversationOwner(auth, conversation) {
+      let conversationMember = getConversationMemberAfter(conversation.id, auth.uid);
+      return conversationMember.data.role == 'OWNER';
+    }
+
+    function currentUserCanReadConversationMember(auth, conversation, conversationMember) {
+      return (
+        currentUserIsConversationMember(auth, conversation) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function currentUserCanCreateConversationMember(auth, conversation, conversationMember) {
+      return (
+        (
+          conversation.data.visibility == 'PUBLIC' &&
+          conversationMember.data.role == 'MEMBER' &&
+          currentUserOwnsResource(auth, conversationMember)
+        ) ||
+        currentUserIsConversationOwnerOrAdmin(auth, conversation) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      );
+    }
+
+    function currentUserCanUpdateConversationMember(auth, conversation, conversationMemberAfter, conversationMemberBefore) {
+      // TODO BRN: need a way to ban users from conversations
+      // TODO BRN: Users should only be able to restore their ConversationMember
+      // record if the conversation is public and they have not been banned
+      return (
+        (
+          currentUserOwnsResource(auth, conversationMemberAfter) &&
+          currentUserOwnsResource(auth, conversationMemberBefore)
+        ) ||
+        currentUserIsConversationOwnerOrAdmin(auth, conversation) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function validateConversationMemberData(conversation, data) {
+      return conversationExistsAfter(data.conversationId) &&
+        data.conversationId == conversation.id &&
+        userExistsAfter(data.userId) &&
+        includes(data.role, [
+          'ADMIN',
+          'HIL',
+          'MEMBER',
+          'OWNER'
+        ])
+    }
+
+    function validateConversationMember(conversation, conversationMember) {
+      return validateEntity(conversationMember) &&
+        conversationMember.id == conversationMember.data.userId &&
+        validateConversationMemberData(conversation, conversationMember.data)
+    }
+
+    function checkReadConversationMember(auth, conversationId, userId, conversationMember) {
+      let conversation = getConversationAfter(conversationId);
+      return currentUserCanReadConversationMember(auth, conversation, conversationMember);
+    }
+
+    function checkCreateConversationMember(auth, conversationId, userId) {
+      let conversation = getConversationAfter(conversationId);
+      let conversationMember = getConversationMemberAfter(conversationId, userId);
+      return conversation != null &&
+        conversationMember != null &&
+        validateConversationMember(conversation, conversationMember) &&
+        currentUserCanCreateConversationMember(auth, conversation, conversationMember);
+    }
+
+    function checkUpdateConversationMember(auth, conversationId, userId) {
+      let conversation = getConversationAfter(conversationId);
+      let conversationMemberAfter = getConversationMemberAfter(conversationId, userId);
+      let conversationMemberBefore = getConversationMemberBefore(conversationId, userId);
+      return conversation != null &&
+        conversationMemberAfter != null &&
+        conversationMemberBefore != null &&
+        validateConversationMember(conversation, conversationMemberAfter) &&
+        currentUserCanUpdateConversationMember(auth, conversation, conversationMemberAfter, conversationMemberBefore);
+    }
+
+    function checkDeleteConversationMember(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /Conversations/{conversationId}/ConversationMembers/{userId} {
+      allow read: if checkReadConversationMember(request.auth, conversationId, userId, resource);
+      allow create: if checkCreateConversationMember(request.auth, conversationId, userId);
+      allow update: if checkUpdateConversationMember(request.auth, conversationId, userId);
+      allow delete: if checkDeleteConversationMember(request.auth);
+    }
+
+
+    // ConversationMessage implementation
+    // -----------------------------
+
+    function getConversationMessageAfter(conversationId, messageId) {
+      return getAfter(/$(databasePath())/Conversations/$(conversationId)/ConversationMessages/$(messageId))
+    }
+
+    function getConversationMessageBefore(conversationId, messageId) {
+      return get(/$(databasePath())/Conversations/$(conversationId)/ConversationMessages/$(messageId))
+    }
+
+    function conversationMessageExistsAfter(conversationId, messageId) {
+      return existsAfter(/$(databasePath())/Conversations/$(conversationId)/ConversationMessages/$(messageId))
+    }
+
+    function conversationMessageExistsBefore(conversationId, messageId) {
+      return exists(/$(databasePath())/Conversations/$(conversationId)/ConversationMessages/$(messageId))
+    }
+
+    function currentUserCanReadConversationMessage(auth, conversation, conversationMessage) {
+      return (
+        (
+          conversation.id == conversationMessage.data.conversationId &&
+          currentUserIsConversationMember(auth, conversation)
+        ) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function currentUserCanCreateConversationMessage(auth, conversation, conversationMessage) {
+      return (
+        (
+          currentUserIsConversationMember(auth, conversation)  &&
+          currentUserOwnsResource(auth, conversationMessage)
+        ) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function currentUserCanUpdateConversationMessage(auth, conversation, conversationMessageAfter, conversationMessageBefore) {
+      // TODO BRN: need a way to separate removing a message vs updating the
+      // of the message. Admins and HILs should be able to remove messages but
+      // not be able to update the content of another user's message
+      return (
+        (
+          currentUserOwnsResource(auth, conversationMessageAfter) &&
+          currentUserOwnsResource(auth, conversationMessageBefore)
+        ) ||
+        currentUserIsConversationOwnerOrAdmin(auth, conversation) ||
+        currentUserHasHilRole(auth) ||
+        currentUserHasAdminRole(auth) ||
+        currentUserIsServiceAccount(auth)
+      )
+    }
+
+    function validateConversationMessageData(conversation, data) {
+      return conversationExistsAfter(data.conversationId) &&
+        userExistsAfter(data.userId) &&
+        data.conversationId == conversation.id &&
+        (data.attachments == null || isList(data.attachments)) &&
+        (data.editedAt == null || isTimestamp(data.editedAt)) &&
+        (data.sentAt == null || isTimestamp(data.sentAt)) &&
+        isString(data.type);
+    }
+
+    function validateConversationMessage(conversation, conversationMessage) {
+      return validateEntity(conversationMessage) &&
+        validateConversationMessageData(conversation, conversationMessage.data)
+    }
+
+    function checkReadConversationMessage(auth, conversationId, conversationMessage) {
+      let conversation = getConversationAfter(conversationId);
+      return currentUserCanReadConversationMessage(auth, conversation, conversationMessage);
+    }
+
+    function checkCreateConversationMessage(auth, conversationId, messageId) {
+      let conversation = getConversationAfter(conversationId);
+      let conversationMessage = getConversationMessageAfter(conversationId, messageId);
+      return conversation != null &&
+        conversationMessage != null &&
+        validateConversationMessage(conversation, conversationMessage) &&
+        currentUserCanCreateConversationMessage(auth, conversation, conversationMessage);
+    }
+
+    function checkUpdateConversationMessage(auth, conversationId, messageId) {
+      let conversation = getConversationAfter(conversationId);
+      let conversationMessageAfter = getConversationMessageAfter(conversationId, messageId);
+      let conversationMessageBefore = getConversationMessageBefore(conversationId, messageId);
+      return conversation != null &&
+        conversationMessageAfter != null &&
+        conversationMessageBefore != null &&
+        validateConversationMessage(conversation, conversationMessageAfter) &&
+        currentUserCanUpdateConversationMessage(auth, conversation, conversationMessageAfter, conversationMessageBefore);
+    }
+
+    function checkDeleteConversationMessage(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /Conversations/{conversationId}/ConversationMessages/{messageId} {
+      allow read: if checkReadConversationMessage(request.auth, conversationId, resource);
+      allow create: if checkCreateConversationMessage(request.auth, conversationId, messageId);
+      allow update: if checkUpdateConversationMessage(request.auth, conversationId, messageId);
+      allow delete: if checkDeleteConversationMessage(request.auth);
+    }
+
+
+    // EntityStats implementation
+    // -----------------------------
+
+    function getEntityStatsAfter(id) {
+      return getAfter(/$(databasePath())/EntityStats/$(id))
+    }
+
+    function getEntityStatsBefore(id) {
+      return get(/$(databasePath())/EntityStats/$(id))
+    }
+
+    function entityStatsExistsAfter(id) {
+      return existsAfter(/$(databasePath())/EntityStats/$(id))
+    }
+
+    function entityStatsExistsBefore(id) {
+      return exists(/$(databasePath())/EntityStats/$(id))
+    }
+
+    function validateEntityStatsData(data) {
+      return isString(data.entityType) &&
+        isString(data.entityId) &&
+        // entityExistsAfter(data.entityType, data.entityId)
+        isNumber(data.numberShards)
+    }
+
+    function validateEntityStats(resource) {
+      return validateEntity(resource) &&
+        validateEntityStatsData(resource.data)
+    }
+
+    match /EntityStats/{id} {
+      allow read: if currentUserCanReadPublicEntity(request.auth, resource, false);
+
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        validateEntityStats(getEntityStatsAfter(id)) &&
+        indexedIdMatchesAfter('EntityStats', ['entityType', 'entityId'], id);
+
+      allow update: if currentUserIsServiceAccount(request.auth) &&
+        validateEntityStats(getEntityStatsAfter(id)) &&
+        indexedIdMatchesAfter('EntityStats', ['entityType', 'entityId'], id);
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    match /Indexes/EntityStats/entityType_entityId/{entityType_entityId} {
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        indexedValueMatchesAfter('EntityStats', 'entityType_entityId', entityType_entityId);
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // EntityStats/{id}/StatsShards implementation
+    // -----------------------------
+
+    function getEntityStatsShardAfter(id, index) {
+      return getAfter(/$(databasePath())/EntityStats/$(id)/StatsShards/$(index))
+    }
+
+    function getEntityStatsShardBefore(id, index) {
+      return get(/$(databasePath())/EntityStats/$(id)/StatsShards/$(index))
+    }
+
+    function entityStatsShardExistsAfter(id, index) {
+      return existsAfter(/$(databasePath())/EntityStats/$(id)/StatsShards/$(index))
+    }
+
+    function entityStatsShardExistsBefore(id, index) {
+      return exists(/$(databasePath())/EntityStats/$(id)/StatsShards/$(index))
+    }
+
+    function validateEntityStatsShardData(data) {
+      return isMap(data.data)
+        && isNumber(data.index)
+    }
+
+    function validateEntityStatsShard(entity) {
+      return matchesNumeric(entity.id) &&
+        validateEntityData(entity.data) &&
+        validateEntityStatsShardData(entity.data)
+    }
+
+    match /EntityStats/{id}/StatsShards/{index} {
+      allow read: if currentUserCanReadPublicEntity(request.auth, resource, false);
+
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        validateEntityStatsShard(getEntityStatsShardAfter(id, index));
+
+      allow update: if currentUserIsServiceAccount(request.auth) &&
+        validateEntityStatsShard(getEntityStatsShardAfter(id, index));
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    // Error implementation
+    // -----------------------------
+
+    function getErrorAfter(id) {
+      return getAfter(/$(databasePath())/Errors/$(id))
+    }
+
+    function getErrorBefore(id) {
+      return get(/$(databasePath())/Errors/$(id))
+    }
+
+    function errorExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Errors/$(id))
+    }
+
+    function errorExistsBefore(id) {
+      return exists(/$(databasePath())/Errors/$(id))
+    }
+
+    function validateErrorData(data) {
+      return (isString(data.code) || data.code == null) &&
+        isString(data.message) &&
+        isString(data.stack) &&
+        isString(data.source)
+    }
+
+    function validateError(entity) {
+      return validateEntity(entity) &&
+        validateErrorData(entity.data)
+    }
+
+    function checkReadError(auth) {
+      return currentUserIsServiceAccount(auth)
+    }
+
+    function checkCreateError(auth, resourceAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateError(resourceAfter)
+    }
+
+    function checkUpdateError(auth, resourceAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateError(resourceAfter)
+    }
+
+    function checkDeleteError(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /Errors/{id} {
+      allow read: if checkReadError(request.auth);
+      allow create: if checkCreateError(request.auth, getErrorAfter(id));
+      allow update: if checkUpdateError(request.auth, getErrorAfter(id));
+      allow delete: if checkDeleteError(request.auth);
+    }
+
+
+    // Host implementation
+    // -----------------------------
+
+    function getHostAfter(id) {
+      return getAfter(/$(databasePath())/Hosts/$(id))
+    }
+
+    function getHostBefore(id) {
+      return get(/$(databasePath())/Hosts/$(id))
+    }
+
+    function hostExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Hosts/$(id))
+    }
+
+    function hostExistsBefore(id) {
+      return exists(/$(databasePath())/Hosts/$(id))
+    }
+
+    function validateHostData(data) {
+      // TODO BRN: replace this with more accurate checks
+      return isString(data.domain) &&
+        (isString(data.subDomain) || isNull(data.subDomain)) &&
+        isString(data.topLevelDomain)
+    }
+
+    function validateHost(entity) {
+      return validateEntity(entity) &&
+        validateHostData(entity.data)
+    }
+
+    function checkReadHost(auth) {
+      return currentUserIsServiceAccount(auth)
+    }
+
+    function checkCreateHost(auth, resourceAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateHost(resourceAfter)
+    }
+
+    function checkUpdateHost(auth, resourceAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateHost(resourceAfter)
+    }
+
+    function checkDeleteHost(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /Hosts/{id} {
+      allow read: if checkReadHost(request.auth);
+      allow create: if checkCreateHost(request.auth ,getHostAfter(id));
+      allow update: if checkUpdateHost(request.auth, getHostAfter(id));
+      allow delete: if checkDeleteHost(request.auth);
+    }
+
+
+    // Image implementation
+    // -----------------------------
+
+    function getImageAfter(id) {
+      return getAfter(/$(databasePath())/Images/$(id))
+    }
+
+    function getImageBefore(id) {
+      return get(/$(databasePath())/Images/$(id))
+    }
+
+    function imageExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Images/$(id))
+    }
+
+    function imageExistsBefore(id) {
+      return exists(/$(databasePath())/Images/$(id))
+    }
+
+    function validateImageData(data) {
+      return isImageContentType(data.contentType) &&
+        isHex(data.hash) &&
+        isNumber(data.height) &&
+        isNumber(data.length) &&
+        (isString(data.path) || !has('path', data)) &&
+        isString(data.storageBucket) &&
+        isNumber(data.width)
+    }
+
+    function validateImage(resource) {
+      return validateEntity(resource) &&
+        validateImageData(resource.data)
+    }
+
+    match /Images/{id} {
+      // NOTE: Only ServiceAccounts can read and write Images.
+      // This is because images are returned by a pass through in firebase
+      // hosting. So only ServiceAccounts actually need to read or write them
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        validateImage(getImageAfter(id));
+
+      allow update: if currentUserIsServiceAccount(request.auth) &&
+        validateImage(getImageAfter(id));
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // InternalPhoneNumber implementation
+    // -----------------------------
+
+    function getInternalPhoneNumberAfter(phoneNumberId) {
+      return getAfter(/$(databasePath())/InternalPhoneNumbers/$(phoneNumberId))
+    }
+
+    function getInternalPhoneNumberBefore(phoneNumberId) {
+      return get(/$(databasePath())/InternalPhoneNumbers/$(phoneNumberId))
+    }
+
+    function internalPhoneNumberExistsAfter(phoneNumberId) {
+      return existsAfter(/$(databasePath())/InternalPhoneNumbers/$(phoneNumberId))
+    }
+
+    function internalPhoneNumberExistsBefore(phoneNumberId) {
+      return exists(/$(databasePath())/InternalPhoneNumbers/$(phoneNumberId))
+    }
+
+    function validateInternalPhoneNumber(resource) {
+      return validateEntity(resource) &&
+        phoneNumberExistsAfter(resource.data.phoneNumberId) &&
+        getPhoneNumberAfter(resource.data.phoneNumberId).data.type == 'internal'
+    }
+
+    match /InternalPhoneNumbers/{phoneNumberId} {
+      allow read: if currentUserCanReadProtectedEntity(request.auth ,resource);
+
+      allow create: if validateInternalPhoneNumber(getInternalPhoneNumberAfter(phoneNumberId)) &&
+        currentUserIsServiceAccount(request.auth);
+      allow update: if false;
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // List implementation
+    // -----------------------------
+
+    function getListAfter(id) {
+      return getAfter(/$(databasePath())/Lists/$(id))
+    }
+
+    function getListBefore(id) {
+      return get(/$(databasePath())/Lists/$(id))
+    }
+
+    function listExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Lists/$(id))
+    }
+
+    function listExistsBefore(id) {
+      return exists(/$(databasePath())/Lists/$(id))
+    }
+
+    function validateListData(data) {
+      return (
+        (isNull(data.parentEntityId) && isNull(data.parentEntityType)) ||
+        entityExistsAfter(data.parentEntityType, data.parentEntityId)
+      )
+    }
+
+    function validateList(resource) {
+      return validateEntity(resource) &&
+        validateListData(resource.data)
+    }
+
+    function checkReadList(auth, resource) {
+      return currentUserCanReadPublicEntity(auth, resource, false)
+    }
+
+    function checkCreateList(auth, id) {
+      let list = getListAfter(id);
+      return list != null && validateList(list) && currentUserIsServiceAccount(auth)
+    }
+
+    function checkUpdateList(auth, id) {
+      let list = getListAfter(id);
+      return list != null && validateList(list) && currentUserIsServiceAccount(auth)
+    }
+
+    function checkDeleteList(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /Lists/{id} {
+      allow read: if checkReadList(request.auth, resource);
+      allow create: if checkCreateList(request.auth, id);
+      allow update: if checkUpdateList(request.auth, id);
+      allow delete: if checkDeleteList(request.auth);
+    }
+
+    // ListEntity implementation
+    // -----------------------------
+
+    function getListEntityAfter(id) {
+      return getAfter(/$(databasePath())/ListEntities/$(id))
+    }
+
+    function getListEntityBefore(id) {
+      return get(/$(databasePath())/ListEntities/$(id))
+    }
+
+    function listEntityExistsAfter(id) {
+      return existsAfter(/$(databasePath())/ListEntities/$(id))
+    }
+
+    function EntityExistsBefore(id) {
+      return exists(/$(databasePath())/ListEntities/$(id))
+    }
+
+    function validateListEntityData(data) {
+      return listExistsAfter(data.listId) &&
+        (isIndex(data.index)) &&
+        entityExistsAfter(data.entityType, data.entityId)
+    }
+
+    function validateListEntity(resource) {
+      return validateEntity(resource) &&
+        validateListEntityData(resource.data)
+    }
+
+    function checkReadListEntity(auth, resource) {
+      return currentUserCanReadPublicEntity(auth, resource, false)
+    }
+
+    function checkCreateListEntity(auth, id) {
+      let queueEntity = getListEntityAfter(id);
+      return queueEntity != null && validateListEntity(queueEntity)
+        && indexedIdMatchesAfter('ListEntity', ['listId', 'index'], id)
+        && currentUserIsServiceAccount(auth);
+    }
+
+    function checkUpdateListEntity(auth, id) {
+      let queueEntity = getListEntityAfter(id);
+      return queueEntity != null && validateListEntity(queueEntity)
+        && indexedIdMatchesAfter('ListEntity', ['listId', 'index'], id)
+        && currentUserIsServiceAccount(auth);
+    }
+
+    function checkDeleteListEntity(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /ListEntities/{id} {
+      allow read: if checkReadListEntity(request.auth, resource);
+      allow create: if checkCreateListEntity(request.auth, id);
+      allow update: if checkUpdateListEntity(request.auth, id);
+      allow delete: if checkDeleteListEntity(request.auth);
+    }
+
+    match /Indexes/ListEntities/listId_index/{listId_index} {
+      allow read: if true;
+      allow create: if indexedValueMatchesAfter('ListEntity', 'listId_index', listId_index);
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // Notification implementation
+    // -----------------------------
+
+    function getNotificationAfter(id) {
+      return getAfter(/$(databasePath())/Notifications/$(id))
+    }
+
+    function getNotificationBefore(id) {
+      return get(/$(databasePath())/Notifications/$(id))
+    }
+
+    function sendExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Notifications/$(id))
+    }
+
+    function sendExistsBefore(id) {
+      return exists(/$(databasePath())/Notifications/$(id))
+    }
+
+    function validateNotificationData(data) {
+      return userExistsAfter(data.userId) &&
+        (isTimestamp(data.readAt) || isNull(data.readAt)) &&
+        isString(data.type) &&
+        (isMap(data.meta) || isNull(data.meta))
+    }
+
+    function validateNotification(resource) {
+      return validateEntity(resource) &&
+        validateNotificationData(resource.data)
+    }
+
+    function checkReadNotification(auth, resource) {
+      return currentUserCanReadPrivateEntity(auth, resource, resource.userId)
+    }
+
+    function checkCreateNotification(auth, resourceAfter) {
+      return validateNotification(resourceAfter) &&
+        currentUserIsServiceAccount(auth)
+    }
+
+    function checkUpdateNotification(auth, resourceAfter) {
+      return validateNotification(resourceAfter) &&
+        currentUserCanUpdateEntity(auth, resourceAfter, false)
+    }
+
+    function checkDeleteNotification(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /Notifications/{id} {
+      allow read: if checkReadNotification(request.auth, resource);
+      allow create: if checkCreateNotification(request.auth, getNotificationAfter(id));
+      allow update: if checkUpdateNotification(request.auth, getNotificationAfter(id));
+      allow delete: if checkDeleteNotification(request.auth);
+    }
+
+    // Notifications/{id}/NotificationSends implementation
+    // -----------------------------
+
+    function getNotificationSendAfter(sendId, sendSendId) {
+      return getAfter(/$(databasePath())/Notifications/$(sendId)/NotificationSends/$(sendSendId))
+    }
+
+    function getNotificationSendBefore(sendId, sendSendId) {
+      return get(/$(databasePath())/Notifications/$(sendId)/NotificationSends/$(sendSendId))
+    }
+
+    function sendSendExistsAfter(sendId, sendSendId) {
+      return existsAfter(/$(databasePath())/Notifications/$(sendId)/NotificationSends/$(sendSendId))
+    }
+
+    function sendSendExistsBefore(sendId, sendSendId) {
+      return exists(/$(databasePath())/Notifications/$(sendId)/NotificationSends/$(sendSendId))
+    }
+
+    function validateNotificationSendData(data, send) {
+      return isMap(data.channels) &&
+        (errorExistsAfter(data.errorId) || data.errorId == null) &&
+        data.sendId == send.id &&
+        (isMap(data.sentAt) || data.sentAt == null) &&
+        includes(data.state, [
+          'ABORTED',
+          'COMPLETED',
+          'ERROR',
+          'SENDING'
+        ])
+    }
+
+    function validateNotificationSend(resource, sendAfter) {
+      return validateEntity(resource) &&
+        validateNotificationSendData(resource.data, sendAfter)
+    }
+
+    function checkReadNotificationSend(auth, resource) {
+      return currentUserCanReadPrivateEntity(auth, resource, resource.userId)
+    }
+
+    function checkCreateNotificationSend(auth, sendAfter, sendSendAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateNotificationSend(sendSendAfter, sendAfter)
+    }
+
+    function checkUpdateNotificationSend(auth, sendBefore, sendSendAfter) {
+      return currentUserIsServiceAccount(auth) &&
+        validateNotificationSend(sendSendAfter, sendBefore)
+    }
+
+    function checkDeleteNotificationSend(auth) {
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /Notifications/{sendId}/NotificationSends/{sendSendId} {
+      allow read: if checkReadNotificationSend(request.auth, resource);
+      allow create: if checkCreateNotificationSend(
+        request.auth,
+        getNotificationAfter(sendId),
+        getNotificationSendAfter(sendId, sendSendId)
+      );
+      allow update: if checkUpdateNotificationSend(
+        request.auth,
+        getNotificationBefore(sendId),
+        getNotificationSendAfter(sendId, sendSendId)
+      );
+      allow delete: if checkDeleteNotificationSend(request.auth);
+    }
+
+    match /{somePath=**}/NotificationSends/{sendSendId} {
+      allow read: if checkReadNotificationSend(request.auth, resource);
+    }
+
+
+    // PhoneNumber implementation
+    // -----------------------------
+
+    function getPhoneNumberAfter(id) {
+      return getAfter(/$(databasePath())/PhoneNumbers/$(id))
+    }
+
+    function getPhoneNumberBefore(id) {
+      return get(/$(databasePath())/PhoneNumbers/$(id))
+    }
+
+    function phoneNumberExistsAfter(id) {
+      return existsAfter(/$(databasePath())/PhoneNumbers/$(id))
+    }
+
+    function phoneNumberExistsBefore(id) {
+      return exists(/$(databasePath())/PhoneNumbers/$(id))
+    }
+
+    function validatePhoneNumber(resource) {
+      return validateEntity(resource) &&
+        isHex(resource.data.hash) &&
+        isString(resource.data.phoneNumber) &&
+        (
+          (resource.data.type == 'internal' &&
+            validateInternalPhoneNumberType(resource)) ||
+          (resource.data.type == 'unclaimed' &&
+            validateUnclaimedPhoneNumberType(resource)) ||
+          (resource.data.type == 'user' &&
+            validateUserPhoneNumberType(resource))
+        )
+    }
+
+    function validateInternalPhoneNumberType(resource) {
+      return internalPhoneNumberExistsAfter(resource.id)
+    }
+
+    function validateUnclaimedPhoneNumberType(resource) {
+      return indexExistsAfter(/PhoneNumberClaims/phoneNumberId/$(resource.id))
+    }
+
+    function validateUserPhoneNumberType(resource) {
+      return userPhoneNumberExistsAfter(resource.id)
+    }
+
+    match /PhoneNumbers/{id} {
+      // Only allow ServiceAccounts to read
+      allow read: if currentUserIsServiceAccount(request.auth);
+
+      // Anyone can add phone numbers
+      allow create: if
+        validatePhoneNumber(getPhoneNumberAfter(id)) &&
+        indexedIdMatchesAfter('PhoneNumber', ['hash'], id) &&
+        (
+          currentUserIsServiceAccount(request.auth) ||
+          // Only allow users to create unclaimed phone numbers
+          getPhoneNumberAfter(id).data.type == 'unclaimed'
+        );
+
+      // ServiceAccounts can update phone numbers
+      allow update: if
+        validatePhoneNumber(getPhoneNumberAfter(id)) &&
+        indexedIdMatchesAfter('PhoneNumber', ['hash'], id) &&
+        currentUserIsServiceAccount(request.auth);
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    match /Indexes/PhoneNumbers/hash/{hash} {
+      allow read: if true;
+      allow create: if indexedValueMatchesAfter('PhoneNumber', 'hash', hash);
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // PhoneNumberClaim implementation
+    // -----------------------------
+
+    function getPhoneNumberClaimAfter(id) {
+      return getAfter(/$(databasePath())/PhoneNumberClaims/$(id))
+    }
+
+    function getPhoneNumberClaimBefore(id) {
+      return get(/$(databasePath())/PhoneNumberClaims/$(id))
+    }
+
+    function phoneNumberClaimExistsAfter(id) {
+      return existsAfter(/$(databasePath())/PhoneNumberClaims/$(id))
+    }
+
+    function phoneNumberClaimExistsBefore(id) {
+      return exists(/$(databasePath())/PhoneNumberClaims/$(id))
+    }
+
+    function validatePhoneNumberClaim(resource) {
+      return validateEntity(resource) &&
+        userExistsAfter(resource.data.userId) &&
+        phoneNumberExistsAfter(resource.data.phoneNumberId) &&
+        getPhoneNumberAfter(resource.data.phoneNumberId).data.type == 'unclaimed'
+    }
+
+    match /PhoneNumberClaims/{id} {
+      // Allow everyone to lookup user ids by phone number claims
+      allow read: if currentUserCanReadProtectedEntity(request.auth, resource);
+
+      // Anyone can add phone number claims if they do not exist in
+      // UserPhoneNumbers or InternalPhoneNumbers
+      allow create: if
+        validatePhoneNumberClaim(getPhoneNumberClaimAfter(id)) &&
+        !userPhoneNumberExistsAfter(getPhoneNumberClaimAfter(id).data.phoneNumberId) &&
+        indexedIdMatchesAfter('PhoneNumberClaim', ['phoneNumberId'], id);
+
+      // ServiceAccounts can update PhoneNumberClaims
+      allow update: if currentUserIsServiceAccount(request.auth);
+
+      // Only ServiceAccounts can delete phone number claims
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    match /Indexes/PhoneNumberClaims/phoneNumberId/{phoneNumberId} {
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow create: if indexedValueMatchesAfter(
+        'PhoneNumberClaim',
+        'phoneNumberId',
+        phoneNumberId
+      );
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // Preferences implementation
+    // -----------------------------
+
+    function getPreferenceAfter(id, key) {
+      return getAfter(/$(databasePath())/UserPreferences/$(id)/Preferences/$(key))
+    }
+
+    function getPreferenceBefore(id, key) {
+      return get(/$(databasePath())/UserPreferences/$(id)/Preferences/$(key))
+    }
+
+    function preferenceExistsAfter(id, key) {
+      return existsAfter(/$(databasePath())/UserPreferences/$(id)/Preferences/$(key))
+    }
+
+    function preferenceExistsBefore(id, key) {
+      return exists(/$(databasePath())/UserPreferences/$(id)/Preferences/$(key))
+    }
+
+    function validatePreferenceData(data) {
+      return userPreferencesExistsAfter(data.userPreferencesId) &&
+        isString(data.key) &&
+        has('value', data)
+    }
+
+    function validatePreference(entity) {
+      return entity.data.key == entity.id &&
+        validateEntityData(entity.data) &&
+        validatePreferenceData(entity.data)
+    }
+
+    function checkReadPreference(auth, resource) {
+      return currentUserCanReadPublicEntity(auth, resource, false)
+    }
+
+    function checkCreatePreference(auth, id, key) {
+      let preference = getPreferenceAfter(id, key);
+      return preference != null && validatePreference(preference) &&
+        currentUserCanCreateUserPreferences(auth, preference.userPreferencesId)
+    }
+
+    function checkUpdatePreference(auth, id, key) {
+      let preference = getPreferenceAfter(id, key);
+      return preference != null && validatePreference(preference) &&
+        currentUserCanUpdateUserPreferences(auth, preference.userPreferencesId, true)
+    }
+
+    function checkDeletePreference(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /UserPreferences/{id}/Preferences/{key} {
+      allow read: if checkReadPreference(request.auth, resource);
+      allow create: if checkCreatePreference(request.auth, id, key);
+      allow update: if checkUpdatePreference(request.auth, id, key);
+      allow delete: if checkDeletePreference(request.auth);
+    }
+
+
+    // Queue implementation
+    // -----------------------------
+
+    function getQueueAfter(id) {
+      return getAfter(/$(databasePath())/Queues/$(id))
+    }
+
+    function getQueueBefore(id) {
+      return get(/$(databasePath())/Queues/$(id))
+    }
+
+    function queueExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Queues/$(id))
+    }
+
+    function queueExistsBefore(id) {
+      return exists(/$(databasePath())/Queues/$(id))
+    }
+
+    function validateQueueData(data) {
+      return (
+        (isNull(data.parentEntityId) && isNull(data.parentEntityType)) ||
+        entityExistsAfter(data.parentEtityType, data.parentEntityId) &&
+        isIndex(data.headIndex) &&
+        isInteger(data.length) &&
+        isInteger(data.tailIndex)
+      )
+    }
+
+    function validateQueue(resource) {
+      return validateEntity(resource) &&
+        validateQueueData(resource.data)
+    }
+
+    function checkReadQueue(auth, resource) {
+      return currentUserCanReadPublicEntity(auth, resource, false)
+    }
+
+    function checkCreateQueue(auth, id) {
+      let queue = getQueueAfter(id);
+      return queue != null && validateQueue(queue)
+        && currentUserIsServiceAccount(auth);
+    }
+
+    function checkUpdateQueue(auth, id) {
+      let queue = getQueueAfter(id);
+      return queue != null && validateQueue(queue)
+        && currentUserIsServiceAccount(auth);
+    }
+
+    function checkDeleteQueue(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    function currentUserOwnsQueue(auth, queueId) {
+      return currentUserIsServiceAccount(auth) || currentUserHasAdminRole(auth) ||
+        (getQueueAfter(queueId).userId == auth.uid)
+    }
+
+    match /Queues/{id} {
+      allow read: if checkReadQueue(request.auth, resource);
+      allow create: if checkCreateQueue(request.auth, id);
+      allow update: if checkUpdateQueue(request.auth, id);
+      allow delete: if checkDeleteQueue(request.auth);
+    }
+
+    // QueueEntity implementation
+    // -----------------------------
+
+    function getQueueEntityAfter(id, index) {
+      return getAfter(/$(databasePath())/Queues/$(id)/QueueEntities/$(index))
+    }
+
+    function getQueueEntityBefore(id, index) {
+      return get(/$(databasePath())/Queues/$(id)/QueueEntities/$(index))
+    }
+
+    function queueEntityExistsAfter(id, index) {
+      return existsAfter(/$(databasePath())/Queues/$(id)/QueueEntities/$(index))
+    }
+
+    function queueEntityExistsBefore(id, index) {
+      return exists(/$(databasePath())/Queues/$(id)/QueueEntities/$(index))
+    }
+
+    function validateQueueEntityData(data) {
+      return queueExistsAfter(data.queueId) &&
+        isInteger(data.index) &&
+        entityExistsAfter(data.entityType, data.entityId)
+    }
+
+    function validateQueueEntity(entity) {
+      return matchesNumeric(entity.id) &&
+        validateEntityData(entity.data) &&
+        validateQueueEntityData(entity.data)
+    }
+
+    function checkReadQueueEntity(auth, resource) {
+      return currentUserCanReadPublicEntity(auth, resource, false)
+    }
+
+    function checkCreateQueueEntity(auth, id, index) {
+      let queueEntity = getQueueEntityAfter(id, index);
+      return queueEntity != null && validateQueueEntity(queueEntity) &&
+        currentUserOwnsQueue(auth, queueEntity.queueId)
+    }
+
+    function checkUpdateQueueEntity(auth, id, index) {
+      let queueEntity = getQueueEntityAfter(id, index);
+      return queueEntity != null && validateQueueEntity(queueEntity) &&
+        currentUserOwnsQueue(auth, queueEntity.queueId)
+    }
+
+    function checkDeleteQueueEntity(auth) {
+      // Only allow ServiceAccounts to delete
+      return currentUserIsServiceAccount(auth)
+    }
+
+    match /Queues/{id}/QueueEntities/{index} {
+      allow read: if checkReadQueueEntity(request.auth, resource);
+      allow create: if checkCreateQueueEntity(request.auth, id, index);
+      allow update: if checkUpdateQueueEntity(request.auth, id, index);
+      allow delete: if checkDeleteQueueEntity(request.auth);
+    }
+
+
+    // ServiceAccount implementation
+    // -----------------------------
+
+    function getServiceAccountAfter(id) {
+      return getAfter(/$(databasePath())/ServiceAccounts/$(id))
+    }
+
+    function getServiceAccountBefore(id) {
+      return get(/$(databasePath())/ServiceAccounts/$(id))
+    }
+
+    function serviceAccountExistsAfter(id) {
+      return existsAfter(/$(databasePath())/ServiceAccounts/$(id))
+    }
+
+    function serviceAccountExistsBefore(id) {
+      return exists(/$(databasePath())/ServiceAccounts/$(id))
+    }
+
+    function validateServiceAccount(resource) {
+      return matchesUuidV4(resource.id) &&
+        isString(resource.data.name) &&
+        resource.data.uid == resource.id
+    }
+
+    match /ServiceAccounts/{id} {
+      // Only firebase admins can create ServiceAccounts
+      allow read: if false;
+      allow write: if false;
+    }
+
+
+    // SMSChallenge implementation
+    // -----------------------------
+
+    function getSMSChallengeAfter(id) {
+      return getAfter(/$(databasePath())/SMSChallenges/$(id))
+    }
+
+    function getSMSChallengeBefore(id) {
+      return get(/$(databasePath())/SMSChallenges/$(id))
+    }
+
+    function smsChallengeExistsAfter(id) {
+      return existsAfter(/$(databasePath())/SMSChallenges/$(id))
+    }
+
+    function smsChallengeExistsBefore(id) {
+      return exists(/$(databasePath())/SMSChallenges/$(id))
+    }
+
+    function validateSMSChallenge(resource) {
+      return validateEntity(resource) &&
+        isString(resource.data.code) &&
+        isString(resource.data.expiresIn) &&
+        phoneNumberExistsAfter(resource.data.phoneNumberId) &&
+        smsChannelExistsAfter(resource.data.smsChannelId) &&
+        (isTimestamp(resource.data.usedAt) || !has('usedAt', resource.data)) &&
+        isBoolean(resource.data.valid)
+    }
+
+    match /SMSChallenges/{id} {
+      // NOTE: only allow ServiceAccounts to read and write
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        validateSMSChallenge(getSMSChallengeAfter(id));
+      allow update: if currentUserIsServiceAccount(request.auth) &&
+        validateSMSChallenge(resource);
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // SMSChannel implementation
+    // -----------------------------
+
+    function getSMSChannelAfter(id) {
+      return getAfter(/$(databasePath())/SMSChannels/$(id))
+    }
+
+    function getSMSChannelBefore(id) {
+      return get(/$(databasePath())/SMSChannels/$(id))
+    }
+
+    function smsChannelExistsAfter(id) {
+      return existsAfter(/$(databasePath())/SMSChannels/$(id))
+    }
+
+    function smsChannelExistsBefore(id) {
+      return exists(/$(databasePath())/SMSChannels/$(id))
+    }
+
+    function validateSMSChannel(resource) {
+      return validateEntity(resource) &&
+        internalPhoneNumberExistsAfter(resource.data.internalPhoneNumberId) &&
+        phoneNumberExistsAfter(resource.data.userPhoneNumberId)
+    }
+
+    function checkReadSMSChannel(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    function checkCreateSMSChannel(auth, id) {
+      return currentUserIsServiceAccount(auth) &&
+        validateSMSChannel(getSMSChannelAfter(id)) &&
+        indexedIdMatchesAfter(
+          'SMSChannel',
+          ['userPhoneNumberId', 'internalPhoneNumberId'],
+          id
+        )
+    }
+
+    match /SMSChannels/{id} {
+      // NOTE: only allow ServiceAccounts to read and write
+      allow read: if checkReadSMSChannel(request.auth)
+      allow create: if checkCreateSMSChannel(request.auth, id)
+      allow update: if currentUserIsServiceAccount(request.auth) &&
+        validateSMSChannel(resource) &&
+        indexedIdMatchesAfter(
+          'SMSChannel',
+          ['userPhoneNumberId', 'internalPhoneNumberId'],
+          id
+        );
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    match /Indexes/SMSChannels/userPhoneNumberId_internalPhoneNumberId/{userPhoneNumberId_internalPhoneNumberId} {
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        indexedValueMatchesAfter(
+          'SMSChannel',
+          'userPhoneNumberId_internalPhoneNumberId',
+          userPhoneNumberId_internalPhoneNumberId
+        );
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // SMSMessage implementation
+    // -----------------------------
+
+    match /SMSMessages/{id} {
+      // TODO: Add validation
+      // NOTE: only allow ServiceAccounts to read and write
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow write: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // Upload implementation
+    // -----------------------------
+
+    function getUploadAfter(id) {
+      return getAfter(/$(databasePath())/Uploads/$(id))
+    }
+
+    function getUploadBefore(id) {
+      return get(/$(databasePath())/Uploads/$(id))
+    }
+
+    function uploadExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Uploads/$(id))
+    }
+
+    function uploadExistsBefore(id) {
+      return exists(/$(databasePath())/Uploads/$(id))
+    }
+
+    function validateUploadData(data) {
+      return userExistsAfter(data.userId) &&
+        (errorExistsAfter(data.errorId) || data.errorId == null) &&
+        (isMap(data.meta) || !has('meta', data)) &&
+        isString(data.source) &&
+        includes(data.state, [
+          'CANCELED',
+          'COMPLETED',
+          'ERROR',
+          'PAUSED',
+          'POST_PROCESSING',
+          'RUNNING',
+          'SUCCESS'
+        ])
+    }
+
+    function validateUpload(resource) {
+      return validateEntity(resource) &&
+        validateUploadData(resource.data)
+    }
+
+    function checkReadUpload(auth, resource) {
+      return currentUserCanReadPrivateEntity(auth, resource, resource.userId)
+    }
+
+    function checkCreateUpload(auth, id) {
+      let upload = getUploadAfter(id);
+      return upload != null && validateUpload(upload) &&
+        currentUserCanCreateEntity(auth, upload)
+    }
+
+    function checkUpdateUpload(auth, id) {
+      let upload = getUploadAfter(id);
+      return upload != null && currentUserIsServiceAccount(auth) &&
+        validateUpload(upload)
+    }
+
+    function checkDeleteUpload(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /Uploads/{id} {
+      allow read: if checkReadUpload(request.auth, resource);
+      allow create: if checkCreateUpload(request.auth, id);
+      allow update: if checkUpdateUpload(request.auth, id);
+      allow delete: if checkDeleteUpload(request.auth);
+    }
+
+
+    // Url implementation
+    // -----------------------------
+
+    function getUrlAfter(id) {
+      return getAfter(/$(databasePath())/Urls/$(id))
+    }
+
+    function getUrlBefore(id) {
+      return get(/$(databasePath())/Urls/$(id))
+    }
+
+    function urlExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Urls/$(id))
+    }
+
+    function urlExistsBefore(id) {
+      return exists(/$(databasePath())/Urls/$(id))
+    }
+
+    function validateUrlData(data) {
+      // TODO BRN: replace this with more accurate checks
+      return (isString(data.hash) || isNull(data.hash)) &&
+        hostExistsAfter(data.hostId) &&
+        isString(data.pathname) &&
+        (isNumber(data.port) || isNull(data.port)) &&
+        isString(data.protocol) &&
+        (isString(data.search) || isNull(data.search))
+    }
+
+    function validateUrl(entity) {
+      return validateEntity(entity) &&
+        validateUrlData(entity.data);
+    }
+
+    function checkReadUrl(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    function checkCreateUrl(auth, id) {
+      let urlAfter = getUrlAfter(id);
+      return currentUserIsServiceAccount(auth) &&
+        validateUrl(urlAfter);
+    }
+
+    function checkUpdateUrl(auth, id) {
+      let urlAfter = getUrlAfter(id);
+      return currentUserIsServiceAccount(auth) &&
+        validateUrl(urlAfter);
+    }
+
+    function checkDeleteUrl(auth) {
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /Urls/{id} {
+      allow read: if checkReadUrl(request.auth);
+      allow create: if checkCreateUrl(request.auth, id);
+      allow update: if checkUpdateUrl(request.auth, id);
+      allow delete: if checkDeleteUrl(request.auth);
+    }
+
+
+    // User implementation
+    // -----------------------------
+
+    function getUserAfter(id) {
+      return getAfter(/$(databasePath())/Users/$(id))
+    }
+
+    function getUserBefore(id) {
+      return get(/$(databasePath())/Users/$(id))
+    }
+
+    function userExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Users/$(id))
+    }
+
+    function userExistsBefore(id) {
+      return exists(/$(databasePath())/Users/$(id))
+    }
+
+    function validateUser(resource) {
+      return validateEntity(resource) &&
+        (isString(resource.data.name) || !has('name', resource.data)) &&
+        isString(resource.data.state) &&
+          (resource.data.state == 'disabled' || resource.data.state == 'pending' || resource.data.state == 'valid')
+    }
+
+    match /Users/{id} {
+      allow read: if currentUserCanReadProtectedEntity(request.auth, resource);
+
+      allow create: if validateUser(getUserAfter(id)) && (
+        currentUserIsServiceAccount(request.auth) ||
+        // Users can only create Users that are pending
+        (getUserAfter(id).data.state == 'pending')
+      );
+      // TODO BRN: validate that createdAt times don't change
+      // TODO BRN: For right now only ServiceAccounts can update users.
+      // It would be best to move "name" to a UserProfile object that can safely
+      // be managed by the user without tampering with system things
+      allow update: if currentUserIsServiceAccount(request.auth)
+
+      // Only allow ServiceAccounts to delete
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // UserPhoneNumber implementation
+    // -----------------------------
+
+    function getUserPhoneNumberAfter(phoneNumberId) {
+      return getAfter(/$(databasePath())/UserPhoneNumbers/$(phoneNumberId))
+    }
+
+    function getUserPhoneNumberBefore(phoneNumberId) {
+      return get(/$(databasePath())/UserPhoneNumbers/$(phoneNumberId))
+    }
+
+    function userPhoneNumberExistsAfter(phoneNumberId) {
+      return existsAfter(/$(databasePath())/UserPhoneNumbers/$(phoneNumberId))
+    }
+
+    function userPhoneNumberExistsBefore(phoneNumberId) {
+      return exists(/$(databasePath())/UserPhoneNumbers/$(phoneNumberId))
+    }
+
+    function validateUserPhoneNumber(resource) {
+      return resource.id == resource.data.phoneNumberId &&
+        userExistsAfter(resource.data.userId) &&
+        phoneNumberExistsAfter(resource.data.phoneNumberId) &&
+        getPhoneNumberAfter(resource.data.phoneNumberId).data.type == 'user'
+    }
+
+    match /UserPhoneNumbers/{phoneNumberId} {
+      allow read: if currentUserCanReadProtectedEntity(request.auth, resource);
+
+      allow create: if validateUserPhoneNumber(getUserPhoneNumberAfter(phoneNumberId)) && currentUserIsServiceAccount(request.auth);
+      allow update: if false;
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // UserPreference implementation
+    // -----------------------------
+
+    function getUserPreferencesAfter(id) {
+      return getAfter(/$(databasePath())/UserPreferences/$(id))
+    }
+
+    function getUserPreferencesBefore(id) {
+      return get(/$(databasePath())/UserPreferences/$(id))
+    }
+
+    function userPreferencesExistsAfter(id) {
+      return existsAfter(/$(databasePath())/UserPreferences/$(id))
+    }
+
+    function userPreferencesExistsBefore(id) {
+      return exists(/$(databasePath())/UserPreferences/$(id))
+    }
+
+    function validateUserPreferencesData(data) {
+      return userExistsAfter(data.userId);
+    }
+
+    function validateUserPreferences(userPreferences) {
+      return validateEntity(userPreferences) &&
+        userPreferences.id == userPreferences.data.userId &&
+        validateUserPreferencesData(userPreferences.data);
+    }
+
+    function checkReadUserPreferences(auth, resource) {
+      // Only the owning user can read UserPreferences
+      return currentUserCanReadPrivateEntity(auth, resource, false);
+    }
+
+    function checkCreateUserPreferences(auth, id) {
+      // Users can create their own UserPreferences
+      let userPreferencesAfter = getUserPreferencesAfter(id);
+      return validateUserPreferences(userPreferencesAfter) &&
+        id == userPreferencesAfter.data.userId &&
+        currentUserCanCreateEntity(auth, userPreferencesAfter);
+    }
+
+    function checkUpdateUserPreferences(auth, id) {
+      // Users can only update their own UserPreferences
+      // TODO BRN: validate that createdAt times don't change
+      let userPreferencesAfter = getUserPreferencesAfter(id);
+      let userPreferencesBefore = getUserPreferencesBefore(id);
+      return validateUserPreferences(userPreferencesAfter) &&
+        id == userPreferencesAfter.data.userId &&
+        currentUserCanUpdateEntity(auth, userPreferencesBefore, false);
+    }
+
+    function checkDeleteUserPreferences(auth) {
+      // Only allow ServiceAccounts to delete UserPreferences
+      return currentUserIsServiceAccount(auth);
+    }
+
+    function currentUserCanCreateUserPreferences(auth, userPreferencesId) {
+      return currentUserCanCreateEntity(auth, getUserPreferencesBefore(userPreferencesId))
+    }
+
+    function currentUserCanUpdateUserPreferences(auth, userPreferencesId, allowRestores) {
+      return currentUserCanUpdateEntity(auth, getUserPreferencesBefore(userPreferencesId), allowRestores)
+    }
+
+    match /UserPreferences/{id} {
+      allow read: if checkReadUserPreferences(request.auth, resource);
+      allow create: if checkCreateUserPreferences(request.auth, id);
+      allow update: if checkUpdateUserPreferences(request.auth, id);
+      allow delete: if checkDeleteUserPreferences(request.auth);
+    }
+
+
+    // UserProfile implementation
+    // -----------------------------
+
+    function getUserProfileAfter(id) {
+      return getAfter(/$(databasePath())/UserProfiles/$(id))
+    }
+
+    function getUserProfileBefore(id) {
+      return get(/$(databasePath())/UserProfiles/$(id))
+    }
+
+    function userProfileExistsAfter(id) {
+      return existsAfter(/$(databasePath())/UserProfiles/$(id))
+    }
+
+    function userProfileExistsBefore(id) {
+      return exists(/$(databasePath())/UserProfiles/$(id))
+    }
+
+    function validateUserProfileData(data) {
+      return isString(data.name) &&
+        userExistsAfter(data.userId) &&
+        (!has('bio', data) || isString(data.bio)) &&
+        (!has('location', data) || isString(data.location)) &&
+        (!has('website', data) || isString(data.website)) &&
+        (!has('userProfileImageId', data) || userProfileImageExistsAfter(data.userProfileImageId));
+    }
+
+    function validateUserProfile(userProfile) {
+      return validateEntity(userProfile) &&
+        userProfile.id == userProfile.data.userId &&
+        validateUserProfileData(userProfile.data);
+    }
+
+    function checkReadUserProfile(auth, resource) {
+      // Anyone can read UserProfiles
+      return currentUserCanReadPublicEntity(auth, resource, false);
+    }
+
+    function checkCreateUserProfile(auth, id) {
+      // Users can create their own UserProfiles
+      let userProfileAfter = getUserProfileAfter(id);
+      return validateUserProfile(userProfileAfter) &&
+        id == userProfileAfter.data.userId &&
+        currentUserCanCreateEntity(auth, userProfileAfter);
+    }
+
+    function checkUpdateUserProfile(auth, id) {
+      // Users can only update their own UserProfiles
+      // TODO BRN: validate that createdAt times don't change
+      let userProfileAfter = getUserProfileAfter(id);
+      let userProfileBefore = getUserProfileBefore(id);
+      return validateUserProfile(userProfileAfter) &&
+        id == userProfileAfter.data.userId &&
+        currentUserCanUpdateEntity(auth, userProfileBefore, false);
+    }
+
+    function checkDeleteUserProfile(auth) {
+      // Only allow ServiceAccounts to delete UserProfiles
+      return currentUserIsServiceAccount(auth);
+    }
+
+    match /UserProfiles/{id} {
+      allow read: if checkReadUserProfile(request.auth, resource);
+      allow create: if checkCreateUserProfile(request.auth, id);
+      allow update: if checkUpdateUserProfile(request.auth, id);
+      allow delete: if checkDeleteUserProfile(request.auth);
+    }
+
+
+    // UserProfileImage implementation
+    // -----------------------------
+
+    function getUserProfileImageAfter(id) {
+      return getAfter(/$(databasePath())/UserProfileImages/$(id))
+    }
+
+    function getUserProfileImageBefore(id) {
+      return get(/$(databasePath())/UserProfileImages/$(id))
+    }
+
+    function userProfileImageExistsAfter(id) {
+      return existsAfter(/$(databasePath())/UserProfileImages/$(id))
+    }
+
+    function userProfileImageExistsBefore(id) {
+      return exists(/$(databasePath())/UserProfileImages/$(id))
+    }
+
+    function validateUserProfileImage(resource) {
+      return validateTimestamped(resource) &&
+        userExistsAfter(resource.data.userId) &&
+        imageExistsAfter(resource.data.imageId);
+    }
+
+    match /UserProfileImages/{id} {
+      allow read: if currentUserCanReadPublicEntity(request.auth, resource, false);
+
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        validateUserProfileImage(getUserProfileImageAfter(id)) &&
+        indexedIdMatchesAfter(
+          'UserProfileImage',
+          ['userId', 'imageId'],
+          id
+        );
+
+      allow update: if false;
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    match /Indexes/UserProfileImages/userId_imageId/{userId_imageId} {
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        indexedValueMatchesAfter(
+          'UserProfileImage',
+          'userId_imageId',
+          userId_imageId
+        );
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    // UserRoles implementation
+    // -----------------------------
+
+    function getUserRoleAfter(id) {
+      return getAfter(/$(databasePath())/UserRoles/$(id))
+    }
+
+    function getUserRoleBefore(id) {
+      return userRoleExistsBefore(id) ?
+        get(/$(databasePath())/UserRoles/$(id)) : null
+    }
+
+    function userRoleExistsAfter(id) {
+      return existsAfter(/$(databasePath())/UserRoles/$(id))
+    }
+
+    function userRoleExistsBefore(id) {
+      return exists(/$(databasePath())/UserRoles/$(id))
+    }
+
+    function validateUserRole(resource) {
+      return validateEntity(resource) &&
+        resource.id == resource.data.userId &&
+        userExistsAfter(resource.data.userId) &&
+        resource.data.role == 'admin' // the only type of role at the moment
+    }
+
+    match /UserRoles/{id} {
+      // NOTE BRN: We use the id here instead of the resouce so that the User
+      // can query for the UserRole even if a role doesn't exist.
+      allow read: if currentUserCanReadPrivateEntity(request.auth, resource, id)
+
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        validateUserRole(getUserRoleAfter(id));
+
+      allow update: if currentUserIsServiceAccount(request.auth) &&
+        validateUserRole(getUserRoleAfter(id));
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // Variable implementation
+    // -----------------------------
+
+    function getVariableAfter(id) {
+      return getAfter(/$(databasePath())/Variables/$(id))
+    }
+
+    function getVariableBefore(id) {
+      return get(/$(databasePath())/Variables/$(id))
+    }
+
+    function variableExistsAfter(id) {
+      return existsAfter(/$(databasePath())/Variables/$(id))
+    }
+
+    function variableExistsBefore(id) {
+      return exists(/$(databasePath())/Variables/$(id))
+    }
+
+    function validateVariable(resource) {
+      return validateTimestamped(resource) &&
+        isString(resource.id) &&
+        has('value', resource.data)
+    }
+
+    match /Variables/{id} {
+      allow read: if currentUserCanReadPublicEntity(request.auth, resource, false);
+
+      allow create: if validateVariable(getVariableAfter(id)) && currentUserIsServiceAccount(request.auth);
+      allow update: if validateVariable(getVariableAfter(id)) && currentUserIsServiceAccount(request.auth);
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+
+    // UserImage implementation
+    // -----------------------------
+
+    function getUserImageAfter(id) {
+      return getAfter(/$(databasePath())/UserImages/$(id))
+    }
+
+    function getUserImageBefore(id) {
+      return get(/$(databasePath())/UserImages/$(id))
+    }
+
+    function userImageExistsAfter(id) {
+      return existsAfter(/$(databasePath())/UserImages/$(id))
+    }
+
+    function userImageExistsBefore(id) {
+      return exists(/$(databasePath())/UserImages/$(id))
+    }
+
+    function validateUserImage(resource) {
+      return validateEntity(resource) &&
+        imageExistsAfter(resource.data.imageId) &&
+        userExistsAfter(resource.data.userId)
+    }
+
+    match /UserImages/{id} {
+      allow read: if currentUserCanReadPublicEntity(request.auth, resource, false);
+
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        validateUserImage(getUserImageAfter(id)) &&
+        indexedIdMatchesAfter(
+          'UserImage',
+          ['userId', 'imageId'],
+          id
+        );
+
+      allow update: if currentUserIsServiceAccount(request.auth) &&
+        validateUserImage(getUserImageAfter(id)) &&
+        indexedIdMatchesAfter(
+          'UserImage',
+          ['userId', 'imageId'],
+          id
+        );
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+
+    match /Indexes/UserImages/userId_imageId/{userId_imageId} {
+      allow read: if currentUserIsServiceAccount(request.auth);
+      allow create: if currentUserIsServiceAccount(request.auth) &&
+        indexedValueMatchesAfter(
+          'UserImage',
+          'userId_imageId',
+          userId_imageId
+        );
+
+      allow delete: if currentUserIsServiceAccount(request.auth);
+    }
+  }
+}

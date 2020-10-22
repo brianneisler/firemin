@@ -1,10 +1,12 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, TokenTypes } from '../../constants'
+import createComment from '../pipes/createComment'
 import getTokenListPosition from '../util/getTokenListPosition'
 
 const Comment = {
+  identify: (context, node) => node,
+  is: (value) => value && value.type === NodeTypes.COMMENT,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -21,12 +23,9 @@ const Comment = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.COMMENT,
-      value: tokenList.get(0).value
-    }
+    return createComment({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) => tokenList.get(0).type === TokenTypes.COMMENT
 }

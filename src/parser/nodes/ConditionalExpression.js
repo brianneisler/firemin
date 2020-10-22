@@ -1,12 +1,19 @@
 import { pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createConditionalExpression from '../pipes/createConditionalExpression'
+import expectColonOperator from '../pipes/expectColonOperator'
+import expectQuestionMarkOperator from '../pipes/expectQuestionMarkOperator'
+import identifyAlternate from '../pipes/identifyAlternate'
+import identifyConsequent from '../pipes/identifyConsequent'
+import identifyTest from '../pipes/identifyTest'
+import parseAlternate from '../pipes/parseAlternate'
 import parseColonOperator from '../pipes/parseColonOperator'
-import parseExpression from '../pipes/parseExpression'
+import parseConsequent from '../pipes/parseConsequent'
 import parseQuestionMarkOperator from '../pipes/parseQuestionMarkOperator'
 import parseTest from '../pipes/parseTest'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 import {
   findNextRealToken,
   findNextRealTokenIndex,
@@ -18,17 +25,7 @@ import Literal from './Literal'
 
 const TEST_PARSERS = [Identifier, Literal]
 
-const parseConsequent = pipe(parseExpression, ({ expression, ...rest }) => ({
-  ...rest,
-  consequent: expression
-}))
-
-const parseAlternate = pipe(parseExpression, ({ expression, ...rest }) => ({
-  ...rest,
-  alternate: expression
-}))
-
-const createConditionalExpression = pipe(
+const parseConditionalExpressionTokens = pipe(
   parseTest,
   parseWhitespaceAndComments,
   parseQuestionMarkOperator,
@@ -38,19 +35,33 @@ const createConditionalExpression = pipe(
   parseColonOperator,
   parseWhitespaceAndComments,
   parseAlternate,
-  ({ alternate, children, consequent, test }) => ({
-    alternate,
-    children,
-    consequent,
-    id: uuidv4(),
-    test,
-    type: NodeTypes.CONDITIONAL_EXPRESSION
-  })
+  createConditionalExpression
+)
+
+const identifyConditionalExpressionChildren = pipe(
+  identifyTest,
+  skipWhitespaceAndComments,
+  expectQuestionMarkOperator,
+  skipWhitespaceAndComments,
+  identifyConsequent,
+  skipWhitespaceAndComments,
+  expectColonOperator,
+  skipWhitespaceAndComments,
+  identifyAlternate
 )
 
 const ConditionalExpression = {
-  parse: (context, tokenList, prevExpression = null) =>
+  identify: (context, node) =>
     createConditionalExpression({
+      ...identifyConditionalExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.CONDITIONAL_EXPRESSION,
+  parse: (context, tokenList, prevExpression = null) =>
+    parseConditionalExpressionTokens({
       children: [],
       context,
       prevExpression,

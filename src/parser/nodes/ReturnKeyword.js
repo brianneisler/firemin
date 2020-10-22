@@ -1,10 +1,13 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createReturnKeyword from '../pipes/createReturnKeyword'
 import { getTokenListPosition } from '../util'
 
 const ReturnKeyword = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value && value.type === NodeTypes.KEYWORD && value.name === Keywords.RETURN,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -23,12 +26,9 @@ const ReturnKeyword = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      name: Keywords.RETURN,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.KEYWORD
-    }
+    return createReturnKeyword({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)

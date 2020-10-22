@@ -11,6 +11,11 @@ import {
 import { getTokenListPosition } from '../util'
 
 const UnaryMinusOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.OPERATOR &&
+    value.operatorType === OperatorTypes.UNARY_MINUS,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {

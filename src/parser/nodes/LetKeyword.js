@@ -1,10 +1,13 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createLetKeyword from '../pipes/createLetKeyword'
 import { getTokenListPosition } from '../util'
 
 const LetKeyword = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value && value.type === NodeTypes.KEYWORD && value.name === Keywords.LET,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -23,12 +26,9 @@ const LetKeyword = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      name: Keywords.LET,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.KEYWORD
-    }
+    return createLetKeyword({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)

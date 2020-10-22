@@ -1,5 +1,4 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -8,9 +7,15 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createCloseParenthesisOperator from '../pipes/createCloseParenthesisOperator'
 import { getTokenListPosition } from '../util'
 
 const CloseParenthesisOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.OPERATOR &&
+    value.operatorType === OperatorTypes.CLOSE_PARENTHESIS,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -31,13 +36,9 @@ const CloseParenthesisOperator = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      operatorType: OperatorTypes.CLOSE_PARENTHESIS,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.OPERATOR,
-      value: nextToken.value
-    }
+    return createCloseParenthesisOperator({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) =>
     tokenList.get(0).type === TokenTypes.OPERATOR_CLOSE_PARENTHESIS,

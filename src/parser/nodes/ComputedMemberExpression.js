@@ -1,39 +1,20 @@
-import { append, pipe, slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
+import { pipe } from 'ramda'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import generateTokenList from '../../generator/generateTokenList'
+import createComputedMemberExpression from '../pipes/createComputedMemberExpression'
+import expectCloseBracketOperator from '../pipes/expectCloseBracketOperator'
+import expectOpenBracketOperator from '../pipes/expectOpenBracketOperator'
+import identifyObject from '../pipes/identifyObject'
+import identifyProperty from '../pipes/identifyProperty'
 import parseCloseBracketOperator from '../pipes/parseCloseBracketOperator'
 import parseObject from '../pipes/parseObject'
 import parseOpenBracketOperator from '../pipes/parseOpenBracketOperator'
+import parseProperty from '../pipes/parseProperty'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
-import {
-  findNextRealToken,
-  findNextRealTokenIndex,
-  parseNextNode
-} from '../util'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
+import { findNextRealToken, findNextRealTokenIndex } from '../util'
 
-import Expression from './Expression'
-import Identifier from './Identifier'
-import Literal from './Literal'
-import Range from './Range'
-
-const PROPERTY_PARSERS = [Range, Expression, Identifier, Literal]
-const parsePropertyNode = parseNextNode(PROPERTY_PARSERS)
-
-const parseProperty = (props) => {
-  const { children, context, tokenList } = props
-  const property = parsePropertyNode(context, tokenList)
-  const parsedTokenList = generateTokenList(context, { ast: property })
-  return {
-    ...props,
-    children: append(property, children),
-    property,
-    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
-  }
-}
-
-const createComputedMemberExpression = pipe(
+const parseComputedMemberExpressionTokens = pipe(
   parseObject,
   parseWhitespaceAndComments,
   parseOpenBracketOperator,
@@ -41,18 +22,31 @@ const createComputedMemberExpression = pipe(
   parseProperty,
   parseWhitespaceAndComments,
   parseCloseBracketOperator,
-  ({ children, object, property }) => ({
-    children,
-    id: uuidv4(),
-    object,
-    property,
-    type: NodeTypes.COMPUTED_MEMBER_EXPRESSION
-  })
+  createComputedMemberExpression
+)
+
+const identifyComputedMemberExpressionChildren = pipe(
+  identifyObject,
+  skipWhitespaceAndComments,
+  expectOpenBracketOperator,
+  skipWhitespaceAndComments,
+  identifyProperty,
+  skipWhitespaceAndComments,
+  expectCloseBracketOperator
 )
 
 const ComputedMemberExpression = {
-  parse: (context, tokenList, prevExpression = null) =>
+  identify: (context, node) =>
     createComputedMemberExpression({
+      ...identifyComputedMemberExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.COMPUTED_MEMBER_EXPRESSION,
+  parse: (context, tokenList, prevExpression = null) =>
+    parseComputedMemberExpressionTokens({
       children: [],
       context,
       prevExpression,

@@ -1,9 +1,8 @@
 import { List } from 'immutable'
 import { has, tail } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, TokenTypes } from '../../constants'
-import generateString from '../../generator/generateString'
+import createWord from '../pipes/createWord'
 import { getTokenListPosition } from '../util'
 
 const WORD_TOKEN_TYPES = {
@@ -28,6 +27,8 @@ const WORD_TOKEN_TYPES = {
 }
 
 const Word = {
+  identify: (context, node) => node,
+  is: (value) => value && value.type === NodeTypes.WORD,
   parse: (context, tokenList) => {
     let nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -52,12 +53,7 @@ const Word = {
       tokenList = tail(tokenList)
       nextToken = tokenList.get(0)
     }
-    return {
-      id: uuidv4(),
-      tokenList: wordTokenList,
-      type: NodeTypes.WORD,
-      value: generateString(context, { tokenList: wordTokenList })
-    }
+    return createWord({ tokenList: wordTokenList })
   },
   test: (context, tokenList) => has(tokenList.get(0).type, WORD_TOKEN_TYPES)
 }

@@ -90,4 +90,20 @@ describe('integration', () => {
       "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function someFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if someFunc(arg1,arg2);allow create:if someFunc(arg1,arg2);allow update:if someFunc(arg1,arg2);allow delete:if someFunc(arg1,arg2);}}}"
     )
   })
+
+  test('collapses single use functions', async () => {
+    const context = setupContext({
+      logger: console
+    })
+    const result = await minimize(context, {
+      filePath: pathResolve(
+        __dirname,
+        'files',
+        'firestore.single-use-functions.rules'
+      )
+    })
+    expect(result).toEqual(
+      "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function multiUseFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if arg1&&arg2;allow create:if!arg1;allow update:if multiUseFunc(arg1,arg2);allow delete:if multiUseFunc(arg1,arg2);}}}"
+    )
+  })
 })

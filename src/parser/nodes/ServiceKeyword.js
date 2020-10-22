@@ -1,10 +1,15 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createServiceKeyword from '../pipes/createServiceKeyword'
 import { getTokenListPosition } from '../util'
 
 const ServiceKeyword = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.KEYWORD &&
+    value.name === Keywords.SERVICE,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -23,12 +28,9 @@ const ServiceKeyword = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      name: Keywords.SERVICE,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.KEYWORD
-    }
+    return createServiceKeyword({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)

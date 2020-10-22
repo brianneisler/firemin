@@ -1,50 +1,33 @@
-import { append, pipe, slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
+import { pipe } from 'ramda'
 
 import { NodeTypes, ParserTypes } from '../../constants'
-import generateTokenList from '../../generator/generateTokenList'
-import { parseNextNode, testNextNode } from '../util'
+import createPathExpression from '../pipes/createPathExpression'
+import identifyPathParts from '../pipes/identifyPathParts'
+import parsePathParts from '../pipes/parsePathParts'
+import { testNextNode } from '../util'
 
 import PathPartExpression from './PathPartExpression'
 import PathPartVariable from './PathPartVariable'
 import PathPartWord from './PathPartWord'
 
 const PATH_PART_PARSERS = [PathPartExpression, PathPartVariable, PathPartWord]
-const parsePathPartNode = parseNextNode(PATH_PART_PARSERS)
 
-const parsePathPart = ({ children, context, tokenList, ...rest }) => {
-  const pathPart = parsePathPartNode(context, tokenList)
-  children = append(pathPart, children)
-  const parsedTokenList = generateTokenList(context, { ast: pathPart })
-  tokenList = slice(parsedTokenList.size, tokenList.size, tokenList)
-  return { ...rest, children, context, pathPart, tokenList }
-}
+const identifyPathExpressionChildren = pipe(identifyPathParts)
 
-const parsePath = (props) => {
-  let { children, context, tokenList } = props
-  let path = []
-  while (testNextNode(PATH_PART_PARSERS, context, tokenList)) {
-    let pathPart
-    ;({ children, context, pathPart, tokenList } = parsePathPart({
-      children,
-      context,
-      tokenList
-    }))
-    path = append(pathPart, path)
-  }
-  return { ...props, children, context, path, tokenList }
-}
-
-const createPathExpression = pipe(parsePath, ({ children, path }) => ({
-  children,
-  id: uuidv4(),
-  path,
-  type: NodeTypes.PATH_EXPRESSION
-}))
+const parsePathExpressionTokens = pipe(parsePathParts, createPathExpression)
 
 const PathExpression = {
+  identify: (context, node) =>
+    createPathExpression({
+      ...identifyPathExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.PATH_EXPRESSION,
   parse: (context, tokenList) =>
-    createPathExpression({ children: [], context, tokenList }),
+    parsePathExpressionTokens({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) =>
     testNextNode(PATH_PART_PARSERS, context, tokenList, prevExpression),
   type: ParserTypes.EXPRESSION

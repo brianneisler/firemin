@@ -1,10 +1,11 @@
 import { List } from 'immutable'
 
-import walkReduceAST from '../../ast/walkReduceAST'
+import walkReduceTree from '../../ast/walkReduceTree'
 import { NodeTypes } from '../../constants'
+import { weakMemoize } from '../../utils'
 
-const findAllFunctionDeclrations = (ast) =>
-  walkReduceAST(
+const findAllFunctionDeclarations = weakMemoize((ast) =>
+  walkReduceTree(
     (accum, node) => {
       if (node.type === NodeTypes.FUNCTION_DECLARATION) {
         return accum.push(node)
@@ -14,5 +15,6 @@ const findAllFunctionDeclrations = (ast) =>
     List(),
     ast
   )
+)
 
-export default findAllFunctionDeclrations
+export default findAllFunctionDeclarations

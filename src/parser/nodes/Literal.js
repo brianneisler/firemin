@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { NodeTypes, TokenTypes } from '../../constants'
 
 const Literal = {
+  identify: (context, node) => node,
+  is: (value) => value.type === NodeTypes.LITERAL,
   parse: (context, tokenList) => {
     const identifier = tokenList.get(0)
     return {

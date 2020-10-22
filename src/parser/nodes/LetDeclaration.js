@@ -1,35 +1,21 @@
-import { append, pipe, slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
+import { pipe } from 'ramda'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import generateTokenList from '../../generator/generateTokenList'
+import createLetDeclaration from '../pipes/createLetDeclaration'
+import expectAssignmentOperator from '../pipes/expectAssignmentOperator'
+import expectLetKeyword from '../pipes/expectLetKeyword'
+import identifyIdentifier from '../pipes/identifyIdentifier'
+import identifyInit from '../pipes/identifyInit'
 import parseAssignmentOperator from '../pipes/parseAssignmentOperator'
 import parseIdentifier from '../pipes/parseIdentifier'
+import parseInit from '../pipes/parseInit'
 import parseLetKeyword from '../pipes/parseLetKeyword'
 import parseOptionalSemicolonOperator from '../pipes/parseOptionalSemicolonOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
-import { parseNextNode } from '../util'
+import skipSemicolonOperator from '../pipes/skipSemicolonOperator'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 
-import Expression from './Expression'
-import Identifier from './Identifier'
-import Literal from './Literal'
-
-const INIT_PARSERS = [Expression, Identifier, Literal]
-const parseInitNode = parseNextNode(INIT_PARSERS)
-
-const parseInit = (props) => {
-  const { children, context, tokenList } = props
-  const init = parseInitNode(context, tokenList)
-  const parsedTokenList = generateTokenList(context, { ast: init })
-  return {
-    ...props,
-    children: append(init, children),
-    init,
-    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
-  }
-}
-
-const createLetDelcaration = pipe(
+const parseLetDelcarationTokens = pipe(
   parseLetKeyword,
   parseWhitespaceAndComments,
   parseIdentifier,
@@ -39,19 +25,33 @@ const createLetDelcaration = pipe(
   parseInit,
   parseWhitespaceAndComments,
   parseOptionalSemicolonOperator,
-  ({ children, identifier, init, operator }) => ({
-    children,
-    id: uuidv4(),
-    identifier,
-    init,
-    operator,
-    type: NodeTypes.LET_DECLARATION
-  })
+  createLetDeclaration
+)
+
+const identifyLetDeclarationChildren = pipe(
+  expectLetKeyword,
+  skipWhitespaceAndComments,
+  identifyIdentifier,
+  skipWhitespaceAndComments,
+  expectAssignmentOperator,
+  skipWhitespaceAndComments,
+  identifyInit,
+  skipWhitespaceAndComments,
+  skipSemicolonOperator
 )
 
 const LetDeclaration = {
+  identify: (context, node) =>
+    createLetDeclaration({
+      ...identifyLetDeclarationChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.LET_DECLARATION,
   parse: (context, tokenList) =>
-    createLetDelcaration({ children: [], context, tokenList }),
+    parseLetDelcarationTokens({ children: [], context, tokenList }),
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)
     return firstToken.type === TokenTypes.KEYWORD_LET

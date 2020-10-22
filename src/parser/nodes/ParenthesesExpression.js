@@ -1,30 +1,46 @@
 import { pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createParenthesesExpression from '../pipes/createParenthesesExpression'
+import expectCloseParenthesisOperator from '../pipes/expectCloseParenthesisOperator'
+import expectOpenParenthesisOperator from '../pipes/expectOpenParenthesisOperator'
+import identifyExpression from '../pipes/identifyExpression'
 import parseCloseParenthesisOperator from '../pipes/parseCloseParenthesisOperator'
 import parseExpression from '../pipes/parseExpression'
 import parseOpenParenthesisOperator from '../pipes/parseOpenParenthesisOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
 
-const createParenthesesExpression = pipe(
+const parseParenthesesExpressionTokens = pipe(
   parseOpenParenthesisOperator,
   parseWhitespaceAndComments,
   parseExpression,
   parseWhitespaceAndComments,
   parseCloseParenthesisOperator,
-  ({ children, expression }) => ({
-    children,
-    expression,
-    id: uuidv4(),
-    type: NodeTypes.PARENTHESES_EXPRESSION
-  })
+  createParenthesesExpression
+)
+
+const identifyParenthesesExpressionChildren = pipe(
+  expectOpenParenthesisOperator,
+  skipWhitespaceAndComments,
+  identifyExpression,
+  skipWhitespaceAndComments,
+  expectCloseParenthesisOperator
 )
 
 const ParenthesesExpression = {
+  identify: (context, node) =>
+    createParenthesesExpression({
+      ...identifyParenthesesExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.PARENTHESES_EXPRESSION,
   parse: (context, tokenList) =>
-    createParenthesesExpression({ children: [], context, tokenList }),
+    parseParenthesesExpressionTokens({ children: [], context, tokenList }),
   test: (context, tokenList, prevExpression = null) => {
     if (prevExpression) {
       // In this case, it's a CallExpression

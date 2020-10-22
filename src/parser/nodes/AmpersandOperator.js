@@ -1,5 +1,4 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -8,9 +7,15 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createAmpersandOperator from '../pipes/createAmpersandOperator'
 import { getTokenListPosition } from '../util'
 
 const AmpersandOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.OPERATOR &&
+    value.operatorType === OperatorTypes.AMPERSAND,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -24,18 +29,12 @@ const AmpersandOperator = {
         tokenList
       )
       throw new Error(
-        `Expected operator '${Operators.AMPERSAND}'. Instead was given '${
-          tokenList.get(0).value
-        }' at ${lineCount}:${lastLineCharacterCount}`
+        `Expected operator '${Operators.AMPERSAND}'. Instead was given '${nextToken.value}' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      operatorType: OperatorTypes.AMPERSAND,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.OPERATOR,
-      value: nextToken.value
-    }
+    return createAmpersandOperator({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) =>
     tokenList.get(0).type === TokenTypes.OPERATOR_AMPERSAND,

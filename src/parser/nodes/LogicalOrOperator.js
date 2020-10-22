@@ -1,5 +1,4 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -8,9 +7,15 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createLogicalOrOperator from '../pipes/createLogicalOrOperator'
 import { getTokenListPosition } from '../util'
 
 const LogicalOrOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value &&
+    value.type === NodeTypes.OPERATOR &&
+    value.operatorType === OperatorTypes.LOGICAL_OR,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -29,13 +34,9 @@ const LogicalOrOperator = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      operatorType: OperatorTypes.LOGICAL_OR,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.OPERATOR,
-      value: nextToken.value
-    }
+    return createLogicalOrOperator({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) =>
     tokenList.get(0).type === TokenTypes.OPERATOR_LOGICAL_OR,

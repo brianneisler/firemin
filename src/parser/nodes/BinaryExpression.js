@@ -1,5 +1,4 @@
 import { has, pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -7,10 +6,15 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createBinaryExpression from '../pipes/createBinaryExpression'
+import identifyBinaryOperator from '../pipes/identifyBinaryOperator'
+import identifyLeft from '../pipes/identifyLeft'
+import identifyRight from '../pipes/identifyRight'
+import parseBinaryOperator from '../pipes/parseBinaryOperator'
 import parseLeft from '../pipes/parseLeft'
-import parseOperator from '../pipes/parseOperator'
 import parseRight from '../pipes/parseRight'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 import {
   findNextRealToken,
   findNextRealTokenIndex,
@@ -37,27 +41,37 @@ const BINARY_OPERATOR_TOKEN_TYPES = {
   [TokenTypes.OPERATOR_UNARY_PLUS]: OperatorTypes.UNARY_PLUS
 }
 
-const createBinaryExpression = pipe(
+const parseBinaryExpressionTokens = pipe(
   parseLeft,
   parseWhitespaceAndComments,
-  parseOperator,
+  parseBinaryOperator,
   parseWhitespaceAndComments,
   parseRight,
-  ({ children, left, operator, right }) => ({
-    children,
-    id: uuidv4(),
-    left,
-    operator,
-    right,
-    type: NodeTypes.BINARY_EXPRESSION
-  })
+  createBinaryExpression
+)
+
+const identifyBinaryExpressionChildren = pipe(
+  identifyLeft,
+  skipWhitespaceAndComments,
+  identifyBinaryOperator,
+  skipWhitespaceAndComments,
+  identifyRight
 )
 
 const LEFT_PARSERS = [Identifier, Literal]
 
 const BinaryExpression = {
-  parse: (context, tokenList, prevExpression = null) =>
+  identify: (context, node) =>
     createBinaryExpression({
+      ...identifyBinaryExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.BINARY_EXPRESSION,
+  parse: (context, tokenList, prevExpression = null) =>
+    parseBinaryExpressionTokens({
       children: [],
       context,
       prevExpression,

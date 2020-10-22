@@ -1,51 +1,51 @@
-import { append, pipe, slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
+import { pipe } from 'ramda'
 
 import { NodeTypes, ParserTypes, TokenTypes } from '../../constants'
-import generateTokenList from '../../generator/generateTokenList'
+import createStaticMemberExpression from '../pipes/createStaticMemberExpression'
+import expectDotOperator from '../pipes/expectDotOperator'
+import identifyObject from '../pipes/identifyObject'
+import identifyStaticProperty from '../pipes/identifyStaticProperty'
 import parseDotOperator from '../pipes/parseDotOperator'
 import parseObject from '../pipes/parseObject'
+import parseStaticProperty from '../pipes/parseStaticProperty'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 import { findNextRealToken, findNextRealTokenIndex } from '../util'
 
-import Identifier from './Identifier'
-
-const parseStaticProperty = (props) => {
-  const { children, context, tokenList } = props
-  const property = Identifier.parse(context, tokenList)
-  const parsedTokenList = generateTokenList(context, { ast: property })
-  return {
-    ...props,
-    children: append(property, children),
-    property,
-    tokenList: slice(parsedTokenList.size, tokenList.size, tokenList)
-  }
-}
-
-const createStaticMemberExpression = pipe(
+const parseStaticMemberExpressionTokens = pipe(
   parseObject,
   parseWhitespaceAndComments,
   parseDotOperator,
   parseWhitespaceAndComments,
   parseStaticProperty,
-  ({ children, object, property }) => ({
-    children,
-    id: uuidv4(),
-    object,
-    property,
-    type: NodeTypes.STATIC_MEMBER_EXPRESSION
-  })
+  createStaticMemberExpression
+)
+
+const identifyStaticMemberExpressionChildren = pipe(
+  identifyObject,
+  skipWhitespaceAndComments,
+  expectDotOperator,
+  skipWhitespaceAndComments,
+  identifyStaticProperty
 )
 
 const StaticMemberExpression = {
-  parse: (context, tokenList, prevExpression = null) =>
+  identify: (context, node) =>
     createStaticMemberExpression({
+      ...identifyStaticMemberExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.STATIC_MEMBER_EXPRESSION,
+  parse: (context, tokenList, prevExpression = null) =>
+    parseStaticMemberExpressionTokens({
       children: [],
       context,
       prevExpression,
       tokenList
     }),
-
   test: (context, tokenList, prevExpression = null) => {
     if (!prevExpression) {
       const identifierToken = findNextRealToken(tokenList)

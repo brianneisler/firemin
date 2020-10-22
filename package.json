@@ -12,12 +12,24 @@
   "bugs": {
     "url": "https://github.com/brianneisler/firemin/issues"
   },
-  "engines": {
-    "node": ">=10.0"
-  },
-  "main": "./index.module.js",
   "bin": {
     "firemin": "./bin/firemin"
+  },
+  "main": "./index.js",
+  "module": "./index.module.js",
+  "exports": {
+    "./ast": "./src/ast/index.js",
+    "./constants": "./src/constants/index.js",
+    "./context": "./src/context/index.js",
+    "./generator": "./src/generator/index.js",
+    "./minimizer": "./src/minimizer/index.js",
+    "./parser": "./src/parser/index.js",
+    "./token": "./src/token/index.js",
+    "./utils": "./src/utils/index.js",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=10.0"
   },
   "scripts": {
     "build": "bash ./scripts/build.sh",
@@ -30,6 +42,7 @@
     "setup": "bash ./scripts/setup.sh",
     "test": "bash ./scripts/test.sh",
     "test:ci": "bash ./scripts/test-ci.sh",
+    "test:debug": "bash ./scripts/test-debug.sh",
     "watch": "bash ./scripts/watch.sh"
   },
   "dependencies": {

@@ -1,22 +1,29 @@
 import { pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
-import { PROGRAM } from '../../constants/NodeTypes'
+import { NodeTypes } from '../../constants'
+import createProgram from '../pipes/createProgram'
+import identifyBodyUntil from '../pipes/identifyBodyUntil'
 import parseBodyUntil from '../pipes/parseBodyUntil'
 
-const createProgram = pipe(
+const parseProgramTokens = pipe(
   parseBodyUntil(() => true),
-  ({ body, children }) => ({
-    body,
-    children,
-    id: uuidv4(),
-    type: PROGRAM
-  })
+  createProgram
 )
 
+const identifyProgramChildren = pipe(identifyBodyUntil(() => true))
+
 const Program = {
-  parse: (context, tokenList) =>
+  identify: (context, node) =>
     createProgram({
+      ...identifyProgramChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.PROGRAM,
+  parse: (context, tokenList) =>
+    parseProgramTokens({
       children: [],
       context,
       tokenList

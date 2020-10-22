@@ -1,29 +1,48 @@
-import { pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
+import { head, pipe } from 'ramda'
 
 import { NodeTypes, TokenTypes } from '../../constants'
+import createBlockStatement from '../pipes/createBlockStatement'
+import expectCloseCurlyBraceOperator from '../pipes/expectCloseCurlyBraceOperator'
+import expectOpenCurlyBraceOperator from '../pipes/expectOpenCurlyBraceOperator'
+import identifyBodyUntil from '../pipes/identifyBodyUntil'
 import parseBodyUntil from '../pipes/parseBodyUntil'
 import parseCloseCurlyBraceOperator from '../pipes/parseCloseCurlyBraceOperator'
 import parseOpenCurlyBraceOperator from '../pipes/parseOpenCurlyBraceOperator'
 
-const createBlockStatement = pipe(
+import CloseCurlyBraceOperator from './CloseCurlyBraceOperator'
+
+const parseBlockStatementTokens = pipe(
   parseOpenCurlyBraceOperator,
   parseBodyUntil(
     ({ tokenList }) =>
       tokenList.get(0).type !== TokenTypes.OPERATOR_CLOSE_CURLY_BRACE
   ),
   parseCloseCurlyBraceOperator,
-  ({ body, children }) => ({
-    body,
-    children,
-    id: uuidv4(),
-    type: NodeTypes.BLOCK_STATEMENT
-  })
+  createBlockStatement
+)
+
+const identifyBlockStatementChildren = pipe(
+  expectOpenCurlyBraceOperator,
+  identifyBodyUntil(({ children }) =>
+    CloseCurlyBraceOperator.is(head(children))
+  ),
+  expectCloseCurlyBraceOperator
 )
 
 const BlockStatement = {
-  parse: (context, tokenList) =>
+  identify: (context, node) =>
     createBlockStatement({
+      ...identifyBlockStatementChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+
+  is: (value) => value && value.type === NodeTypes.BLOCK_STATEMENT,
+
+  parse: (context, tokenList) =>
+    parseBlockStatementTokens({
       children: [],
       context,
       tokenList

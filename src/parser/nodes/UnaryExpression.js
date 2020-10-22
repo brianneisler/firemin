@@ -1,5 +1,4 @@
 import { has, pipe } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import {
   NodeTypes,
@@ -7,9 +6,13 @@ import {
   ParserTypes,
   TokenTypes
 } from '../../constants'
+import createUnaryExpression from '../pipes/createUnaryExpression'
+import identifyArgument from '../pipes/identifyArgument'
+import identifyOperator from '../pipes/identifyOperator'
 import parseArgument from '../pipes/parseArgument'
 import parseOperator from '../pipes/parseOperator'
 import parseWhitespaceAndComments from '../pipes/parseWhitespaceAndComments'
+import skipWhitespaceAndComments from '../pipes/skipWhitespaceAndComments'
 
 const UNARY_OPERATOR_TOKEN_TYPES = {
   [TokenTypes.OPERATOR_LOGICAL_NOT]: OperatorTypes.LOGICAL_NOT,
@@ -17,22 +20,31 @@ const UNARY_OPERATOR_TOKEN_TYPES = {
   [TokenTypes.OPERATOR_UNARY_PLUS]: OperatorTypes.UNARY_PLUS
 }
 
-const createUnaryExpression = pipe(
+const parseUnaryExpressionTokens = pipe(
   parseOperator,
   parseWhitespaceAndComments,
   parseArgument,
-  ({ argument, children, operator }) => ({
-    argument,
-    children,
-    id: uuidv4(),
-    operator,
-    type: NodeTypes.UNARY_EXPRESSION
-  })
+  createUnaryExpression
+)
+
+const identifyUnaryExpressionChildren = pipe(
+  identifyOperator,
+  skipWhitespaceAndComments,
+  identifyArgument
 )
 
 const UnaryExpression = {
-  parse: (context, tokenList, prevExpression = null) =>
+  identify: (context, node) =>
     createUnaryExpression({
+      ...identifyUnaryExpressionChildren({
+        ...node,
+        context
+      }),
+      children: node.children
+    }),
+  is: (value) => value && value.type === NodeTypes.UNARY_EXPRESSION,
+  parse: (context, tokenList, prevExpression = null) =>
+    parseUnaryExpressionTokens({
       children: [],
       context,
       prevExpression,

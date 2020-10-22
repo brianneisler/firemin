@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-const { minimize, setupContext } = require('../index.module')
 const { resolve } = require('path')
+
 const program = require('commander')
 const pino = require('pino')
+
+const { minimize, setupContext } = require('../index.bin')
 
 program
   .description('minimize a firebase firestore rules file')
@@ -20,14 +22,19 @@ program
   .parse(process.argv)
 
 const exec = async (options) => {
-  const context = await setupContext()
+  const startTime = Date.now()
+  const context = setupContext()
   const { logger } = context
   logger.info('running...')
 
   const finalLogger = pino.final(logger)
   try {
     await minimize(context, options)
-    logger.info(`Minimized rules file generated ${options.outputFilePath}`)
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2)
+    logger.info()
+    logger.info(
+      `Minimized rules file in ${duration}s and output to ${options.outputFilePath}`
+    )
   } catch (error) {
     finalLogger.warn('An error occured while trying to minimize the rules file')
     throw error

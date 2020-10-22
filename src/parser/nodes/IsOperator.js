@@ -1,10 +1,13 @@
 import { slice } from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
 
 import { Keywords, NodeTypes, ParserTypes, TokenTypes } from '../../constants'
+import createIsOperator from '../pipes/createIsOperator'
 import { getTokenListPosition } from '../util'
 
 const IsOperator = {
+  identify: (context, node) => node,
+  is: (value) =>
+    value && value.type === NodeTypes.OPERATOR && value.name === Keywords.IS,
   parse: (context, tokenList) => {
     const nextToken = tokenList.get(0)
     if (!nextToken) {
@@ -23,12 +26,9 @@ const IsOperator = {
         }' at ${lineCount}:${lastLineCharacterCount}`
       )
     }
-    return {
-      id: uuidv4(),
-      name: Keywords.IS,
-      tokenList: slice(0, 1, tokenList),
-      type: NodeTypes.OPERATOR
-    }
+    return createIsOperator({
+      tokenList: slice(0, 1, tokenList)
+    })
   },
   test: (context, tokenList) => {
     const firstToken = tokenList.get(0)

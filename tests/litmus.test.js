@@ -1,3 +1,4 @@
+import { EOL } from 'os'
 import { resolve as pathResolve } from 'path'
 
 import { readFile } from 'fs-extra'
@@ -10,12 +11,14 @@ describe('litmus', () => {
       pathResolve(__dirname, 'files', 'firestore.litmus.min.rules'),
       'utf8'
     )
+    // eslint-disable-next-line no-console
+    console.log('expected:', expected)
     const context = setupContext({
       logger: console
     })
     const result = await minimize(context, {
       filePath: pathResolve(__dirname, 'files', 'firestore.litmus.rules')
     })
-    expect(result + '\n').toEqual(expected)
+    expect(result + EOL).toEqual(expected)
   })
 })

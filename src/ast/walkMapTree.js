@@ -6,7 +6,7 @@ import walkReduceTree from './walkReduceTree'
 const walkMapTree = curry((context, iteratee, tree) =>
   walkReduceTree(
     (accum, node, keys) => {
-      const result = iteratee(node, keys)
+      const result = iteratee(node, keys, tree)
       if (result !== node) {
         return assocNodePath(context, keys, result, accum)
       }

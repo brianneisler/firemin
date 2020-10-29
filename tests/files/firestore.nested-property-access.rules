@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function singleUseFunction(data) {
+      return data.data;
+    }
+
+    match /some/path/{arg} {
+      allow read: if singleUseFunction(arg.data);
+    }
+  }
+}

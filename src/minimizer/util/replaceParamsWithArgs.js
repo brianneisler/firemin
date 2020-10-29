@@ -1,8 +1,22 @@
-import { fromPairs, has, map, prop, zip } from 'ramda'
+import { fromPairs, has, init, map, prop, zip } from 'ramda'
 
-import { walkMapTree } from '../../ast'
+import { getNodePath, walkMapTree } from '../../ast'
 import { NodeTypes } from '../../constants'
 import { measure } from '../../utils'
+
+const isValidReplacementTarget = (node, keys, tree) => {
+  const parent = getNodePath(init(keys), tree)
+  if (parent.type === NodeTypes.LET_DECLARATION) {
+    if (parent.identifier === node) {
+      return false
+    }
+  } else if (parent.type === NodeTypes.STATIC_MEMBER_EXPRESSION) {
+    if (parent.property === node) {
+      return false
+    }
+  }
+  return true
+}
 
 const replaceParamsWithArgs = measure(
   'replaceParamsWithArgs',
@@ -16,13 +30,16 @@ const replaceParamsWithArgs = measure(
     // immutably replace the parameter identifiers with the arguments from the CallExpression
     return walkMapTree(
       context,
-      (node) => {
+      (node, keys, tree) => {
         // NOTE BRN: With the new `identify` system we shouldn't have to make
         // these kinds of changes anymore since these values will automatically be
         // regenerated anytime the children are changed
 
         if (node.type === NodeTypes.IDENTIFIER) {
-          if (has(node.name, paramNamesToArgs)) {
+          if (
+            has(node.name, paramNamesToArgs) &&
+            isValidReplacementTarget(node, keys, tree)
+          ) {
             return paramNamesToArgs[node.name]
           }
         }

@@ -50,6 +50,7 @@
     "buffer": "^5.6.0",
     "commander": "^6.1.0",
     "core-js": "^3.6.5",
+    "firetree": "^0.1.0",
     "fs-extra": "^9.0.1",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",

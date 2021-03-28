@@ -1,7 +1,6 @@
+import { NodeTypes, getNodePath, walkMapTree } from 'firetree'
 import { fromPairs, has, init, map, prop, zip } from 'ramda'
 
-import { getNodePath, walkMapTree } from '../../ast'
-import { NodeTypes } from '../../constants'
 import { measure } from '../../utils'
 
 const isValidReplacementTarget = (node, keys, tree) => {
@@ -36,10 +35,7 @@ const replaceParamsWithArgs = measure(
         // regenerated anytime the children are changed
 
         if (node.type === NodeTypes.IDENTIFIER) {
-          if (
-            has(node.name, paramNamesToArgs) &&
-            isValidReplacementTarget(node, keys, tree)
-          ) {
+          if (has(node.name, paramNamesToArgs) && isValidReplacementTarget(node, keys, tree)) {
             return paramNamesToArgs[node.name]
           }
         }

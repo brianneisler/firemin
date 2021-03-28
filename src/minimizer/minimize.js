@@ -1,9 +1,6 @@
 import { resolve } from 'path'
 
-import generateFile from '../generator/generateFile'
-import generateString from '../generator/generateString'
-import generateTokenList from '../generator/generateTokenList'
-import parseFile from '../parser/parseFile'
+import { generateFile, generateString, generateTokenList, parseFile } from 'firetree'
 
 import minimizeAST from './minimizeAST'
 import minimizeTokenList from './minimizeTokenList'

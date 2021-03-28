@@ -1,8 +1,7 @@
+import { NodeTypes, identifyNode, rejectNodes } from 'firetree'
 import { isObject } from 'lodash'
 import { map, pipe } from 'ramda'
 
-import { identifyNode, rejectNodes } from '../../ast'
-import { NodeTypes } from '../../constants'
 import { update } from '../../utils'
 
 const removeFunctionDeclarations = (context, unusedFunctionIdMap, node) => {
@@ -11,14 +10,11 @@ const removeFunctionDeclarations = (context, unusedFunctionIdMap, node) => {
       rejectNodes(
         context,
         (childNode) =>
-          childNode.type === NodeTypes.FUNCTION_DECLARATION &&
-          unusedFunctionIdMap.has(childNode.id)
+          childNode.type === NodeTypes.FUNCTION_DECLARATION && unusedFunctionIdMap.has(childNode.id)
       ),
       update(
         'children',
-        map((childNode) =>
-          removeFunctionDeclarations(context, unusedFunctionIdMap, childNode)
-        )
+        map((childNode) => removeFunctionDeclarations(context, unusedFunctionIdMap, childNode))
       ),
       identifyNode(context)
     )(node)

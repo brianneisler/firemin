@@ -1,6 +1,4 @@
-import { setupContext } from '../context'
-import { generateString } from '../generator'
-import { parseString } from '../parser'
+import { generateString, parseString, setupContext } from 'firetree'
 
 import minimizeAST from './minimizeAST'
 
@@ -33,16 +31,12 @@ describe('minimizeAST', () => {
   })
 
   test('replaces multiple params with args in function collapse of BinaryExpression', async () => {
-    const code =
-      'function foo(param1, param2) { return param1 && param2; }' +
-      'foo(true, false);'
+    const code = 'function foo(param1, param2) { return param1 && param2; }' + 'foo(true, false);'
 
     const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
-    expect(generateString(context, { ast: minimizedAST })).toEqual(
-      'true && false;'
-    )
+    expect(generateString(context, { ast: minimizedAST })).toEqual('true && false;')
   })
 
   test('replaces multiple params with args in function collapse', async () => {
@@ -53,17 +47,11 @@ describe('minimizeAST', () => {
     const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
-    expect(generateString(context, { ast: minimizedAST })).toEqual(
-      'true && false && true;'
-    )
+    expect(generateString(context, { ast: minimizedAST })).toEqual('true && false && true;')
   })
 
   test('removes an unused function', async () => {
-    const code =
-      'function a() { return true; }' +
-      'function b() { return true; }' +
-      'b();' +
-      'b();'
+    const code = 'function a() { return true; }' + 'function b() { return true; }' + 'b();' + 'b();'
 
     const context = setupContext({ logger: console })
     const ast = await parseString(context, code)

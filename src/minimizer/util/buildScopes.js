@@ -1,7 +1,7 @@
+import { NodeTypes } from 'firetree'
 import { isObject } from 'lodash'
 import { reduce } from 'ramda'
 
-import { NodeTypes } from '../../constants'
 import { measure } from '../../utils'
 
 import newScope from './newScope'
@@ -13,10 +13,7 @@ import newScope from './newScope'
 
 // - build the scope tree depth first. This way we can memoize
 const buildScopes = (scopes, currentScope, node) => {
-  if (
-    node.type === NodeTypes.PROGRAM ||
-    node.type === NodeTypes.BLOCK_STATEMENT
-  ) {
+  if (node.type === NodeTypes.PROGRAM || node.type === NodeTypes.BLOCK_STATEMENT) {
     currentScope = newScope(currentScope)
   }
   // NOTE BRN: Record all functions by name

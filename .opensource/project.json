@@ -1,0 +1,12 @@
+{
+  "name": "firemin",
+  "platforms": ["Node", "Admin"],
+  "content": "README.md",
+  "pages": ["CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "DEVELOPMENT.md", "RELEASE.md"],
+  "tabs": [
+    {
+      "title": "NPM",
+      "href": "https://www.npmjs.com/package/firemin"
+    }
+  ]
+}

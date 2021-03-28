@@ -2,10 +2,11 @@ import { exec } from 'child_process'
 import { tmpdir } from 'os'
 import { resolve as pathResolve } from 'path'
 
+import { generateString, parse, setupContext } from 'firetree'
 import { readFile } from 'fs-extra'
 import { v4 as uuidv4 } from 'uuid'
 
-import { generateString, minimize, parse, setupContext } from '../src'
+import { minimize } from '../src'
 
 describe('integration', () => {
   test('should install globally', async () => {
@@ -30,10 +31,7 @@ describe('integration', () => {
     const context = setupContext({
       logger: console
     })
-    const string = await readFile(
-      pathResolve(__dirname, 'files', 'firestore.rules'),
-      'utf-8'
-    )
+    const string = await readFile(pathResolve(__dirname, 'files', 'firestore.rules'), 'utf-8')
 
     const ast = await parse(context, {
       string
@@ -57,11 +55,7 @@ describe('integration', () => {
     const context = setupContext({
       logger: console
     })
-    const outputFilePath = pathResolve(
-      tmpdir(),
-      uuidv4(),
-      'firestore.min.rules'
-    )
+    const outputFilePath = pathResolve(tmpdir(), uuidv4(), 'firestore.min.rules')
     const returned = await minimize(context, {
       filePath: pathResolve(__dirname, 'files', 'firestore.rules'),
       outputFilePath
@@ -80,11 +74,7 @@ describe('integration', () => {
       logger: console
     })
     const result = await minimize(context, {
-      filePath: pathResolve(
-        __dirname,
-        'files',
-        'firestore.unused-functions.rules'
-      )
+      filePath: pathResolve(__dirname, 'files', 'firestore.unused-functions.rules')
     })
     expect(result).toEqual(
       "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function someFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if someFunc(arg1,arg2);allow create:if someFunc(arg1,arg2);allow update:if someFunc(arg1,arg2);allow delete:if someFunc(arg1,arg2);}}}"
@@ -96,11 +86,7 @@ describe('integration', () => {
       logger: console
     })
     const result = await minimize(context, {
-      filePath: pathResolve(
-        __dirname,
-        'files',
-        'firestore.single-use-functions.rules'
-      )
+      filePath: pathResolve(__dirname, 'files', 'firestore.single-use-functions.rules')
     })
     expect(result).toEqual(
       "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function multiUseFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if arg1&&arg2;allow create:if!arg1;allow update:if multiUseFunc(arg1,arg2);allow delete:if multiUseFunc(arg1,arg2);}}}"
@@ -112,11 +98,7 @@ describe('integration', () => {
       logger: console
     })
     const result = await minimize(context, {
-      filePath: pathResolve(
-        __dirname,
-        'files',
-        'firestore.nested-property-access.rules'
-      )
+      filePath: pathResolve(__dirname, 'files', 'firestore.nested-property-access.rules')
     })
     expect(result).toEqual(
       "rules_version='2';service cloud.firestore{match/databases/{database}/documents{match/some/path/{arg}{allow read:if arg.data.data;}}}"

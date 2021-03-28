@@ -1,11 +1,7 @@
 import { Map } from 'immutable'
 import { curry, reduce } from 'ramda'
 
-import {
-  buildScopes,
-  collapseFunctionDeclaration,
-  findSingleUseFunctions
-} from '../util'
+import { buildScopes, collapseFunctionDeclaration, findSingleUseFunctions } from '../util'
 
 const collapseSingleUseFunctions = curry((context, ast) => {
   context = {

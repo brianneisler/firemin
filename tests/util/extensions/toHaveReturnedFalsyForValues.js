@@ -18,12 +18,7 @@ function toHaveReturnedFalsyForValues(func, values) {
   }
 
   const message = () =>
-    this.utils.matcherHint(
-      'toHaveReturnedTruthyForValues',
-      func,
-      `[${value}]`,
-      options
-    ) +
+    this.utils.matcherHint('toHaveReturnedTruthyForValues', func, `[${value}]`, options) +
     '\n\n' +
     `Expected: ${this.utils.printExpected(expected)}\n` +
     `Received: ${this.utils.printReceived(received)}`

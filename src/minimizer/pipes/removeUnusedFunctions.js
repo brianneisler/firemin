@@ -1,11 +1,7 @@
 import { Map } from 'immutable'
 import { curry } from 'ramda'
 
-import {
-  buildScopes,
-  findUnusedFunctions,
-  removeFunctionDeclarations
-} from '../util'
+import { buildScopes, findUnusedFunctions, removeFunctionDeclarations } from '../util'
 
 const removeUnusedFunctions = curry((context, ast) => {
   const unusedFunctionIdMap = findUnusedFunctions(

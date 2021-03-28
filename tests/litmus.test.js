@@ -1,6 +1,8 @@
 import { resolve as pathResolve } from 'path'
 
-import { minimize, setupContext } from '../src'
+import { setupContext } from 'firetree'
+
+import { minimize } from '../src'
 
 describe('litmus', () => {
   test('large rules file from moltres project', async () => {

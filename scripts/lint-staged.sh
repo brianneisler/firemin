@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 set -e
-lint-staged
+eslint --fix --cache --ext ts,tsx,js,jsx $@

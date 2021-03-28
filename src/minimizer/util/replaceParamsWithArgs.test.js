@@ -1,12 +1,10 @@
-import { setupContext } from '../../context'
-import { generateString } from '../../generator'
-import { tokenize } from '../../parser'
+import { generateString, setupContext, tokenize } from 'firetree'
 import {
   BinaryExpression,
   Identifier,
   LetDeclaration,
   StaticMemberExpression
-} from '../../parser/nodes'
+} from 'firetree/parser/nodes'
 
 import replaceParamsWithArgs from './replaceParamsWithArgs'
 
@@ -15,16 +13,9 @@ describe('replaceParamsWithArgs', () => {
     const context = setupContext({
       logger: console
     })
-    const statement = Identifier.parse(
-      context,
-      await tokenize(context, { string: 'foo' })
-    )
-    const params = [
-      Identifier.parse(context, await tokenize(context, { string: 'foo' }))
-    ]
-    const args = [
-      Identifier.parse(context, await tokenize(context, { string: 'bar' }))
-    ]
+    const statement = Identifier.parse(context, await tokenize(context, { string: 'foo' }))
+    const params = [Identifier.parse(context, await tokenize(context, { string: 'foo' }))]
+    const args = [Identifier.parse(context, await tokenize(context, { string: 'bar' }))]
     const result = replaceParamsWithArgs(context, statement, params, args)
     expect(result).toBe(args[0])
   })
@@ -37,12 +28,8 @@ describe('replaceParamsWithArgs', () => {
       context,
       await tokenize(context, { string: '1 + foo' })
     )
-    const params = [
-      Identifier.parse(context, await tokenize(context, { string: 'foo' }))
-    ]
-    const args = [
-      Identifier.parse(context, await tokenize(context, { string: 'bar' }))
-    ]
+    const params = [Identifier.parse(context, await tokenize(context, { string: 'foo' }))]
+    const args = [Identifier.parse(context, await tokenize(context, { string: 'bar' }))]
     const result = replaceParamsWithArgs(context, statement, params, args)
 
     expect(generateString(context, { ast: result })).toBe('1 + bar')
@@ -56,12 +43,8 @@ describe('replaceParamsWithArgs', () => {
       context,
       await tokenize(context, { string: 'let foo = 1;' })
     )
-    const params = [
-      Identifier.parse(context, await tokenize(context, { string: 'foo' }))
-    ]
-    const args = [
-      Identifier.parse(context, await tokenize(context, { string: 'bar' }))
-    ]
+    const params = [Identifier.parse(context, await tokenize(context, { string: 'foo' }))]
+    const args = [Identifier.parse(context, await tokenize(context, { string: 'bar' }))]
     const result = replaceParamsWithArgs(context, statement, params, args)
 
     expect(generateString(context, { ast: result })).toBe('let foo = 1;')
@@ -75,12 +58,8 @@ describe('replaceParamsWithArgs', () => {
       context,
       await tokenize(context, { string: 'foo.bar' })
     )
-    const params = [
-      Identifier.parse(context, await tokenize(context, { string: 'foo' }))
-    ]
-    const args = [
-      Identifier.parse(context, await tokenize(context, { string: 'bar' }))
-    ]
+    const params = [Identifier.parse(context, await tokenize(context, { string: 'foo' }))]
+    const args = [Identifier.parse(context, await tokenize(context, { string: 'bar' }))]
     const result = replaceParamsWithArgs(context, statement, params, args)
 
     expect(generateString(context, { ast: result })).toBe('bar.bar')
@@ -94,12 +73,8 @@ describe('replaceParamsWithArgs', () => {
       context,
       await tokenize(context, { string: 'bar.foo' })
     )
-    const params = [
-      Identifier.parse(context, await tokenize(context, { string: 'foo' }))
-    ]
-    const args = [
-      Identifier.parse(context, await tokenize(context, { string: 'bar' }))
-    ]
+    const params = [Identifier.parse(context, await tokenize(context, { string: 'foo' }))]
+    const args = [Identifier.parse(context, await tokenize(context, { string: 'bar' }))]
     const result = replaceParamsWithArgs(context, statement, params, args)
 
     expect(generateString(context, { ast: result })).toBe('bar.foo')

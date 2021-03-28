@@ -1,4 +1,6 @@
-import {
+import { TokenTypes } from 'firetree'
+
+const {
   COMMENT,
   OPERATOR_ASSIGNMENT,
   OPERATOR_BACKWARD_SLASH,
@@ -27,7 +29,7 @@ import {
   OPERATOR_UNARY_MINUS,
   OPERATOR_UNARY_PLUS,
   WHITESPACE
-} from '../constants/TokenTypes'
+} = TokenTypes
 
 const minimizeTokenList = (context, tokenList) =>
   tokenList

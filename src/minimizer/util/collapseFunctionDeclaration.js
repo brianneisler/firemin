@@ -1,7 +1,6 @@
+import { NodeTypes, assocNodePath, findNodeInTree, findNodePathInTree } from 'firetree'
 import { propEq } from 'ramda'
 
-import { assocNodePath, findNodeInTree, findNodePathInTree } from '../../ast'
-import { NodeTypes } from '../../constants'
 import { measure } from '../../utils'
 
 import getCallExpressionByNameInScope from './getCallExpressionByNameInScope'
@@ -10,10 +9,7 @@ import replaceParamsWithArgs from './replaceParamsWithArgs'
 const replaceCallExpression = measure(
   'replaceCallExpression',
   (context, callExpression, statement, ast) => {
-    const callExpressionPath = findNodePathInTree(
-      propEq('id', callExpression.id),
-      ast
-    )
+    const callExpressionPath = findNodePathInTree(propEq('id', callExpression.id), ast)
 
     // TODO BRN: This will not update any node where the callExpression is
     // embedded within an expression

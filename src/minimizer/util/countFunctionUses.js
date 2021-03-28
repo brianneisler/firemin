@@ -1,7 +1,6 @@
+import { NodeTypes, walkReduceTree } from 'firetree'
 import { OrderedMap } from 'immutable'
 
-import walkReduceTree from '../../ast/walkReduceTree'
-import { NodeTypes } from '../../constants'
 import { weakMemoize } from '../../utils'
 
 import findAllFunctionDeclrations from './findAllFunctionDeclarations'
@@ -18,10 +17,7 @@ const countFunctionUses = weakMemoize(({ scopes }, ast) => {
           if (!scope) {
             throw new Error(`Could not find scope for node ${node}`)
           }
-          const functionDeclaration = getFunctionDeclarationByNameInScope(
-            callee.name,
-            scope
-          )
+          const functionDeclaration = getFunctionDeclarationByNameInScope(callee.name, scope)
           if (functionDeclaration) {
             return accum.update(functionDeclaration.id, (value) => value + 1)
           }

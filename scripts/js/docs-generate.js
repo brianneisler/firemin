@@ -4,17 +4,7 @@ import dox from 'dox'
 import fs from 'fs-extra'
 import glob from 'glob'
 import markdownMagic from 'markdown-magic'
-import {
-  append,
-  assoc,
-  filter,
-  find,
-  forEach,
-  isEmpty,
-  map,
-  prop,
-  reduce
-} from 'ramda'
+import { append, assoc, filter, find, forEach, isEmpty, map, prop, reduce } from 'ramda'
 
 import pack from '../../package.json'
 
@@ -45,9 +35,7 @@ const parseReturnsString = (string) => {
     const typesDescription = result[0]
     return {
       description: string.slice(result.index + typesDescription.length).trim(),
-      typesDescription: typesDescription
-        .slice(1, typesDescription.length - 1)
-        .trim()
+      typesDescription: typesDescription.slice(1, typesDescription.length - 1).trim()
     }
   }
   return {}
@@ -118,10 +106,7 @@ const findParams = (tags) => {
 }
 
 const findReturns = (tags) => {
-  const returnsTag = find(
-    (tag) => tag.type === 'return' || tag.type === 'returns',
-    tags
-  )
+  const returnsTag = find((tag) => tag.type === 'return' || tag.type === 'returns', tags)
   return returnsTag
 }
 
@@ -405,29 +390,17 @@ const generateCategoryDocs = (srcData) =>
           if (type === 'function') {
             const fnDocs = generateFunctionDocs(meta, data.srcFile)
             let category = getCategory(fnDocs.category, categories)
-            category = assoc(
-              'functions',
-              append(fnDocs, category.functions),
-              category
-            )
+            category = assoc('functions', append(fnDocs, category.functions), category)
             categories = assoc(fnDocs.category, category, categories)
           } else if (type === 'class') {
             const classDocs = generateClassDocs(meta, data.srcFile)
             let category = getCategory(classDocs.category, categories)
-            category = assoc(
-              'classes',
-              append(classDocs, category.classes),
-              category
-            )
+            category = assoc('classes', append(classDocs, category.classes), category)
             categories = assoc(classDocs.category, category, categories)
           } else {
             const valueDocs = generateValueDocs(meta, data.srcFile)
             let category = getCategory(valueDocs.category, categories)
-            category = assoc(
-              'values',
-              append(valueDocs, category.values),
-              category
-            )
+            category = assoc('values', append(valueDocs, category.values), category)
             categories = assoc(valueDocs.category, category, categories)
           }
         }

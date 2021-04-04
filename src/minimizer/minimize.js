@@ -7,7 +7,7 @@ import minimizeTokenList from './minimizeTokenList'
 
 /**
  * Minimizes the rules contained at the given filePath.
- * If given an outputFilePath this method will output the result to the given
+ * If given an output this method will output the result to the given
  * file path instead of returning a minimize string.
  *
  * @function
@@ -16,7 +16,7 @@ import minimizeTokenList from './minimizeTokenList'
  * @param {Context} context
  * @param {{
  *   filePath: String,
- *   outputFilePath: String
+ *   output: String
  * }}} options
  * @returns {String | Null}
  * @example
@@ -30,10 +30,10 @@ import minimizeTokenList from './minimizeTokenList'
  * // minimize and send output to a file
  * await minimize(context, {
  *   filePath: './path/to/firestore.rules',
- *   outputFilePath: './path/to/firestore.min.rules'
+ *   output: './path/to/firestore.min.rules'
  * })
  */
-const minimize = async (context, { filePath, outputFilePath }) => {
+const minimize = async (context, { filePath, output }) => {
   const ast = await parseFile(context, filePath)
   const minimizedAST = await minimizeAST(context, ast)
   const minimizedTokenList = minimizeTokenList(
@@ -47,10 +47,12 @@ const minimize = async (context, { filePath, outputFilePath }) => {
   // })
   // log += ']'
   // console.log(log)
-  if (outputFilePath) {
-    outputFilePath = resolve(outputFilePath)
+  if (output === 'STDOUT') {
+    return process.stdout.write(generateString(context, { tokenList: minimizedTokenList }))
+  }
+  if (output) {
     return await generateFile(context, {
-      outputFilePath,
+      outputFilePath: resolve(output),
       tokenList: minimizedTokenList
     })
   }

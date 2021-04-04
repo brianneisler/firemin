@@ -1,9 +1,16 @@
 import { NodeTypes, assocNodePath, findNodeInTree, findNodePathInTree } from 'firetree'
-import { propEq } from 'ramda'
+import {
+  createCloseParenthesisOperator,
+  createOpenParenthesisOperator,
+  createParenthesesExpression
+} from 'firetree/parser/pipes'
+import { OperatorCloseParenthesis, OperatorOpenParenthesis } from 'firetree/parser/tokens'
+import { List } from 'immutable'
+import { propEq, reduce } from 'ramda'
 
 import { measure } from '../../utils'
 
-import getCallExpressionByNameInScope from './getCallExpressionByNameInScope'
+import getCallExpressionsByNameInScope from './getCallExpressionsByNameInScope'
 import replaceParamsWithArgs from './replaceParamsWithArgs'
 
 const replaceCallExpression = measure(
@@ -33,7 +40,7 @@ const collapseFunctionDeclaration = measure(
     // console.debug(`collapsing function ${functionDeclaration.identifier.name}`)
 
     const scope = scopes.get(functionId)
-    const callExpression = getCallExpressionByNameInScope(
+    const callExpressions = getCallExpressionsByNameInScope(
       functionDeclaration.identifier.name,
       scope
     )
@@ -47,17 +54,39 @@ const collapseFunctionDeclaration = measure(
       statement = functionBody.argument
     }
 
-    if (functionDeclaration.params.length > 0) {
-      statement = replaceParamsWithArgs(
-        context,
-        statement,
-        functionDeclaration.params,
-        callExpression.args
-      )
-    }
+    return reduce(
+      (accumAst, callExpression) => {
+        let replacedStatement =
+          functionDeclaration.params.length > 0
+            ? replaceParamsWithArgs(
+                context,
+                statement,
+                functionDeclaration.params,
+                callExpression.args
+              )
+            : statement
 
-    // replace CallExpression with statement
-    return replaceCallExpression(context, callExpression, statement, ast)
+        if (replacedStatement.type === NodeTypes.BINARY_EXPRESSION) {
+          // TODO BRN: Need a simpler way to do this... maybe a template engine...
+          replacedStatement = createParenthesesExpression({
+            children: [
+              createOpenParenthesisOperator({
+                tokenList: List([OperatorOpenParenthesis.parse()])
+              }),
+              replacedStatement,
+              createCloseParenthesisOperator({
+                tokenList: List([OperatorCloseParenthesis.parse()])
+              })
+            ],
+            statement: replacedStatement
+          })
+        }
+        // replace CallExpression with statement
+        return replaceCallExpression(context, callExpression, replacedStatement, accumAst)
+      },
+      ast,
+      callExpressions
+    )
   }
 )
 

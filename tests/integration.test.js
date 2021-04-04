@@ -85,7 +85,7 @@ describe('integration', () => {
       filePath: pathResolve(__dirname, 'files', 'firestore.unused-functions.rules')
     })
     expect(result).toEqual(
-      "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function someFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if someFunc(arg1,arg2);allow create:if someFunc(arg1,arg2);allow update:if someFunc(arg1,arg2);allow delete:if someFunc(arg1,arg2);}}}"
+      "rules_version='2';service cloud.firestore{match/databases/{database}/documents{match/some/path/{arg1}/{arg2}{allow read:if arg1.keys().hasAll([arg2]);allow create:if arg1.keys().hasAll([arg2]);allow update:if arg1.keys().hasAll([arg2]);allow delete:if arg1.keys().hasAll([arg2]);}}}"
     )
   })
 
@@ -97,7 +97,7 @@ describe('integration', () => {
       filePath: pathResolve(__dirname, 'files', 'firestore.single-use-functions.rules')
     })
     expect(result).toEqual(
-      "rules_version='2';service cloud.firestore{match/databases/{database}/documents{function multiUseFunc(someParam1,someParam2){return someParam1.keys().hasAll([someParam2])}match/some/path/{arg1}/{arg2}{allow read:if arg1&&arg2;allow create:if!arg1;allow update:if multiUseFunc(arg1,arg2);allow delete:if multiUseFunc(arg1,arg2);}}}"
+      "rules_version='2';service cloud.firestore{match/databases/{database}/documents{match/some/path/{arg1}/{arg2}{allow read:if(arg1&&arg2);allow create:if!arg1;}}}"
     )
   })
 
@@ -110,6 +110,18 @@ describe('integration', () => {
     })
     expect(result).toEqual(
       "rules_version='2';service cloud.firestore{match/databases/{database}/documents{match/some/path/{arg}{allow read:if arg.data.data;}}}"
+    )
+  })
+
+  test('minfier collapses small functions', async () => {
+    const context = setupContext({
+      logger: console
+    })
+    const result = await minimize(context, {
+      filePath: pathResolve(__dirname, 'files', 'firestore.small-functions.rules')
+    })
+    expect(result).toEqual(
+      "rules_version='2';service cloud.firestore{match/databases/{database}/documents{match/some/path/{arg1}/{arg2}{allow read:if!arg1;allow create:if!arg1;allow update:if(arg1&&arg2);allow delete:if(arg1&&arg2);}}}"
     )
   })
 })

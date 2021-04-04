@@ -22,7 +22,10 @@ const buildScopes = (scopes, currentScope, node) => {
     currentScope.functions[node.identifier.name] = node
   }
   if (node.type === NodeTypes.CALL_EXPRESSION) {
-    currentScope.calls[node.callee.name] = node
+    if (!currentScope.calls[node.callee.name]) {
+      currentScope.calls[node.callee.name] = []
+    }
+    currentScope.calls[node.callee.name].push(node)
   }
   scopes = scopes.set(node.id, currentScope)
   const { children } = node

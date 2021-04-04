@@ -21,6 +21,15 @@ describe('minimizeAST', () => {
     expect(generateString(context, { ast: minimizedAST })).toEqual('true;')
   })
 
+  test('replaces params with args in function collapse with multiple calls', async () => {
+    const code = 'function foo(param1) { return param1; }' + 'foo(true);' + 'foo(false);'
+
+    const context = setupContext({ logger: console })
+    const ast = await parseString(context, code)
+    const minimizedAST = await minimizeAST(context, ast)
+    expect(generateString(context, { ast: minimizedAST })).toEqual('true;false;')
+  })
+
   test('replaces params with args in function collapse of UnaryExpression', async () => {
     const code = 'function foo(param1) { return !param1; }' + 'foo(true);'
 
@@ -36,7 +45,7 @@ describe('minimizeAST', () => {
     const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
-    expect(generateString(context, { ast: minimizedAST })).toEqual('true && false;')
+    expect(generateString(context, { ast: minimizedAST })).toEqual('(true && false);')
   })
 
   test('replaces multiple params with args in function collapse', async () => {
@@ -47,17 +56,24 @@ describe('minimizeAST', () => {
     const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
-    expect(generateString(context, { ast: minimizedAST })).toEqual('true && false && true;')
+    expect(generateString(context, { ast: minimizedAST })).toEqual('(true && false && true);')
   })
 
   test('removes an unused function', async () => {
-    const code = 'function a() { return true; }' + 'function b() { return true; }' + 'b();' + 'b();'
+    const code = 'function a() { return true; }' + 'true;'
 
     const context = setupContext({ logger: console })
     const ast = await parseString(context, code)
     const minimizedAST = await minimizeAST(context, ast)
-    expect(generateString(context, { ast: minimizedAST })).toEqual(
-      'function b() { return true; }' + 'b();' + 'b();'
-    )
+    expect(generateString(context, { ast: minimizedAST })).toEqual('true;')
+  })
+
+  test('collapses a simple single operation function with multiple uses that returns a Literal', async () => {
+    const code = 'function foo() { return true; }' + 'foo();foo();'
+
+    const context = setupContext({ logger: console })
+    const ast = await parseString(context, code)
+    const minimizedAST = await minimizeAST(context, ast)
+    expect(generateString(context, { ast: minimizedAST })).toEqual('true;true;')
   })
 })

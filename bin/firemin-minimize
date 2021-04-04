@@ -11,13 +11,13 @@ program
   .description('minimize a firebase firestore rules file')
   .option(
     '-f, --filePath [filePath]',
-    'The relative file path to the rule file (defaults to ./firestore.rules)',
+    'The relative file path to the rules file (defaults to ./firestore.rules)',
     resolve('./firestore.rules')
   )
   .option(
-    '-o, --outputFilePath [outputFilePath]',
-    'the relative file path to output the new minimized file (defaults to ./firestore.min.rules)',
-    resolve('./firestore.min.rules')
+    '-o, --output [output]',
+    'the output target (STDOUT or file path) for the new minimized rules (defaults to ./firestore.min.rules)',
+    'STDOUT'
   )
   .parse(process.argv)
 
@@ -25,23 +25,26 @@ const exec = async (options) => {
   const startTime = Date.now()
   const context = setupContext()
   const { logger } = context
-  logger.info('running...')
+  const isStdout = options.output === 'STDOUT'
+
+  if (!isStdout) {
+    logger.info('running...')
+  }
 
   const finalLogger = pino.final(logger)
   try {
     await minimize(context, options)
-    const duration = ((Date.now() - startTime) / 1000).toFixed(2)
-    logger.info()
-    logger.info(
-      `Minimized rules file in ${duration}s and output to ${options.outputFilePath}`
-    )
+    if (!isStdout) {
+      const duration = ((Date.now() - startTime) / 1000).toFixed(2)
+      logger.info(`Minimized rules file in ${duration}s and output to ${options.output}`)
+    }
   } catch (error) {
     finalLogger.warn('An error occured while trying to minimize the rules file')
     throw error
   }
 }
 
-exec(program)
+exec(program.opts())
   // .then(() => process.exit())
   .catch((error) => {
     // eslint-disable-next-line no-console

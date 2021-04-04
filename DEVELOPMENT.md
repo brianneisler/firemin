@@ -2,8 +2,8 @@
 
 ## Requirements
 
-* node.js 10.0+
-* npm 10.0+
+- node.js 10.0+
+- npm 10.0+
 
 _NOTE:_ we recommend using [nvm](https://github.com/creationix/nvm)
 
@@ -12,6 +12,7 @@ brew install nvm
 ```
 
 ## Tasks
+
 The following outlines the commands for common development tasks.
 
 ### Setup
@@ -34,7 +35,6 @@ To build the project
 npm run build
 ```
 
-
 ### Watch
 
 To build on every file change
@@ -43,7 +43,6 @@ To build on every file change
 npm run watch
 ```
 
-
 ### Clean
 
 To clean and remove all built files
@@ -51,7 +50,6 @@ To clean and remove all built files
 ```sh
 npm run clean
 ```
-
 
 ### Cleanse
 
@@ -63,7 +61,6 @@ To cleanse the project
 npm run cleanse
 ```
 
-
 ### Test
 
 Run tests for the project
@@ -71,7 +68,6 @@ Run tests for the project
 ```sh
 npm test
 ```
-
 
 ### Lint
 

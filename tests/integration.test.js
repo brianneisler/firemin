@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 import { tmpdir } from 'os'
-import { resolve as pathResolve, sep as pathSep } from 'path'
+import { resolve as pathResolve } from 'path'
 
 import { readFile } from 'fs-extra'
 import { v4 as uuidv4 } from 'uuid'
@@ -61,11 +61,7 @@ describe('integration', () => {
     // will pass.
     const result = await new Promise((resolve, reject) => {
       exec(
-        `npx ${['.', 'bin', 'firemin'].join(pathSep)} minimize -f ${pathResolve(
-          __dirname,
-          'files',
-          'firestore.rules'
-        )}`,
+        `npx ./bin/firemin minimize -f ${pathResolve(__dirname, 'files', 'firestore.rules')}`,
         { cwd: pathResolve(__dirname, '..') },
         (error, stdout) => {
           if (error) {

@@ -2,49 +2,49 @@ language: node_js
 sudo: false
 
 node_js:
-- 14
-- 12
-- 10
+  - 14
+  - 12
+  - 10
 
 os:
-- linux
-- osx
-- windows
+  - linux
+  - osx
+  - windows
 
 install:
-- npm run setup
+  - npm run setup
 
 script:
-- npm run test:ci
+  - npm run test:ci
 
 stages:
-- audit
-- lint
-- test
-- name: deploy
-  if: tag=~^v AND repo=brianneisler/firemin
+  - audit
+  - lint
+  - test
+  - name: deploy
+    if: tag=~^v AND repo=brianneisler/firemin
 
 jobs:
   include:
-  - stage: audit
-    node_js: 14
-    os: linux
-    script: npm run security:audit
-  - stage: lint
-    node_js: 14
-    os: linux
-    script: npm run lint
-  - stage: deploy
-    node_js: 14
-    os: linux
-    script: echo "Deploying to npm ..."
-    deploy:
-      provider: npm
-      skip_cleanup: true
-      email: me@brianneisler.com
-      api_key: "$NPM_TOKEN"
-      on:
-        tags: true
+    - stage: audit
+      node_js: 14
+      os: linux
+      script: npm run security:audit
+    - stage: lint
+      node_js: 14
+      os: linux
+      script: npm run lint
+    - stage: deploy
+      node_js: 14
+      os: linux
+      script: echo "Deploying to npm ..."
+      deploy:
+        provider: npm
+        skip_cleanup: true
+        email: me@brianneisler.com
+        api_key: '$NPM_TOKEN'
+        on:
+          tags: true
 
 env:
   global:

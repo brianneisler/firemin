@@ -4,7 +4,7 @@ Firebase Firestore/Storage security rules minifier
 
 ## Project Status
 
-[![license](https://img.shields.io/npm/l/moltres.svg)](https://github.com/brianneisler/moltres/blob/master/LICENSE)
+[![license](https://img.shields.io/npm/l/firemin.svg)](https://github.com/brianneisler/firemin/blob/master/LICENSE)
 [![npm version](https://badge.fury.io/js/firemin.svg)](https://badge.fury.io/js/firemin)<br />
 [![Build Status](https://travis-ci.org/brianneisler/firemin.svg)](https://travis-ci.org/brianneisler/firemin)<br />
 [![Code coverage](https://codecov.io/gh/brianneisler/firemin/branch/master/graph/badge.svg)](https://codecov.io/gh/brianneisler/firemin/branch/master/)<br />
@@ -91,14 +91,14 @@ https://stackoverflow.com/questions/63925021/firestore-uploading-larger-rules-fi
 - [x] Removes unnecessary whitespace
 - [x] Removes unused functions from your rules file
 - [x] Collapses single use functions (functions that are only invoked once)
+- [x] Collapse small functions (functions that only perform few operation do not
+      necessarily save us anything on code size and create more operation overhead)
 
 ## TODO
 
+- [ ] Allow for option to preserve white space (for debugging)
 - [ ] Replace function names and function parameter names with shorter single character names
 - [ ] Collapse single use let declarations
-- [ ] Collapse single operation functions (functions that only perform one
-      operation do not necessarily save us anything on code size and create more
-      operation overhead)
 
 ## Install
 

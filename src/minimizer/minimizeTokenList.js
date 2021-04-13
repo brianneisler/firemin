@@ -31,6 +31,7 @@ const {
   WHITESPACE
 } = TokenTypes
 
+const PRESERVE_WHITESPACE = false
 const minimizeTokenList = (context, tokenList) =>
   tokenList
     // filter out comments
@@ -39,10 +40,17 @@ const minimizeTokenList = (context, tokenList) =>
     .map((token) => {
       if (token.type === WHITESPACE) {
         if (token.length > 1) {
+          if (!PRESERVE_WHITESPACE || !token.value.includes('\n')) {
+            return {
+              length: 1,
+              type: WHITESPACE,
+              value: ' '
+            }
+          }
           return {
             length: 1,
             type: WHITESPACE,
-            value: ' '
+            value: '\n'
           }
         }
       }
@@ -50,6 +58,9 @@ const minimizeTokenList = (context, tokenList) =>
     })
     // filter out all unnecessary whitespace
     .filter((token, index, list) => {
+      if (PRESERVE_WHITESPACE) {
+        return true
+      }
       if (index > 0) {
         if (index === list.length - 1) {
           return token.type !== WHITESPACE

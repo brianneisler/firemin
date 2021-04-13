@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function smallFunctionUnaryExpression(arg1) {
+      return !arg1;
+    }
+
+    function smallFunctionBinaryExpression(arg1, arg2) {
+      return arg1 && arg2;
+    }
+
+    match /some/path/{arg1}/{arg2} {
+      allow read: if smallFunctionUnaryExpression(arg1);
+      allow create: if smallFunctionUnaryExpression(arg1);
+      allow update: if smallFunctionBinaryExpression(arg1, arg2);
+      allow delete: if smallFunctionBinaryExpression(arg1, arg2);
+    }
+  }
+}

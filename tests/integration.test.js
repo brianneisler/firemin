@@ -61,7 +61,7 @@ describe('integration', () => {
     // will pass.
     const result = await new Promise((resolve, reject) => {
       exec(
-        `npx "${pathResolve(__dirname, '..', 'bin', 'firemin')} minimize" -f "${pathResolve(
+        `npx "${pathResolve(__dirname, '..', 'bin', 'firemin')}" minimize -f "${pathResolve(
           __dirname,
           'files',
           'firestore.rules'

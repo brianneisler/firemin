@@ -1,6 +1,6 @@
 {
   "name": "firemin",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Firebase Firestore/Storage security rules minifier",
   "author": "Brian Neisler <hello@brianneisler.com>",
   "license": "Apache-2.0",

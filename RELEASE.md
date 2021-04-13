@@ -68,6 +68,8 @@ git push origin release/vX.X.X
 git log --pretty="- %s" --no-merges origin/release/vX.X.X..release/vX.X.X >> CHANGELOG.md
 ```
 
+git log --pretty="- %s" --no-merges origin/release/v0.2.2..release/v0.3.0 >> CHANGELOG.md
+
 - Commit the changelog. Replace Xs with new version number.
 
 ```sh

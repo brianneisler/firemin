@@ -61,7 +61,11 @@ describe('integration', () => {
     // will pass.
     const result = await new Promise((resolve, reject) => {
       exec(
-        `npx ./bin/firemin minimize -f ${pathResolve(__dirname, 'files', 'firestore.rules')}`,
+        `npx ${pathResolve(__dirname, '..', 'bin', 'firemin')} minimize -f ${pathResolve(
+          __dirname,
+          'files',
+          'firestore.rules'
+        )}`,
         { cwd: pathResolve(__dirname, '..') },
         (error, stdout) => {
           if (error) {

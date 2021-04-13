@@ -1,4 +1,4 @@
-import { exec } from 'child_process'
+import { exec, fork } from 'child_process'
 import { tmpdir } from 'os'
 import { resolve as pathResolve } from 'path'
 
@@ -60,20 +60,25 @@ describe('integration', () => {
     // NOTE BRN: This runs against the production built code so you must `npm run build` before this
     // will pass.
     const result = await new Promise((resolve, reject) => {
-      exec(
-        `npx "${pathResolve(__dirname, '..', 'bin', 'firemin')}" minimize -f "${pathResolve(
-          __dirname,
-          'files',
-          'firestore.rules'
-        )}"`,
-        { cwd: pathResolve(__dirname, '..') },
-        (error, stdout) => {
-          if (error) {
-            return reject(error)
-          }
-          return resolve(stdout)
-        }
+      let output = ''
+      let errorOccured
+      const child = fork(
+        pathResolve(__dirname, '..', 'bin', 'firemin'),
+        ['minimize', '-f', pathResolve(__dirname, 'files', 'firestore.rules')],
+        { cwd: pathResolve(__dirname, '..'), stdio: 'pipe' }
       )
+      child.on('error', (error) => {
+        errorOccured = error
+      })
+      child.stdout.on('data', (data) => {
+        output += data
+      })
+      child.on('exit', () => {
+        if (errorOccured) {
+          return reject(errorOccured)
+        }
+        resolve(output)
+      })
     })
 
     expect(result).toEqual(

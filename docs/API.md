@@ -15,7 +15,7 @@
 
 ### function minimize()
 
-[source](https://github.com/brianneisler/firemin.git/tree/v0.2.2/src/minimizer/minimize.js#L8)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
+[source](https://github.com/brianneisler/firemin.git/tree/v0.3.0/src/minimizer/minimize.js#L8)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
 
 <p>Minimizes the rules contained at the given filePath.<br />
 If given an output this method will output the result to the given<br />
@@ -55,7 +55,7 @@ await minimize(context, {
 
 ### **private** function cacheChain()
 
-[source](https://github.com/brianneisler/firemin.git/tree/v0.2.2/src/utils/cacheChain.js#L42)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
+[source](https://github.com/brianneisler/firemin.git/tree/v0.3.0/src/utils/cacheChain.js#L42)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
 
 <p>This method generates a specific object instance for use in a WeakMap cache.<br />
 The object instance is unique based upon the parameters that are passed to<br />
@@ -83,7 +83,7 @@ cache chains connected to the object will automatically be removed from the cach
 
 ### **private** function functionDefineLength()
 
-[source](https://github.com/brianneisler/firemin.git/tree/v0.2.2/src/utils/functionDefineLength.js#L55)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
+[source](https://github.com/brianneisler/firemin.git/tree/v0.3.0/src/utils/functionDefineLength.js#L55)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; since v0.1.0
 
 <p>Defines <code>length</code> for the given <code>func</code></p>
 <p>Note: This mutates <code>func</code></p>

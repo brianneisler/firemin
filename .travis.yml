@@ -1,51 +1,52 @@
 language: node_js
+
 sudo: false
 
 node_js:
-  - 14
-  - 12
-  - 10
+- 14
+- 12
+- 10
 
 os:
-  - linux
-  - osx
-  - windows
+- linux
+- osx
+- windows
 
 install:
-  - npm run setup
+- npm run setup
 
 script:
-  - npm run test:ci
+- npm run test:ci
 
 stages:
-  - audit
-  - lint
-  - test
-  - name: deploy
-    if: tag=~^v AND repo=brianneisler/firemin
+- audit
+- lint
+- test
+- name: deploy
+  if: tag=~^v AND repo=brianneisler/firemin
 
 jobs:
   include:
-    - stage: audit
-      node_js: 14
-      os: linux
-      script: npm run security:audit
-    - stage: lint
-      node_js: 14
-      os: linux
-      script: npm run lint
-    - stage: deploy
-      node_js: 14
-      os: linux
-      script: echo "Deploying to npm ..."
-      deploy:
-        provider: npm
-        skip_cleanup: true
-        email: me@brianneisler.com
-        api_key: '$NPM_TOKEN'
-        on:
-          tags: true
+  - stage: audit
+    node_js: 14
+    os: linux
+    script: npm run security:audit
+  - stage: lint
+    node_js: 14
+    os: linux
+    script: npm run lint
+  - stage: deploy
+    node_js: 14
+    os: linux
+    script: echo "Deploying to npm ..."
+    deploy:
+      provider: npm
+      skip_cleanup: true
+      email: me@brianneisler.com
+      api_key: "$NPM_TOKEN"
+      on:
+        tags: true
 
 env:
   global:
-    secure: Xo7UinKqo0N68mQwo7mKceh0b51HBLMgSneG4avWuTrOPoo6MUQJE2VWaBF3eE3O74mPR1Fj/slpyPkiHwPDMU1AA+bqHUN0kTrsAikhEzqSYW8PWMwkBGtEYuxmUpY2Y/3aFnZ4IFMNeqYhkBq7n/66sWoIO7ue52mW1XjwIx+UEAGQEj62GKpZ4Y4LhmyMqTaZoxUPNhjXx0wshOO5lwxqFy/hUoOS+Taxt/aKk+jfSyzLcUedP73mY+gFh/0m0GBQBNCprwY6lt0gsy2K8hazcesitCBifCfz7BVK27j1pci3XUp83mvCXAHG0eC/F1mQzCVlsCyV0ighUhNvMjBsUsM5EpvKOVzQiGfjyVBX8gveWnBlXl7/m0AMjDNJ8dmQLu3sIlpRv4pi9toqXV8NVMDQgRANpa3k1XvvXbvQtXCWUIlJ/DMptl04KlFOJSDswYCenqZ58M9+aqdzDz+RBP22/onatkF0TcZ28Dtix7bhOX08VLQ2HPXgZ0Wq/EyvJhM2GdLSzNTOX6vPmugBhdruuzLmwJENHjs7WdK4bUhjfTJZTnDi7XE2Du2ctlTvlEcsUtU1+qQGIRUZhXgQ8GsE56tpYcOld8wbxaTELDm/OPuBC6MP192RRmw3WwW8vJiOTjYs3kCO1hcfQ3VqU0TDlOUJFet3HBjYz5o=
+    secure: x5FlTUQPifYMxNNkGaU5G/v2jYn07lj3Zbn8idLFkKJ6r0zS7D57B7UzOTUruekfuBhV0wujcdfVLOfg0Ei2CyY7H24hHiX/1BHN7F2XoE56WsBAnNDfa6cuBpCX+vXn5bB6BeVJzTuh+SUhix9TKn2ar55r7w6Z2stA1RFgMHs+dv0OYDU7qwfgdAqjwDSHns+XaFXvBTN4NAZu/a3Y0G6Uq8IVohKF4BxT8zdSQNlw0TmfGNBpPeKausHbq0XmNUqtmJu/ZrNPn4Tm1B6C4s28R8JP+mBUuXLuDcGZj4So6dAM+l1CK7LpNHUKGtdTz+1htsNvDg+Fjp6+nbWIoTzyHqOrd5tZG+84ZT2hKAEk7DG+b5Ux6Biz4F2cNzCq4P7BO7x8cf1sneVt7J9WQujmY5ebWo+i5Wriwt7gCHDNAJJpeoO0uPrR0e3O0cjcdNmZY0dSC93K98y0/KTXdIYaxF1oWW8/nnlyYyT6H6P5wxkCgiMBs0R50L091MYDJJ1ikETrTCE9zT1mSvQtaN6W2mj9G78lsKo3cqlgqNOXGmqvj/b9kC5Pz7uTKG8XPkVUupvs0vHRW6xe08MXcucohAMBSTv2urMRhK54Ejf+faMUTnmuTqy6C9bjJ68uWlxnSblu1zv3pF1qpMdUcsEstvmsHzbYo3i3hBd3/eQ=

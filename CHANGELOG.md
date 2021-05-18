@@ -21,3 +21,7 @@
 - Add collapsing of small functions to help eliminate operation overhead and slight reduction in code size.
 - Update docs
 - Re-add setupContext method for programmatic usage. Upgrade firetree. Add export folders to allow for importing of subfolders. Add stdout support as a method of returning minified code.
+
+## Release v0.3.1
+
+- Upgrade all dependencies to latest versions. Update npm token in travis file
